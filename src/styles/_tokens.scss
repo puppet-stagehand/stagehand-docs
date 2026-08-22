@@ -1,0 +1,57 @@
+$stagehand-navy: #071521;
+$stagehand-raised-navy: #0d2233;
+$stagehand-cyan: #20d7e7;
+$stagehand-purple: #6f3cc3;
+$stagehand-off-white: #f4f7f9;
+$stagehand-warning: #ffbd4a;
+
+$primary: $stagehand-cyan;
+$secondary: $stagehand-purple;
+$warning: $stagehand-warning;
+$light: $stagehand-off-white;
+$dark: $stagehand-raised-navy;
+$body-bg: $stagehand-navy;
+$body-color: $stagehand-off-white;
+$body-secondary-color: rgba($stagehand-off-white, 0.72);
+$body-tertiary-color: rgba($stagehand-off-white, 0.68);
+$body-secondary-bg: $stagehand-raised-navy;
+$body-tertiary-bg: color.mix($stagehand-raised-navy, $stagehand-navy, 55%);
+$body-emphasis-color: #ffffff;
+$border-color: rgba($stagehand-off-white, 0.16);
+$link-color: $stagehand-cyan;
+$link-hover-color: #8cebf3;
+$font-family-sans-serif: 'IBM Plex Sans', sans-serif;
+$font-family-monospace: 'IBM Plex Mono', monospace;
+$font-family-base: $font-family-sans-serif;
+$font-size-base: 1rem;
+$line-height-base: 1.6;
+$headings-font-weight: 600;
+$headings-line-height: 1.05;
+$headings-color: #ffffff;
+$border-radius: 0;
+$border-radius-sm: 0;
+$border-radius-lg: 0;
+$enable-dark-mode: false;
+$enable-gradients: false;
+$focus-ring-width: 0.2rem;
+$focus-ring-opacity: 1;
+$focus-ring-color: rgba($stagehand-warning, 0.95);
+$btn-font-family: $font-family-monospace;
+$btn-font-weight: 400;
+$btn-border-width: 1px;
+$btn-border-radius: 0;
+$container-padding-x: 1.5rem;
+$grid-gutter-width: 2rem;
+
+:root {
+  --stagehand-navy: #{$stagehand-navy};
+  --stagehand-raised-navy: #{$stagehand-raised-navy};
+  --stagehand-cyan: #{$stagehand-cyan};
+  --stagehand-purple: #{$stagehand-purple};
+  --stagehand-off-white: #{$stagehand-off-white};
+  --stagehand-warning: #{$stagehand-warning};
+  --stagehand-line: #{rgba($stagehand-off-white, 0.14)};
+  --stagehand-line-strong: #{rgba($stagehand-off-white, 0.26)};
+  --stagehand-muted: #{rgba($stagehand-off-white, 0.68)};
+  --stagehand-mono: #{$font-family-monospace};
+}

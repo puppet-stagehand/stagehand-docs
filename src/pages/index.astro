@@ -1,15 +1,75 @@
 ---
-const title = 'Puppet Stagehand';
+import StatusMark from '../components/StatusMark.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const capabilities = [
+  {
+    title: 'Environment visibility',
+    description:
+      'Bring the shape and state of Puppet environments into one legible operational view.',
+  },
+  {
+    title: 'Bolt-native execution',
+    description:
+      'Frame repeatable work around the Bolt tools and execution patterns operators already know.',
+  },
+  {
+    title: 'Explicit support boundaries',
+    description:
+      'Read product tiers, platform compatibility, and limitations as maintained customer-facing records.',
+  },
+] as const;
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{title}</title>
-  </head>
-  <body>
-    <main><h1>{title}</h1></main>
-  </body>
-</html>
+<BaseLayout
+  title="Puppet Stagehand"
+  description="A focused interface for Puppet environment visibility, Bolt-native execution workflows, and explicit support boundaries."
+  canonicalPath="/"
+>
+  <section class="control-hero" aria-labelledby="hero-title">
+    <div class="container control-hero__grid">
+      <div class="control-hero__intro">
+        <p class="control-hero__eyebrow">AUTOMATION CONTROL PLANE</p>
+        <h1 id="hero-title">Operate Puppet with less ceremony.</h1>
+        <p class="control-hero__lede">
+          A focused interface for environment visibility, Bolt-native execution workflows, and
+          clearly documented support boundaries.
+        </p>
+        <div class="control-hero__actions">
+          <a class="btn btn-primary" href="/docs/getting-started/">Get started</a>
+          <a class="btn btn-outline-light" href="/compatibility/">Check compatibility</a>
+        </div>
+      </div>
+      <aside class="control-hero__rail" aria-label="Stagehand system profile">
+        <div class="control-hero__datum">
+          <span class="control-hero__datum-label">CONTROL MODE</span>
+          <StatusMark label="Operator directed" />
+        </div>
+        <div class="control-hero__datum">
+          <span class="control-hero__datum-label">EXECUTION</span>
+          <StatusMark label="Bolt native" tone="purple" />
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="capabilities" aria-labelledby="capabilities-title">
+    <div class="container">
+      <div class="capabilities__heading">
+        <p>CAPABILITY GRID / 03</p>
+        <h2 id="capabilities-title">Operational signal, without the noise.</h2>
+      </div>
+      <div class="capability-grid">
+        {
+          capabilities.map(({ title, description }, index) => (
+            <article class="capability">
+              <span class="capability__index">0{index + 1}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
