@@ -1,0 +1,8 @@
+schema_version: 1
+tiers:
+  - id: puppet-core
+    name: Puppet Core
+    audience: Puppet Core users
+    entitlement: commercial
+    summary: Puppet Core deployments.
+    features: [Core deployment guidance]

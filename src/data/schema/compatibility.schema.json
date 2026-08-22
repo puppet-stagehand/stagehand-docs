@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "records"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "platform",
+          "puppet_versions",
+          "stagehand_versions",
+          "tier",
+          "provider",
+          "transport",
+          "operating_systems",
+          "status",
+          "limitations",
+          "docs_path",
+          "evidence_url",
+          "last_verified"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "platform": { "type": "string", "minLength": 1 },
+          "puppet_versions": { "type": "string", "minLength": 1 },
+          "stagehand_versions": { "type": "string", "minLength": 1 },
+          "tier": { "enum": ["openvox", "puppet-core", "puppet-enterprise", "pe-advanced"] },
+          "provider": { "type": "string", "minLength": 1 },
+          "transport": { "type": "string", "minLength": 1 },
+          "operating_systems": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "status": { "enum": ["supported", "compatible", "limited", "deprecated", "unsupported"] },
+          "limitations": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+          "docs_path": { "type": "string", "pattern": "^/docs/.+/$" },
+          "evidence_url": { "type": "string", "format": "uri" },
+          "last_verified": { "type": "string", "format": "date" }
+        }
+      }
+    }
+  }
+}
