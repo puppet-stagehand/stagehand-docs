@@ -72,16 +72,6 @@
   position: relative;
 }
 
-.site-wordmark__product::after {
-  display: inline-block;
-  width: 0.35rem;
-  height: 0.35rem;
-  margin-left: 0.45rem;
-  background: var(--stagehand-cyan);
-  content: '';
-  vertical-align: 0.14em;
-}
-
 .site-header__desktop {
   display: none;
 }
