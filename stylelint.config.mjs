@@ -1,0 +1,24 @@
+export default {
+  extends: ['stylelint-config-standard-scss'],
+  ignoreFiles: [
+    '.astro/**',
+    '.superpowers/**',
+    'coverage/**',
+    'dist/**',
+    'node_modules/**',
+    'playwright-report/**',
+    'test-results/**',
+  ],
+  rules: {
+    'alpha-value-notation': null,
+    'at-rule-empty-line-before': null,
+    'color-function-alias-notation': null,
+    'color-function-notation': null,
+    'color-hex-length': null,
+    'media-feature-range-notation': null,
+    'scss/dollar-variable-empty-line-before': null,
+    'scss/operator-no-newline-after': null,
+    'selector-class-pattern': null,
+    'value-keyword-case': null,
+  },
+};

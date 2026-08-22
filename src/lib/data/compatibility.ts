@@ -22,6 +22,7 @@ const sourceDataPath = (moduleRelativePath: string, projectRelativePath: string)
 };
 
 const dataPath = sourceDataPath('../../data/compatibility.yaml', 'src/data/compatibility.yaml');
+const e2eDataPath = resolve(process.cwd(), 'tests/fixtures/data/compatibility-e2e.yaml');
 const schemaPath = sourceDataPath(
   '../../data/schema/compatibility.schema.json',
   'src/data/schema/compatibility.schema.json',
@@ -56,7 +57,8 @@ const utcToday = (today: Date): number =>
 export const loadCompatibility = (
   options: LoadCompatibilityOptions = {},
 ): CompatibilityRecord[] => {
-  const source = options.path ?? dataPath;
+  const source =
+    options.path ?? (process.env.STAGEHAND_E2E_FIXTURES === '1' ? e2eDataPath : dataPath);
   const document = loadYaml<CompatibilityDocument>(
     source,
     JSON.parse(readFileSync(schemaPath, 'utf8')),
