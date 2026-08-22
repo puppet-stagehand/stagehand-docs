@@ -1,0 +1,43 @@
+---
+import type { Tier } from '../lib/data/types';
+
+interface Props {
+  tier: Tier;
+  index: number;
+}
+
+const { tier, index } = Astro.props;
+const entitlementLabels: Record<Tier['entitlement'], string> = {
+  community: 'Community',
+  commercial: 'Commercial',
+  advanced: 'Advanced',
+};
+const customerNames: Record<Tier['id'], string> = {
+  openvox: 'OpenVox',
+  'puppet-core': 'Puppet Core',
+  'puppet-enterprise': 'Puppet Enterprise',
+  'pe-advanced': 'PE Advanced',
+};
+---
+
+<article class:list={['tier-register', `tier-register--${tier.entitlement}`]}>
+  <header class="tier-register__header">
+    <span class="tier-register__index" aria-hidden="true">
+      {String(index + 1).padStart(2, '0')}
+    </span>
+    <div>
+      <p class="tier-register__entitlement">{entitlementLabels[tier.entitlement]}</p>
+      <h2>{customerNames[tier.id]}</h2>
+    </div>
+  </header>
+  <div class="tier-register__body">
+    <p class="tier-register__audience">For {tier.audience}</p>
+    <p>{tier.summary}</p>
+    <div class="tier-register__scope">
+      <span>INCLUDED SCOPE</span>
+      <ul>
+        {tier.features.map((feature) => <li>{feature}</li>)}
+      </ul>
+    </div>
+  </div>
+</article>

@@ -1,0 +1,68 @@
+---
+import TierCard from '../../components/TierCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { loadTiers } from '../../lib/data/tiers';
+
+const tiers = loadTiers();
+---
+
+<BaseLayout
+  title="Customer tiers"
+  description="Understand the Community, Commercial, and Advanced customer tiers documented for Puppet Stagehand."
+  canonicalPath="/tiers/"
+>
+  <header class="register-hero">
+    <div class="container register-hero__grid">
+      <div>
+        <p class="register-hero__eyebrow">
+          CUSTOMER REGISTER / {tiers.length.toString().padStart(2, '0')}
+        </p>
+        <h1>Stagehand tiers</h1>
+      </div>
+      <p class="register-hero__lede">
+        Public documentation grouped by customer entitlement. This register describes content
+        boundaries; it does not grant or enforce product access.
+      </p>
+    </div>
+  </header>
+
+  <section class="tier-intro" aria-labelledby="tier-model-title">
+    <div class="container tier-intro__grid">
+      <div>
+        <p class="section-kicker">ENTITLEMENT MODEL</p>
+        <h2 id="tier-model-title">Three access levels. Four customer products.</h2>
+      </div>
+      <dl class="tier-intro__levels">
+        <div>
+          <dt>Community</dt>
+          <dd>OpenVox</dd>
+        </div>
+        <div>
+          <dt>Commercial</dt>
+          <dd>Puppet Core and Puppet Enterprise</dd>
+        </div>
+        <div>
+          <dt>Advanced</dt>
+          <dd>PE Advanced</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="tier-list" aria-label="Customer tier details">
+    <div class="container">
+      {tiers.map((tier, index) => <TierCard tier={tier} index={index} />)}
+    </div>
+  </section>
+
+  <aside class="tier-enforcement">
+    <div class="container tier-enforcement__grid">
+      <p class="section-kicker">ENFORCEMENT BOUNDARY</p>
+      <p>
+        Access control and Forge payment enforcement occur in <strong>Puppet Console</strong>, not
+        on this public static documentation site.
+      </p>
+      <a href="/data/tiers.json" download>Download tier data <span aria-hidden="true">↓</span></a>
+    </div>
+  </aside>
+</BaseLayout>

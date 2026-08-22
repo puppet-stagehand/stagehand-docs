@@ -1,0 +1,46 @@
+---
+import CompatibilityEmptyState from '../../components/CompatibilityEmptyState.astro';
+import CompatibilityMatrix from '../../components/CompatibilityMatrix.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { loadCompatibility } from '../../lib/data/compatibility';
+
+const records = loadCompatibility();
+---
+
+<BaseLayout
+  title="Compatibility register"
+  description="Verified Puppet Stagehand compatibility claims, version boundaries, evidence, and limitations."
+  canonicalPath="/compatibility/"
+>
+  <header class="register-hero register-hero--compatibility">
+    <div class="container register-hero__grid">
+      <div>
+        <p class="register-hero__eyebrow">
+          RELEASE VERIFICATION / {records.length.toString().padStart(2, '0')}
+        </p>
+        <h1>Compatibility register</h1>
+      </div>
+      <div class="register-hero__lede">
+        <p>
+          Only Stagehand release claims backed by current verification evidence appear in this
+          register.
+        </p>
+        <a href="/data/compatibility.json" download>
+          Download compatibility data <span aria-hidden="true">↓</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="compatibility-page">
+    <div class="container">
+      {
+        records.length === 0 ? (
+          <CompatibilityEmptyState />
+        ) : (
+          <CompatibilityMatrix records={records} />
+        )
+      }
+    </div>
+  </div>
+</BaseLayout>

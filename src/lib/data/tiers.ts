@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Tier } from './types';
 import { loadYaml } from './load-yaml';
@@ -8,8 +9,16 @@ interface TierDocument {
   tiers: Tier[];
 }
 
-const dataPath = fileURLToPath(new URL('../../data/tiers.yaml', import.meta.url));
-const schemaPath = fileURLToPath(new URL('../../data/schema/tiers.schema.json', import.meta.url));
+const sourceDataPath = (moduleRelativePath: string, projectRelativePath: string): string => {
+  const modulePath = fileURLToPath(new URL(moduleRelativePath, import.meta.url));
+  return existsSync(modulePath) ? modulePath : resolve(process.cwd(), projectRelativePath);
+};
+
+const dataPath = sourceDataPath('../../data/tiers.yaml', 'src/data/tiers.yaml');
+const schemaPath = sourceDataPath(
+  '../../data/schema/tiers.schema.json',
+  'src/data/schema/tiers.schema.json',
+);
 const requiredTierIds: Tier['id'][] = [
   'openvox',
   'puppet-core',

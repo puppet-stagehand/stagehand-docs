@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { CompatibilityRecord } from './types';
 import { loadYaml } from './load-yaml';
@@ -15,9 +16,15 @@ export interface LoadCompatibilityOptions {
   tiersPath?: string;
 }
 
-const dataPath = fileURLToPath(new URL('../../data/compatibility.yaml', import.meta.url));
-const schemaPath = fileURLToPath(
-  new URL('../../data/schema/compatibility.schema.json', import.meta.url),
+const sourceDataPath = (moduleRelativePath: string, projectRelativePath: string): string => {
+  const modulePath = fileURLToPath(new URL(moduleRelativePath, import.meta.url));
+  return existsSync(modulePath) ? modulePath : resolve(process.cwd(), projectRelativePath);
+};
+
+const dataPath = sourceDataPath('../../data/compatibility.yaml', 'src/data/compatibility.yaml');
+const schemaPath = sourceDataPath(
+  '../../data/schema/compatibility.schema.json',
+  'src/data/schema/compatibility.schema.json',
 );
 
 const identityOf = (record: CompatibilityRecord) =>
