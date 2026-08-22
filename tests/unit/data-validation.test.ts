@@ -41,6 +41,16 @@ describe('compatibility data validation', () => {
     ).toThrow('Duplicate compatibility record');
   });
 
+  it('rejects duplicate compatibility record IDs', () => {
+    // Catches two distinct claims sharing the stable DOM/filter identity and undercounting results.
+    expect(() =>
+      loadCompatibility({
+        path: fixture('compatibility-duplicate-id.yaml'),
+        today: new Date('2026-08-22Z'),
+      }),
+    ).toThrow('Duplicate compatibility record ID shared-record-id; record IDs must be unique');
+  });
+
   it('rejects evidence older than 365 UTC calendar days', () => {
     // Catches treating stale customer claims as current.
     expect(() =>

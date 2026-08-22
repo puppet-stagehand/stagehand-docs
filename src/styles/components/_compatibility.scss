@@ -160,8 +160,7 @@
 .compat-table__meta,
 .compat-table__id,
 .compat-table__mono,
-.compat-table__verified,
-.compat-table td > a {
+.compat-table__verified {
   display: block;
 }
 
@@ -188,8 +187,16 @@
   overflow-wrap: anywhere;
 }
 
-.compat-table td > a + a {
-  margin-top: 0.35rem;
+.compat-table__links {
+  display: grid;
+  justify-items: start;
+}
+
+.compat-table__links a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  padding: 0.45rem 0;
+  align-items: center;
 }
 
 .compat-versions,

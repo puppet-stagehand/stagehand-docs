@@ -150,8 +150,10 @@ const presentStatus = (status: SupportStatus) => {
                   )}
                 </td>
                 <td>
-                  <a href={record.evidence_url}>Primary evidence</a>
-                  <a href={record.docs_path}>Platform guidance</a>
+                  <div class="compat-table__links">
+                    <a href={record.evidence_url}>Primary evidence</a>
+                    <a href={record.docs_path}>Platform guidance</a>
+                  </div>
                   <span class="compat-table__verified">
                     VERIFIED / <time datetime={record.last_verified}>{record.last_verified}</time>
                   </span>

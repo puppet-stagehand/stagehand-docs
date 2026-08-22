@@ -63,10 +63,18 @@ export const loadCompatibility = (
     'compatibility',
   );
   const validTiers = new Set(loadTiers(options.tiersPath).map((tier) => tier.id));
+  const recordIds = new Set<string>();
   const identities = new Set<string>();
   const currentDay = utcToday(options.today ?? new Date());
 
   for (const record of document.records) {
+    if (recordIds.has(record.id)) {
+      throw new Error(
+        `Duplicate compatibility record ID ${record.id}; record IDs must be unique in ${source}`,
+      );
+    }
+    recordIds.add(record.id);
+
     if (!validTiers.has(record.tier)) {
       throw new Error(
         `Unknown tier ${record.tier} for compatibility record ${record.id} in ${source}`,
