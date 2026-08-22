@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The requested Puppet Stagehand page could not be found."
+  canonicalPath="/404.html"
+>
+  <section class="not-found">
+    <div class="container not-found__grid">
+      <p class="not-found__code" aria-hidden="true">404</p>
+      <div>
+        <p class="section-kicker">ROUTE NOT FOUND</p>
+        <h1>Page not found</h1>
+        <p>
+          The requested route is not in this static release. Start from the documentation register
+          or choose the appropriate support channel.
+        </p>
+        <div class="not-found__actions">
+          <a class="btn btn-primary" href="/docs/">Browse documentation</a>
+          <a class="btn btn-outline-light" href="/support/">Find support</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

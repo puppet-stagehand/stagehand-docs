@@ -1,0 +1,88 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import DocsNavigation from '../components/DocsNavigation.astro';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  entry: CollectionEntry<'docs'>;
+  entries: CollectionEntry<'docs'>[];
+  previous?: CollectionEntry<'docs'>;
+  next?: CollectionEntry<'docs'>;
+}
+
+const { entry, entries, previous, next } = Astro.props;
+const updatedDate = entry.data.updated;
+const updatedIso = updatedDate?.toISOString().slice(0, 10);
+const updatedLabel = updatedDate?.toLocaleDateString('en-US', {
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'UTC',
+  year: 'numeric',
+});
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  canonicalPath={`/docs/${entry.id}/`}
+>
+  <div class="docs-shell">
+    <div class="container">
+      <nav class="docs-breadcrumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/docs/">Documentation</a></li>
+          <li aria-current="page">{entry.data.title}</li>
+        </ol>
+      </nav>
+
+      <div class="docs-shell__grid">
+        <aside class="docs-shell__rail">
+          <DocsNavigation entries={entries} currentSlug={entry.id} />
+        </aside>
+
+        <article class="docs-article">
+          <header class="docs-article__header">
+            <p class="section-kicker">GUIDE / {entry.data.order.toString().padStart(2, '0')}</p>
+            <h1>{entry.data.title}</h1>
+            <p class="docs-article__description">{entry.data.description}</p>
+            {
+              updatedIso && updatedLabel && (
+                <p class="docs-article__updated">
+                  Last updated <time datetime={updatedIso}>{updatedLabel}</time>
+                </p>
+              )
+            }
+          </header>
+
+          <div class="docs-content">
+            <slot />
+          </div>
+
+          <nav class="docs-pagination" aria-label="Adjacent documentation">
+            <div>
+              {
+                previous && (
+                  <a href={`/docs/${previous.id}/`} rel="prev">
+                    <span>Previous</span>
+                    {previous.data.title}
+                  </a>
+                )
+              }
+            </div>
+            <div>
+              {
+                next && (
+                  <a href={`/docs/${next.id}/`} rel="next">
+                    <span>Next</span>
+                    {next.data.title}
+                  </a>
+                )
+              }
+            </div>
+          </nav>
+        </article>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

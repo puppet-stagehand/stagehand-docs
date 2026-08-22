@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const entries = (await getCollection('docs')).sort(
+  (left, right) => left.data.order - right.data.order,
+);
+---
+
+<BaseLayout
+  title="Documentation"
+  description="Version-controlled product, operations, and security guidance for Puppet Stagehand."
+  canonicalPath="/docs/"
+>
+  <header class="register-hero docs-index__hero">
+    <div class="container register-hero__grid">
+      <div>
+        <p class="register-hero__eyebrow">
+          VERSION-CONTROLLED GUIDANCE / {entries.length.toString().padStart(2, '0')}
+        </p>
+        <h1>Documentation</h1>
+      </div>
+      <p class="register-hero__lede">
+        Reviewed guidance for Stagehand setup and trust boundaries. Product availability is defined
+        by approved release compatibility records, not by a page appearing here.
+      </p>
+    </div>
+  </header>
+
+  <section class="docs-index" aria-labelledby="guide-list-title">
+    <div class="container">
+      <div class="docs-index__heading">
+        <p class="section-kicker">GUIDE REGISTER</p>
+        <h2 id="guide-list-title">Start with the operating boundary.</h2>
+      </div>
+      <ol class="docs-index__list">
+        {
+          entries.map((entry) => (
+            <li>
+              <a href={`/docs/${entry.id}/`}>
+                <span class="docs-index__order" aria-hidden="true">
+                  {entry.data.order.toString().padStart(2, '0')}
+                </span>
+                <span>
+                  <strong>{entry.data.title}</strong>
+                  <span>{entry.data.description}</span>
+                </span>
+                <span class="docs-index__arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+</BaseLayout>
