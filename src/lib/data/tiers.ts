@@ -10,6 +10,31 @@ interface TierDocument {
 
 const dataPath = fileURLToPath(new URL('../../data/tiers.yaml', import.meta.url));
 const schemaPath = fileURLToPath(new URL('../../data/schema/tiers.schema.json', import.meta.url));
+const requiredTierIds: Tier['id'][] = [
+  'openvox',
+  'puppet-core',
+  'puppet-enterprise',
+  'pe-advanced',
+];
 
-export const loadTiers = (): Tier[] =>
-  loadYaml<TierDocument>(dataPath, JSON.parse(readFileSync(schemaPath, 'utf8')), 'tier').tiers;
+const assertExactTierSet = (tiers: Tier[], source: string): void => {
+  for (const id of requiredTierIds) {
+    const count = tiers.filter((tier) => tier.id === id).length;
+    if (count === 0) {
+      throw new Error(`Tier registry is missing required tier ID ${id} in ${source}`);
+    }
+    if (count > 1) {
+      throw new Error(`Tier registry has duplicate tier ID ${id} in ${source}`);
+    }
+  }
+};
+
+export const loadTiers = (path = dataPath): Tier[] => {
+  const tiers = loadYaml<TierDocument>(
+    path,
+    JSON.parse(readFileSync(schemaPath, 'utf8')),
+    'tier',
+  ).tiers;
+  assertExactTierSet(tiers, path);
+  return tiers;
+};

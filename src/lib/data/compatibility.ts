@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { CompatibilityRecord } from './types';
 import { loadYaml } from './load-yaml';
+import { loadTiers } from './tiers';
 
 interface CompatibilityDocument {
   schema_version: 1;
@@ -18,7 +19,6 @@ const dataPath = fileURLToPath(new URL('../../data/compatibility.yaml', import.m
 const schemaPath = fileURLToPath(
   new URL('../../data/schema/compatibility.schema.json', import.meta.url),
 );
-const tiersPath = fileURLToPath(new URL('../../data/tiers.yaml', import.meta.url));
 
 const identityOf = (record: CompatibilityRecord) =>
   [record.platform, record.puppet_versions, record.tier, record.provider, record.transport].join(
@@ -55,18 +55,7 @@ export const loadCompatibility = (
     JSON.parse(readFileSync(schemaPath, 'utf8')),
     'compatibility',
   );
-  const validTiers = new Set(
-    loadYaml<{ tiers: { id: string }[] }>(
-      options.tiersPath ?? tiersPath,
-      JSON.parse(
-        readFileSync(
-          fileURLToPath(new URL('../../data/schema/tiers.schema.json', import.meta.url)),
-          'utf8',
-        ),
-      ),
-      'tier',
-    ).tiers.map((tier) => tier.id),
-  );
+  const validTiers = new Set(loadTiers(options.tiersPath).map((tier) => tier.id));
   const identities = new Set<string>();
   const currentDay = utcToday(options.today ?? new Date());
 

@@ -71,15 +71,15 @@ describe('compatibility data validation', () => {
     ).toThrow('future last_verified date');
   });
 
-  it('rejects a claim whose tier is absent from the real injected tier file', () => {
-    // Catches skipping the compatibility-to-tier join.
+  it('rejects an injected tier registry before an invalid join can be evaluated', () => {
+    // Catches allowing a compatibility join against a registry missing an exact required ID.
     expect(() =>
       loadCompatibility({
         path: fixture('compatibility-valid.yaml'),
         tiersPath: fixture('tiers-without-openvox.yaml'),
         today: new Date('2026-08-22Z'),
       }),
-    ).toThrow('Unknown tier');
+    ).toThrow('Tier registry is missing required tier ID openvox');
   });
 
   it('rejects malformed compatibility fields', () => {
@@ -132,5 +132,19 @@ describe('tier data validation', () => {
       'puppet-enterprise',
       'pe-advanced',
     ]);
+  });
+
+  it('rejects a real tier registry that omits a required customer category', () => {
+    // Catches allowing a registry that silently drops a supported tier ID.
+    expect(() => loadTiers(fixture('tiers-omitted.yaml'))).toThrow(
+      'Tier registry is missing required tier ID pe-advanced',
+    );
+  });
+
+  it('rejects a real tier registry that defines a customer category twice', () => {
+    // Catches allowing ambiguous compatibility joins for a duplicated tier ID.
+    expect(() => loadTiers(fixture('tiers-duplicate.yaml'))).toThrow(
+      'Tier registry has duplicate tier ID openvox',
+    );
   });
 });

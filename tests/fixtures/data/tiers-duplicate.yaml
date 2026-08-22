@@ -1,0 +1,32 @@
+schema_version: 1
+tiers:
+  - id: openvox
+    name: OpenVox
+    audience: Community users
+    entitlement: community
+    summary: Community-oriented deployments using OpenVox.
+    features: [Community deployment guidance]
+  - id: openvox
+    name: OpenVox duplicate
+    audience: Community users
+    entitlement: community
+    summary: A duplicate OpenVox definition.
+    features: [Duplicate guidance]
+  - id: puppet-core
+    name: Puppet Core
+    audience: Puppet Core users
+    entitlement: commercial
+    summary: Commercial Puppet Core deployments.
+    features: [Core deployment guidance]
+  - id: puppet-enterprise
+    name: Puppet Enterprise
+    audience: Puppet Enterprise users
+    entitlement: commercial
+    summary: Puppet Enterprise deployments.
+    features: [Enterprise deployment guidance]
+  - id: pe-advanced
+    name: Puppet Enterprise Advanced
+    audience: Advanced Puppet Enterprise users
+    entitlement: advanced
+    summary: Advanced Puppet Enterprise deployments.
+    features: [Advanced deployment guidance]
