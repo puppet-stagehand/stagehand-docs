@@ -1,8 +1,16 @@
 import { spawnSync } from 'node:child_process';
-import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  chmodSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { delimiter, resolve } from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 const repositoryRoot = resolve(import.meta.dirname, '../..');
 const deployScript = resolve(repositoryRoot, 'scripts/deploy-site.sh');
@@ -42,32 +50,52 @@ afterEach(() => {
 });
 
 describe('deploy-site.sh', () => {
-  it('uploads immutable assets before revalidated content and invalidates only mutable paths', () => {
-    const directory = temporaryDirectory('stagehand-deploy-');
+  beforeAll(() => {
+    const build = run('npm', ['run', 'build'], {
+      cwd: repositoryRoot,
+      env: { ASTRO_TELEMETRY_DISABLED: '1' },
+    });
+    expect(build.status, build.stderr).toBe(0);
+    expect(existsSync(resolve(repositoryRoot, 'dist/assets'))).toBe(true);
+  });
+
+  const createAwsStub = (directory: string) => {
     const binDirectory = resolve(directory, 'bin');
-    mkdirSync(resolve(directory, 'dist/assets'), { recursive: true });
-    mkdirSync(resolve(directory, 'dist/data'), { recursive: true });
     mkdirSync(binDirectory);
-    writeFileSync(resolve(directory, 'dist/assets/site.js'), 'asset');
-    writeFileSync(resolve(directory, 'dist/index.html'), 'html');
-    writeFileSync(resolve(directory, 'dist/data/compatibility.json'), '{}');
     writeFileSync(
       resolve(binDirectory, 'aws'),
-      '#!/bin/sh\nprintf \'%s\\n\' "$*" >> "$AWS_CALL_LOG"\n',
+      `#!/bin/sh
+printf '%s\\n' "$*" >> "$AWS_CALL_LOG"
+case "$AWS_FAIL_PHASE:$*" in
+  immutable:s3\\ sync\\ dist/assets\\ *) exit 41 ;;
+  mutable:s3\\ sync\\ dist\\ *) exit 42 ;;
+esac
+`,
     );
     chmodSync(resolve(binDirectory, 'aws'), 0o755);
+    return binDirectory;
+  };
 
+  const deployWithStub = (failPhase = '') => {
+    const directory = temporaryDirectory('stagehand-deploy-');
+    const binDirectory = createAwsStub(directory);
     const log = resolve(directory, 'aws.log');
     const result = run('sh', [deployScript], {
-      cwd: directory,
+      cwd: repositoryRoot,
       env: {
         AWS_CALL_LOG: log,
+        AWS_FAIL_PHASE: failPhase,
         CONTENT_BUCKET: 'stagehand-content-test',
         DEPLOY_ENVIRONMENT: 'beta',
         DISTRIBUTION_ID: 'EDIST123',
         PATH: `${binDirectory}${delimiter}${process.env.PATH ?? ''}`,
       },
     });
+    return { log, result };
+  };
+
+  it('uploads real production-build assets before revalidated content and reaches AWS', () => {
+    const { log, result } = deployWithStub();
 
     expect(result.status, result.stderr).toBe(0);
     expect(readFileSync(log, 'utf8').trim().split('\n')).toEqual([
@@ -75,6 +103,22 @@ describe('deploy-site.sh', () => {
       's3 sync dist s3://stagehand-content-test --exclude assets/* --cache-control public,max-age=0,must-revalidate --delete',
       'cloudfront create-invalidation --distribution-id EDIST123 --paths /index.html /tiers/index.html /compatibility/index.html /docs/index.html /docs/getting-started/index.html /docs/security/index.html /support/index.html /404.html /data/*',
     ]);
+  });
+
+  it('stops before mutable upload and invalidation when immutable upload fails', () => {
+    const { log, result } = deployWithStub('immutable');
+
+    expect(result.status).toBe(41);
+    expect(readFileSync(log, 'utf8').trim().split('\n')).toHaveLength(1);
+    expect(readFileSync(log, 'utf8')).toContain('s3 sync dist/assets');
+  });
+
+  it('stops before invalidation when mutable upload fails', () => {
+    const { log, result } = deployWithStub('mutable');
+
+    expect(result.status).toBe(42);
+    expect(readFileSync(log, 'utf8').trim().split('\n')).toHaveLength(2);
+    expect(readFileSync(log, 'utf8')).not.toContain('cloudfront create-invalidation');
   });
 
   it.each([
@@ -85,18 +129,23 @@ describe('deploy-site.sh', () => {
   ])('rejects invalid required input %s=%j before invoking AWS', (name, value) => {
     const directory = temporaryDirectory('stagehand-deploy-invalid-');
     mkdirSync(resolve(directory, 'dist'), { recursive: true });
+    const binDirectory = createAwsStub(directory);
+    const log = resolve(directory, 'aws.log');
     const result = run('sh', [deployScript], {
       cwd: directory,
       env: {
         CONTENT_BUCKET: 'stagehand-content-test',
         DEPLOY_ENVIRONMENT: 'stable',
         DISTRIBUTION_ID: 'EDIST123',
+        AWS_CALL_LOG: log,
+        PATH: `${binDirectory}${delimiter}${process.env.PATH ?? ''}`,
         [name]: value,
       },
     });
 
     expect(result.status).not.toBe(0);
     expect(`${result.stdout}${result.stderr}`).not.toContain('AWS_SECRET');
+    expect(existsSync(log)).toBe(false);
   });
 });
 
@@ -156,6 +205,7 @@ describe('GitHub Actions contracts', () => {
     expect(source).toContain('npm run verify');
     expect(source).toMatch(/tofu[^\n]* test/u);
     expect(source).toContain('scripts/check-tofu-tags.sh');
+    expect(source).toContain('tofu_version_file: .opentofu-version');
   });
 
   it('promotes an explicit full SHA with OIDC, environment vars, and non-cancelling concurrency', () => {
@@ -171,15 +221,44 @@ describe('GitHub Actions contracts', () => {
     expect(source).toContain('CONTENT_BUCKET: ${{ vars.CONTENT_BUCKET }}');
     expect(source).toContain('CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}');
     expect(source).toContain("outputs.configured == 'true'");
+    expect(source).toContain('WORKFLOW_REF: ${{ github.ref }}');
+    expect(source).toContain('if [[ "$WORKFLOW_REF" != \'refs/heads/main\' ]]');
   });
 
-  it('keeps infrastructure plans non-secret and requires exact apply confirmation', () => {
+  it('keeps plan and apply credentials distinct and excludes forks before environments', () => {
     const source = workflow('infrastructure');
-    expect(source).toContain('role-to-assume: ${{ vars.AWS_INFRASTRUCTURE_ROLE_ARN }}');
+    expect(source).toContain('role-to-assume: ${{ vars.AWS_INFRASTRUCTURE_PLAN_ROLE_ARN }}');
+    expect(source).toContain('role-to-assume: ${{ vars.AWS_INFRASTRUCTURE_APPLY_ROLE_ARN }}');
+    expect(source).not.toContain('AWS_INFRASTRUCTURE_ROLE_ARN');
+    expect(source).toContain(
+      "if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository",
+    );
     expect(source).toContain("inputs.confirmation == 'apply'");
     expect(source).toContain('tofu plan -out=tfplan');
     expect(source).toContain('tofu apply tfplan');
     expect(source).not.toMatch(/upload-artifact@[\s\S]{0,500}path:\s*tfplan/u);
     expect(source).toContain('plan-summary.txt');
+    expect(source).toContain("github.ref == 'refs/heads/main'");
+    expect(source).toContain('if [[ "$WORKFLOW_REF" != \'refs/heads/main\' ]]');
+  });
+
+  it('pins every OpenTofu setup and passes one region to backend and provider', () => {
+    const sources = [workflow('validate'), workflow('infrastructure')].join('\n');
+    const setups = sources.match(/uses: opentofu\/setup-opentofu@/gu) ?? [];
+    const versionFiles = sources.match(/tofu_version_file: \.opentofu-version/gu) ?? [];
+    expect(versionFiles).toHaveLength(setups.length);
+    expect(readFileSync(resolve(repositoryRoot, '.opentofu-version'), 'utf8')).toBe('1.12.6\n');
+    const infrastructure = workflow('infrastructure');
+    expect(
+      infrastructure.match(/TF_VAR_aws_region: \$\{\{ vars\.AWS_REGION \|\| 'us-east-2' \}\}/gu),
+    ).toHaveLength(2);
+  });
+
+  it('installs only the pinned Playwright Chromium browser and OS dependencies', () => {
+    const source = readFileSync(
+      resolve(repositoryRoot, '.github/actions/setup-site/action.yml'),
+      'utf8',
+    );
+    expect(source).toContain('npx playwright install --with-deps chromium');
   });
 });

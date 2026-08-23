@@ -10,3 +10,4 @@ blob-report/
 .tofu/
 .terraform/
 *.tfstate*
+.opentofu-version

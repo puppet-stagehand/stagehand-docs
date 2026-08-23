@@ -39,6 +39,13 @@ test('stable apex redirect preserves the URI and query string', () => {
   );
 });
 
+test('stable apex redirect compares the host case-insensitively', () => {
+  const result = context.handler(request('/tiers/', 'PuppetStagehand.COM'));
+
+  assert.equal(result.statusCode, 301);
+  assert.equal(result.headers.location.value, 'https://www.puppetstagehand.com/tiers/');
+});
+
 test('extensionless paths redirect to a trailing slash and preserve query', () => {
   const result = context.handler(
     request('/guides/install', 'beta.puppetstagehand.com', {

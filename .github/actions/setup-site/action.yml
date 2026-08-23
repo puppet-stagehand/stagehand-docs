@@ -13,3 +13,7 @@ runs:
     - name: Install dependencies
       shell: bash
       run: npm ci
+
+    - name: Install Playwright Chromium
+      shell: bash
+      run: npx playwright install --with-deps chromium

@@ -30,6 +30,17 @@ jobs:
     name: Validate selected commit
     runs-on: ubuntu-latest
     steps:
+      - name: Require manual dispatch from main
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          WORKFLOW_REF: ${{ github.ref }}
+        shell: bash
+        run: |
+          if [[ "$WORKFLOW_REF" != 'refs/heads/main' ]]; then
+            echo 'Manual deployments must run from the main workflow ref.' >&2
+            exit 1
+          fi
+
       - name: Validate manual commit input
         if: github.event_name == 'workflow_dispatch'
         env:

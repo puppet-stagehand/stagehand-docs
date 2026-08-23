@@ -30,9 +30,13 @@ jobs:
     steps:
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
 
       - name: Set up OpenTofu
         uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version_file: .opentofu-version
 
       - name: Validate configuration locally
         shell: bash
@@ -50,7 +54,7 @@ jobs:
 
   plan:
     name: Plan ${{ matrix.environment }}
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     needs: validate
     runs-on: ubuntu-latest
     environment: ${{ matrix.environment }}
@@ -68,18 +72,17 @@ jobs:
       - name: Check plan configuration
         id: plan_configuration
         env:
-          AWS_INFRASTRUCTURE_ROLE_ARN: ${{ vars.AWS_INFRASTRUCTURE_ROLE_ARN }}
+          AWS_INFRASTRUCTURE_PLAN_ROLE_ARN: ${{ vars.AWS_INFRASTRUCTURE_PLAN_ROLE_ARN }}
           OIDC_PROVIDER_ARN: ${{ vars.OIDC_PROVIDER_ARN }}
           HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}
           TOFU_STATE_BUCKET: ${{ vars.TOFU_STATE_BUCKET }}
-          TRUSTED_PULL_REQUEST: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         shell: bash
         run: |
-          if [[ "$TRUSTED_PULL_REQUEST" == 'true' && -n "$AWS_INFRASTRUCTURE_ROLE_ARN" && -n "$OIDC_PROVIDER_ARN" && -n "$HOSTED_ZONE_ID" && -n "$TOFU_STATE_BUCKET" ]]; then
+          if [[ -n "$AWS_INFRASTRUCTURE_PLAN_ROLE_ARN" && -n "$OIDC_PROVIDER_ARN" && -n "$HOSTED_ZONE_ID" && -n "$TOFU_STATE_BUCKET" ]]; then
             echo 'configured=true' >> "$GITHUB_OUTPUT"
           else
             echo 'configured=false' >> "$GITHUB_OUTPUT"
-            echo 'AWS plan skipped: this is an untrusted fork or the protected Environment is not configured.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'AWS plan skipped: the protected Environment is not configured.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Check out source
@@ -89,12 +92,14 @@ jobs:
       - name: Set up OpenTofu
         if: steps.plan_configuration.outputs.configured == 'true'
         uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version_file: .opentofu-version
 
       - name: Configure AWS credentials
         if: steps.plan_configuration.outputs.configured == 'true'
         uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
-          role-to-assume: ${{ vars.AWS_INFRASTRUCTURE_ROLE_ARN }}
+          role-to-assume: ${{ vars.AWS_INFRASTRUCTURE_PLAN_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION || 'us-east-2' }}
 
       - name: Create value-free plan summary
@@ -102,6 +107,7 @@ jobs:
         env:
           TF_VAR_github_oidc_provider_arn: ${{ vars.OIDC_PROVIDER_ARN }}
           TF_VAR_hosted_zone_id: ${{ vars.HOSTED_ZONE_ID }}
+          TF_VAR_aws_region: ${{ vars.AWS_REGION || 'us-east-2' }}
           AWS_REGION: ${{ vars.AWS_REGION || 'us-east-2' }}
           TOFU_STATE_BUCKET: ${{ vars.TOFU_STATE_BUCKET }}
         shell: bash
@@ -135,10 +141,27 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  authorize_dispatch:
+    name: Authorize infrastructure dispatch
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require manual dispatch from main
+        env:
+          WORKFLOW_REF: ${{ github.ref }}
+        shell: bash
+        run: |
+          if [[ "$WORKFLOW_REF" != 'refs/heads/main' ]]; then
+            echo 'Manual infrastructure applies must run from the main workflow ref.' >&2
+            exit 1
+          fi
+
   apply:
     name: Apply ${{ inputs.environment }}
-    if: github.event_name == 'workflow_dispatch' && inputs.confirmation == 'apply'
-    needs: validate
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.confirmation == 'apply'
+    needs:
+      - validate
+      - authorize_dispatch
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
@@ -147,33 +170,38 @@ jobs:
     steps:
       - name: Require environment configuration
         env:
-          AWS_INFRASTRUCTURE_ROLE_ARN: ${{ vars.AWS_INFRASTRUCTURE_ROLE_ARN }}
+          AWS_INFRASTRUCTURE_APPLY_ROLE_ARN: ${{ vars.AWS_INFRASTRUCTURE_APPLY_ROLE_ARN }}
           OIDC_PROVIDER_ARN: ${{ vars.OIDC_PROVIDER_ARN }}
           HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}
           TOFU_STATE_BUCKET: ${{ vars.TOFU_STATE_BUCKET }}
         shell: bash
         run: |
-          if [[ -z "$AWS_INFRASTRUCTURE_ROLE_ARN" || -z "$OIDC_PROVIDER_ARN" || -z "$HOSTED_ZONE_ID" || -z "$TOFU_STATE_BUCKET" ]]; then
+          if [[ -z "$AWS_INFRASTRUCTURE_APPLY_ROLE_ARN" || -z "$OIDC_PROVIDER_ARN" || -z "$HOSTED_ZONE_ID" || -z "$TOFU_STATE_BUCKET" ]]; then
             echo 'The selected protected Environment is missing required infrastructure variables.' >&2
             exit 1
           fi
 
       - name: Check out source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
 
       - name: Set up OpenTofu
         uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version_file: .opentofu-version
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
-          role-to-assume: ${{ vars.AWS_INFRASTRUCTURE_ROLE_ARN }}
+          role-to-assume: ${{ vars.AWS_INFRASTRUCTURE_APPLY_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION || 'us-east-2' }}
 
       - name: Create and apply fresh plan
         env:
           TF_VAR_github_oidc_provider_arn: ${{ vars.OIDC_PROVIDER_ARN }}
           TF_VAR_hosted_zone_id: ${{ vars.HOSTED_ZONE_ID }}
+          TF_VAR_aws_region: ${{ vars.AWS_REGION || 'us-east-2' }}
           AWS_REGION: ${{ vars.AWS_REGION || 'us-east-2' }}
           TOFU_STATE_BUCKET: ${{ vars.TOFU_STATE_BUCKET }}
         shell: bash

@@ -25,13 +25,14 @@ function redirect(location) {
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- CloudFront invokes this global entry point.
 function handler(event) {
   var request = event.request;
   var uri = request.uri;
   var query = encodeQueryString(request.querystring);
   var apexRedirectEnabled = __ENABLE_APEX_REDIRECT__;
 
-  if (apexRedirectEnabled && request.headers.host.value === 'puppetstagehand.com') {
+  if (apexRedirectEnabled && request.headers.host.value.toLowerCase() === 'puppetstagehand.com') {
     return redirect('https://www.puppetstagehand.com' + uri + query);
   }
 
