@@ -169,11 +169,23 @@ run "uses_oac_https_and_distinct_cache_behaviors" {
 
   assert {
     condition = (
-      one(aws_cloudfront_distribution.site.custom_error_response).error_code == 404 &&
-      one(aws_cloudfront_distribution.site.custom_error_response).response_code == 404 &&
-      one(aws_cloudfront_distribution.site.custom_error_response).response_page_path == "/404.html"
+      length(aws_cloudfront_distribution.site.custom_error_response) == 2 &&
+      length([
+        for response in aws_cloudfront_distribution.site.custom_error_response : response
+        if response.error_code == 403 &&
+        response.response_code == 404 &&
+        response.response_page_path == "/404.html" &&
+        response.error_caching_min_ttl == 60
+      ]) == 1 &&
+      length([
+        for response in aws_cloudfront_distribution.site.custom_error_response : response
+        if response.error_code == 404 &&
+        response.response_code == 404 &&
+        response.response_page_path == "/404.html" &&
+        response.error_caching_min_ttl == 60
+      ]) == 1
     )
-    error_message = "Missing content must render /404.html while retaining a real 404 status."
+    error_message = "Private-origin 403s and direct 404s must each render /404.html with a viewer 404 and a 60-second error TTL."
   }
 }
 
@@ -246,37 +258,54 @@ run "limits_github_trust_and_deployment_permissions" {
   command = plan
 
   assert {
-    condition     = jsondecode(aws_iam_role.deploy.assume_role_policy).Statement[0].Principal.Federated == var.github_oidc_provider_arn
-    error_message = "The deployment role must trust only the configured GitHub OIDC provider."
+    condition = jsondecode(aws_iam_role.deploy.assume_role_policy) == {
+      Version = "2012-10-17"
+      Statement = [{
+        Sid    = "GitHubActionsEnvironment"
+        Effect = "Allow"
+        Principal = {
+          Federated = var.github_oidc_provider_arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+            "token.actions.githubusercontent.com:sub" = "repo:puppet-stagehand/stagehand-docs:environment:beta"
+          }
+        }
+      }]
+    }
+    error_message = "The trust policy must contain exactly one environment-bound GitHub OIDC AssumeRoleWithWebIdentity statement."
   }
 
   assert {
-    condition     = jsondecode(aws_iam_role.deploy.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:aud"] == "sts.amazonaws.com"
-    error_message = "GitHub OIDC trust must require the STS audience."
-  }
-
-  assert {
-    condition     = jsondecode(aws_iam_role.deploy.assume_role_policy).Statement[0].Condition.StringEquals["token.actions.githubusercontent.com:sub"] == "repo:puppet-stagehand/stagehand-docs:environment:beta"
-    error_message = "GitHub OIDC trust must be limited to this repository and environment."
-  }
-
-  assert {
-    condition     = jsondecode(aws_iam_role_policy.deploy.policy).Statement[0].Resource == aws_s3_bucket.content.arn
-    error_message = "Bucket-list permission must be limited to the content bucket."
-  }
-
-  assert {
-    condition     = jsondecode(aws_iam_role_policy.deploy.policy).Statement[1].Resource == "${aws_s3_bucket.content.arn}/*"
-    error_message = "Object deployment permissions must be limited to this content bucket."
-  }
-
-  assert {
-    condition     = jsondecode(aws_iam_role_policy.deploy.policy).Statement[2].Resource == aws_cloudfront_distribution.site.arn
-    error_message = "Invalidation permission must be limited to this distribution."
-  }
-
-  assert {
-    condition     = jsondecode(aws_iam_role_policy.deploy.policy).Statement[2].Action == "cloudfront:CreateInvalidation"
-    error_message = "The deployment role must only invalidate this CloudFront distribution."
+    condition = jsondecode(aws_iam_role_policy.deploy.policy) == {
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Sid      = "ListContentBucket"
+          Effect   = "Allow"
+          Action   = "s3:ListBucket"
+          Resource = aws_s3_bucket.content.arn
+        },
+        {
+          Sid    = "DeployContentObjects"
+          Effect = "Allow"
+          Action = [
+            "s3:DeleteObject",
+            "s3:GetObject",
+            "s3:PutObject",
+          ]
+          Resource = "${aws_s3_bucket.content.arn}/*"
+        },
+        {
+          Sid      = "InvalidateSiteDistribution"
+          Effect   = "Allow"
+          Action   = "cloudfront:CreateInvalidation"
+          Resource = aws_cloudfront_distribution.site.arn
+        },
+      ]
+    }
+    error_message = "The deployment policy must contain exactly the single-bucket list/object actions and single-distribution invalidation, with no additional actions, statements, wildcards, role passing, role assumption, or infrastructure mutation."
   }
 }
