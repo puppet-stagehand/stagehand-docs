@@ -29,6 +29,9 @@ test('the real compatibility matrix preserves record parity and filters both res
   for (const [index, [id, status, symbol]] of expectedRecords.entries()) {
     const card = cards.nth(index);
     await expect(card).toContainText(id);
+    await expect(card.locator('dt', { hasText: 'Record' }).locator('..').locator('dd')).toHaveClass(
+      /compat-card__mono/,
+    );
     await expect(card.getByText(status, { exact: true })).toBeVisible();
     await expect(card.locator('.compat-status__symbol')).toHaveText(symbol);
   }

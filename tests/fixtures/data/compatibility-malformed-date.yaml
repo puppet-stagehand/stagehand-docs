@@ -1,0 +1,15 @@
+schema_version: 1
+records:
+  - id: malformed-date
+    platform: AWS EC2
+    puppet_versions: '>= 8.0 < 9.0'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: aws
+    transport: ssh
+    operating_systems: [Ubuntu 24.04]
+    status: supported
+    limitations: []
+    docs_path: /docs/platforms/aws-ec2/
+    evidence_url: https://example.com/evidence/malformed-date
+    last_verified: '2026-02-30'

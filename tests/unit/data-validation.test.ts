@@ -122,6 +122,33 @@ describe('compatibility data validation', () => {
     ).toThrow('Invalid compatibility data');
   });
 
+  it('rejects a compatibility record missing a required field', () => {
+    expect(() =>
+      loadCompatibility({
+        path: fixture('compatibility-missing-field.yaml'),
+        today: new Date('2026-08-22Z'),
+      }),
+    ).toThrow('Invalid compatibility data');
+  });
+
+  it('rejects a malformed calendar date in a compatibility record', () => {
+    expect(() =>
+      loadCompatibility({
+        path: fixture('compatibility-malformed-date.yaml'),
+        today: new Date('2026-08-22Z'),
+      }),
+    ).toThrow('Invalid compatibility data');
+  });
+
+  it('rejects a malformed evidence URI in a compatibility record', () => {
+    expect(() =>
+      loadCompatibility({
+        path: fixture('compatibility-malformed-uri.yaml'),
+        today: new Date('2026-08-22Z'),
+      }),
+    ).toThrow('Invalid compatibility data');
+  });
+
   it('rejects unknown compatibility fields', () => {
     // Catches relaxing the closed compatibility-record schema.
     expect(() =>
