@@ -56,6 +56,17 @@ const canonicalOutput = (buildRoot: string, url: URL): string => {
   return resolvedOutput;
 };
 
+const canonicalDocumentUrl = (buildRoot: string, file: string): URL => {
+  const generatedPath = relative(buildRoot, file).split(sep).join('/');
+  const pathname =
+    generatedPath === 'index.html'
+      ? '/'
+      : generatedPath.endsWith('/index.html')
+        ? `/${generatedPath.slice(0, -'index.html'.length)}`
+        : `/${generatedPath}`;
+  return new URL(pathname, canonicalBase);
+};
+
 export const validateBuiltLinks = async (root = 'dist'): Promise<void> => {
   const buildRoot = resolve(root);
   const externalLinks = new Map<string, string[]>();
@@ -64,30 +75,29 @@ export const validateBuiltLinks = async (root = 'dist'): Promise<void> => {
 
   for (const file of await htmlFiles(buildRoot)) {
     const html = await readFile(file, 'utf8');
+    const sourceDocument = canonicalDocumentUrl(buildRoot, file);
     for (const decodedLink of linkAttributes(html)) {
-      const rawLink = decodedLink.trim();
-      if (!rawLink || rawLink.startsWith('#')) continue;
+      if (decodedLink === '') continue;
 
-      const scheme = /^([a-z][a-z\d+.-]*):/iu.exec(rawLink)?.[1]?.toLowerCase();
-      const protocolRelative = rawLink.startsWith('//');
-      if (!protocolRelative && !scheme) continue;
-      if (scheme && nonNetworkSchemes.has(`${scheme}:`)) continue;
-
-      if (protocolRelative || scheme === 'http' || scheme === 'https') {
-        try {
-          const url = new URL(rawLink, canonicalBase);
-          if (url.origin === canonicalBase.origin) {
-            recordSource(canonicalLinks, url.href, file);
-          } else {
-            recordSource(externalLinks, url.href, file);
-          }
-        } catch {
-          recordSource(unsupportedLinks, rawLink, file);
-        }
+      let url: URL;
+      try {
+        url = new URL(decodedLink, sourceDocument);
+      } catch {
+        recordSource(unsupportedLinks, decodedLink, file);
         continue;
       }
 
-      recordSource(unsupportedLinks, rawLink, file);
+      if (nonNetworkSchemes.has(url.protocol)) continue;
+      if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        recordSource(unsupportedLinks, url.href, file);
+        continue;
+      }
+
+      if (url.origin === canonicalBase.origin) {
+        recordSource(canonicalLinks, url.href, file);
+      } else {
+        recordSource(externalLinks, url.href, file);
+      }
     }
   }
 

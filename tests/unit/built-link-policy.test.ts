@@ -18,6 +18,18 @@ const runCombinedCheck = (fixture: string) => {
 };
 
 describe('built external-link policy', () => {
+  it.each([
+    ['encoded leading backslashes', 'encoded-backslash-external'],
+    ['encoded root backslash', 'encoded-root-backslash-external'],
+    ['encoded scheme control character', 'encoded-control-external'],
+  ])('rejects %s before linkinator starts', (_description, fixture) => {
+    const result = runCombinedCheck(fixture);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('https://evil.example/path');
+    expect(result.stdout).not.toContain('→ crawling');
+  });
+
   it('rejects an entity-encoded unapproved HTTP link before linkinator starts', () => {
     const result = runCombinedCheck('entity-encoded-external');
 
@@ -31,6 +43,14 @@ describe('built external-link policy', () => {
 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('javascript:alert(1)');
+    expect(result.stdout).not.toContain('→ crawling');
+  });
+
+  it('rejects an invalid decoded URL before linkinator starts', () => {
+    const result = runCombinedCheck('invalid-url');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('http://[invalid');
     expect(result.stdout).not.toContain('→ crawling');
   });
 
