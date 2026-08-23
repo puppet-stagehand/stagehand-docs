@@ -12,7 +12,7 @@ records:
     status: supported
     limitations: []
     docs_path: /docs/getting-started/
-    evidence_url: https://github.com/puppet-stagehand/stagehand-docs
+    evidence_url: https://www.puppet.com/docs/puppet/8/release_notes_puppet
     last_verified: '2026-08-22'
   - id: azure-core-compatible
     platform: Azure VM

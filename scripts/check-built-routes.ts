@@ -1,4 +1,4 @@
-import { access } from 'node:fs/promises';
+import { stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const requiredOutputs = [
@@ -15,9 +15,11 @@ const requiredOutputs = [
 ] as const;
 
 const missing: string[] = [];
+const buildRoot = resolve(process.argv[2] ?? 'dist');
 for (const output of requiredOutputs) {
   try {
-    await access(resolve('dist', output));
+    const details = await stat(resolve(buildRoot, output));
+    if (!details.isFile()) missing.push(output);
   } catch {
     missing.push(output);
   }

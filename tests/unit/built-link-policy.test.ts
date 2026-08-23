@@ -1,6 +1,8 @@
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { validateBuiltLinks } from '../../scripts/check-built-links';
 
 const runCombinedCheck = (fixture: string) => {
   const fixturePath = fileURLToPath(new URL(`../fixtures/links/${fixture}/`, import.meta.url));
@@ -18,6 +20,29 @@ const runCombinedCheck = (fixture: string) => {
 };
 
 describe('built external-link policy', () => {
+  it('accepts an exact non-GitHub evidence URL from the validated fixture build', async () => {
+    const evidenceUrl = 'https://www.puppet.com/docs/puppet/8/release_notes_puppet';
+    const build = spawnSync('npm', ['run', 'build'], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      env: { ...process.env, ASTRO_TELEMETRY_DISABLED: '1', STAGEHAND_E2E_FIXTURES: '1' },
+      timeout: 30_000,
+    });
+
+    expect(build.status, build.stderr).toBe(0);
+    expect(readFileSync('.e2e-dist/compatibility/index.html', 'utf8')).toContain(evidenceUrl);
+
+    const originalFixtureFlag = process.env.STAGEHAND_E2E_FIXTURES;
+    process.env.STAGEHAND_E2E_FIXTURES = '1';
+    try {
+      const acceptedExternalLinks = await validateBuiltLinks('.e2e-dist');
+      expect(acceptedExternalLinks).toContain(evidenceUrl);
+    } finally {
+      if (originalFixtureFlag === undefined) delete process.env.STAGEHAND_E2E_FIXTURES;
+      else process.env.STAGEHAND_E2E_FIXTURES = originalFixtureFlag;
+    }
+  }, 50_000);
+
   it.each([
     ['encoded leading backslashes', 'encoded-backslash-external'],
     ['encoded root backslash', 'encoded-root-backslash-external'],

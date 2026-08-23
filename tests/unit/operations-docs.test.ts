@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -16,6 +17,29 @@ const documentationPaths = [
 ];
 
 describe('operations documentation contract', () => {
+  it('repository-wide ignores cover every documented saved plan path', () => {
+    const paths = [
+      'infra/bootstrap/bootstrap.tfplan',
+      'infra/environments/testpilots/tfplan',
+      'infra/environments/testpilots/plan-summary.txt',
+    ];
+
+    for (const path of paths) {
+      const result = spawnSync('git', ['check-ignore', '--no-index', '-q', path], {
+        cwd: repositoryRoot,
+      });
+      expect(result.status, `${path} must be ignored`).toBe(0);
+    }
+  });
+
+  it('treats saved plans as sensitive and gives exact cleanup commands', () => {
+    const guide = read('docs/operations/aws-bootstrap.md');
+
+    expect(guide).toContain('Saved plan files are sensitive');
+    expect(guide).toContain('rm -f infra/bootstrap/bootstrap.tfplan');
+    expect(guide).toContain('rm -f infra/environments/testpilots/tfplan');
+  });
+
   it('gives contributors a complete local verification path', () => {
     const readme = read('README.md');
     expect(readme).toContain('Node.js 24');

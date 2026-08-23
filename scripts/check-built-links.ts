@@ -1,8 +1,9 @@
 import { access, readFile, readdir } from 'node:fs/promises';
 import { extname, join, relative, resolve, sep } from 'node:path';
 import { parse, type DefaultTreeAdapterTypes } from 'parse5';
+import { loadCompatibility } from '../src/lib/data/compatibility';
 
-const allowedExternalLinks = new Set([
+const allowedNonClaimLinks = new Set([
   'https://github.com/puppet-stagehand/stagehand-docs',
   'https://github.com/puppet-stagehand/stagehand-docs/issues',
   'https://github.com/puppet-stagehand/stagehand-docs/issues/new',
@@ -67,8 +68,11 @@ const canonicalDocumentUrl = (buildRoot: string, file: string): URL => {
   return new URL(pathname, canonicalBase);
 };
 
-export const validateBuiltLinks = async (root = 'dist'): Promise<void> => {
+export const validateBuiltLinks = async (root = 'dist'): Promise<string[]> => {
   const buildRoot = resolve(root);
+  const allowedEvidenceLinks = new Set(
+    loadCompatibility().map((record) => new URL(record.evidence_url).href),
+  );
   const externalLinks = new Map<string, string[]>();
   const unsupportedLinks = new Map<string, string[]>();
   const canonicalLinks = new Map<string, string[]>();
@@ -102,7 +106,9 @@ export const validateBuiltLinks = async (root = 'dist'): Promise<void> => {
   }
 
   const unapproved = [
-    ...[...externalLinks].filter(([url]) => !allowedExternalLinks.has(url)),
+    ...[...externalLinks].filter(
+      ([url]) => !allowedNonClaimLinks.has(url) && !allowedEvidenceLinks.has(url),
+    ),
     ...unsupportedLinks,
   ];
   if (unapproved.length > 0) {
@@ -131,4 +137,5 @@ export const validateBuiltLinks = async (root = 'dist'): Promise<void> => {
 
   console.log(`Verified ${externalLinks.size} exact external link targets`);
   console.log(`Verified ${canonicalLinks.size} canonical first-party link targets locally`);
+  return [...externalLinks.keys()];
 };

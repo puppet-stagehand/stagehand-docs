@@ -4,14 +4,21 @@ import { validateBuiltLinks } from './check-built-links';
 
 const buildRoot = resolve(process.argv[2] ?? 'dist');
 
-await validateBuiltLinks(buildRoot);
+const validatedExternalLinks = await validateBuiltLinks(buildRoot);
+
+const exactPattern = (value: string): string => {
+  const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return value.startsWith('https://')
+    ? `^https?://${escaped.slice('https://'.length)}$`
+    : `^${escaped}$`;
+};
 
 console.log(`→ crawling ${buildRoot}`);
 const result = await check({
   path: buildRoot,
   recurse: true,
   linksToSkip: [
-    '^https?://github\\.com/puppet-stagehand/stagehand-docs(?:$|[/?#])',
+    ...validatedExternalLinks.map(exactPattern),
     '^https?://www\\.puppetstagehand\\.com(?:$|[/?#])',
   ],
 });

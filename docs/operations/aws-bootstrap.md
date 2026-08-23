@@ -36,7 +36,12 @@ tofu -chdir=infra/bootstrap output -raw github_oidc_provider_arn
 tofu -chdir=infra/bootstrap output -json state_bucket_names | jq -r '.testpilots'
 tofu -chdir=infra/bootstrap output -json state_bucket_names | jq -r '.beta'
 tofu -chdir=infra/bootstrap output -json state_bucket_names | jq -r '.stable'
+rm -f infra/bootstrap/bootstrap.tfplan
 ```
+
+Saved plan files are sensitive because they can contain account-specific or sensitive planned
+values. Delete each saved plan immediately after its apply or final review; do not archive, attach,
+or commit it. The cleanup command above removes the bootstrap plan after its last required use.
 
 Record the `github_oidc_provider_arn` and the three `state_bucket_names` outputs in the protected
 configuration system without display quotes. Do not commit the copied values or state.
@@ -87,7 +92,12 @@ and all module resources enforce `project=stagehand` and the literal environment
 tofu -chdir=infra/environments/testpilots plan -out=tfplan
 tofu -chdir=infra/environments/testpilots show tfplan
 tofu -chdir=infra/environments/testpilots apply tfplan
+rm -f infra/environments/testpilots/tfplan
 ```
+
+Delete the environment's saved plan after apply, or immediately after review when no apply will
+follow. Run the equivalent cleanup path for `beta` and `stable`. CI-generated `plan-summary.txt`
+files are temporary review output and must also be deleted after review rather than retained.
 
 Before applying, inspect every create, update, replacement, deletion, Route 53 record, and tag.
 Stop if a taggable environment resource lacks either required tag. Repeat with the `beta` root,
