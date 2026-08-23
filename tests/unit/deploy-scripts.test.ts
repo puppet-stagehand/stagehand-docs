@@ -220,6 +220,19 @@ describe('GitHub Actions contracts', () => {
     return step!;
   };
 
+  const setupSiteOptOuts = (workflows: Array<[string, Record<string, WorkflowJob>]>) =>
+    workflows.flatMap(([name, jobs]) =>
+      Object.entries(jobs).flatMap(([job, { steps = [] }]) =>
+        steps
+          .filter(
+            ({ uses, with: inputs }) =>
+              uses === './.github/actions/setup-site' &&
+              String(inputs?.['install-playwright']) === 'false',
+          )
+          .map(() => `${name}/${job}`),
+      ),
+    );
+
   it('pins validation actions and grants only read access', () => {
     const source = workflow('validate');
     expect(source).toContain('contents: read');
@@ -289,18 +302,33 @@ describe('GitHub Actions contracts', () => {
     expect(setupSiteStep('deploy', 'validate').with?.['install-playwright']).toBeUndefined();
     expect(setupSiteStep('deploy', 'deploy').with?.['install-playwright']).toBe('false');
 
-    const optOuts = ['validate', 'deploy'].flatMap((name) =>
-      Object.entries(workflowJobs(name)).flatMap(([job, { steps = [] }]) =>
-        steps
-          .filter(({ uses, with: inputs }) =>
-            Boolean(
-              uses === './.github/actions/setup-site' && inputs?.['install-playwright'] === 'false',
-            ),
-          )
-          .map(() => `${name}/${job}`),
-      ),
+    const optOuts = setupSiteOptOuts(
+      ['validate', 'deploy'].map((name) => [name, workflowJobs(name)]),
     );
     expect(optOuts).toEqual(['deploy/deploy']);
+  });
+
+  it('counts quoted and unquoted false as equivalent setup-site opt-outs', () => {
+    const jobs = (
+      parse(`
+jobs:
+  quoted:
+    steps:
+      - uses: ./.github/actions/setup-site
+        with:
+          install-playwright: 'false'
+  boolean:
+    steps:
+      - uses: ./.github/actions/setup-site
+        with:
+          install-playwright: false
+`) as { jobs: Record<string, WorkflowJob> }
+    ).jobs;
+
+    expect(setupSiteOptOuts([['synthetic', jobs]])).toEqual([
+      'synthetic/quoted',
+      'synthetic/boolean',
+    ]);
   });
 
   it('rejects an invalid apply confirmation before attaching the protected environment', () => {
