@@ -11,6 +11,7 @@ import {
 import { tmpdir } from 'node:os';
 import { delimiter, resolve } from 'node:path';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { parse } from 'yaml';
 
 const repositoryRoot = resolve(import.meta.dirname, '../..');
 const deployScript = resolve(repositoryRoot, 'scripts/deploy-site.sh');
@@ -198,6 +199,27 @@ describe('GitHub Actions contracts', () => {
   const workflow = (name: string) =>
     readFileSync(resolve(repositoryRoot, `.github/workflows/${name}.yml`), 'utf8');
 
+  type WorkflowStep = {
+    name?: string;
+    uses?: string;
+    with?: Record<string, unknown>;
+  };
+
+  type WorkflowJob = {
+    steps?: WorkflowStep[];
+  };
+
+  const workflowJobs = (name: string) =>
+    (parse(workflow(name)) as { jobs: Record<string, WorkflowJob> }).jobs;
+
+  const setupSiteStep = (name: string, job: string) => {
+    const step = workflowJobs(name)[job]?.steps?.find(
+      ({ uses }) => uses === './.github/actions/setup-site',
+    );
+    expect(step, `${name}.yml job ${job} must set up the site`).toBeDefined();
+    return step!;
+  };
+
   it('pins validation actions and grants only read access', () => {
     const source = workflow('validate');
     expect(source).toContain('contents: read');
@@ -263,10 +285,22 @@ describe('GitHub Actions contracts', () => {
     expect(source).toContain("if: inputs.install-playwright == 'true'");
     expect(source).toContain('npx playwright install --with-deps chromium');
 
-    const deploy = workflow('deploy');
-    expect(deploy).toMatch(
-      /- name: Set up site\s+[\s\S]*?uses: \.\/\.github\/actions\/setup-site\s+[\s\S]*?with:\s+[\s\S]*?install-playwright: ['"]false['"]/u,
+    expect(setupSiteStep('validate', 'site').with?.['install-playwright']).toBeUndefined();
+    expect(setupSiteStep('deploy', 'validate').with?.['install-playwright']).toBeUndefined();
+    expect(setupSiteStep('deploy', 'deploy').with?.['install-playwright']).toBe('false');
+
+    const optOuts = ['validate', 'deploy'].flatMap((name) =>
+      Object.entries(workflowJobs(name)).flatMap(([job, { steps = [] }]) =>
+        steps
+          .filter(({ uses, with: inputs }) =>
+            Boolean(
+              uses === './.github/actions/setup-site' && inputs?.['install-playwright'] === 'false',
+            ),
+          )
+          .map(() => `${name}/${job}`),
+      ),
     );
+    expect(optOuts).toEqual(['deploy/deploy']);
   });
 
   it('rejects an invalid apply confirmation before attaching the protected environment', () => {
