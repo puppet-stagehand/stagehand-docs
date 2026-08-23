@@ -6,6 +6,8 @@ dist/
 .tofu/
 .terraform/
 *.tfstate*
+backend.hcl
+terraform.tfvars
 playwright-report/
 test-results/
 blob-report/

@@ -1,0 +1,6 @@
+# Copy to the ignored backend.hcl only after applying bootstrap, then replace bucket with its testpilots output.
+bucket       = "puppet-stagehand-testpilots-tofu-state"
+key          = "stagehand-docs/terraform.tfstate"
+region       = "us-east-2"
+encrypt      = true
+use_lockfile = true
