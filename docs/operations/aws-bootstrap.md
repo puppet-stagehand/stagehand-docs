@@ -32,11 +32,28 @@ tofu -chdir=infra/bootstrap init
 tofu -chdir=infra/bootstrap plan -out=bootstrap.tfplan
 tofu -chdir=infra/bootstrap show bootstrap.tfplan
 tofu -chdir=infra/bootstrap apply bootstrap.tfplan
-tofu -chdir=infra/bootstrap output
+tofu -chdir=infra/bootstrap output -raw github_oidc_provider_arn
+tofu -chdir=infra/bootstrap output -json state_bucket_names | jq -r '.testpilots'
+tofu -chdir=infra/bootstrap output -json state_bucket_names | jq -r '.beta'
+tofu -chdir=infra/bootstrap output -json state_bucket_names | jq -r '.stable'
 ```
 
 Record the `github_oidc_provider_arn` and the three `state_bucket_names` outputs in the protected
-configuration system. Do not commit the copied values or state.
+configuration system without display quotes. Do not commit the copied values or state.
+
+The local bootstrap state is a sensitive foundational asset: it owns the remote-state buckets and
+shared OIDC provider. Before the first apply, designate one accountable owner and allow one active writer.
+Choose an organization-approved custody location that is encrypted, access-controlled, and
+versioned. Store `terraform.tfstate` and any backup immediately after each bootstrap change;
+never leave the only copy on an operator workstation or create competing writable copies.
+
+The custodian must periodically perform and record a restore test in an isolated, access-controlled
+workspace. Initialize the same bootstrap configuration, restore a copy of the state, and use
+read-only `tofu state list` and `tofu plan` inspection; do not apply during the restore test. If the
+state is lost, stop before re-applying. Restore the approved copy first. If no restorable copy
+exists, inventory the existing buckets, their supporting controls, and the OIDC provider, then use
+`tofu import` for every corresponding resource address. Review a no-surprise plan with a second
+administrator before any later apply.
 
 ## 2. Configure one environment backend
 
@@ -80,27 +97,41 @@ then the `stable` root. Applying `stable` creates the public records for
 After each apply, capture the values needed by its GitHub Environment:
 
 ```sh
-tofu -chdir=infra/environments/testpilots output content_bucket_name
-tofu -chdir=infra/environments/testpilots output distribution_id
-tofu -chdir=infra/environments/testpilots output deployment_role_arn
+tofu -chdir=infra/environments/testpilots output -raw content_bucket_name
+tofu -chdir=infra/environments/testpilots output -raw distribution_id
+tofu -chdir=infra/environments/testpilots output -raw deployment_role_arn
 ```
 
 Store these as `CONTENT_BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID`, and `AWS_DEPLOY_ROLE_ARN`
-respectively. Repeat for beta and stable; never copy an output from one environment into another.
+respectively, without display quotes. Repeat for beta and stable; never copy an output from one
+environment into another.
 
 ## 4. Audit applied tags
 
-Run all three account-level audits after the applies:
+Set `AWS_REGION` to the configured regional-provider region. First enumerate every resource the
+Tagging API can see with `project=stagehand` in that region and in `us-east-1`, where the ACM
+certificate lives. Review this unfiltered inventory for missing or unexpected environment tags:
 
 ```sh
-aws resourcegroupstaggingapi get-resources --tag-filters Key=project,Values=stagehand Key=environment,Values=testpilots
-aws resourcegroupstaggingapi get-resources --tag-filters Key=project,Values=stagehand Key=environment,Values=beta
-aws resourcegroupstaggingapi get-resources --tag-filters Key=project,Values=stagehand Key=environment,Values=stable
+aws resourcegroupstaggingapi get-resources --region "$AWS_REGION" --tag-filters Key=project,Values=stagehand
+aws resourcegroupstaggingapi get-resources --region us-east-1 --tag-filters Key=project,Values=stagehand
 ```
 
-Compare each result with its reviewed state and plan. Some AWS resource types are not returned by
-the Resource Groups Tagging API, so also inspect the OpenTofu state and AWS service console when a
-resource is absent from the API result.
+Then run filtered presence checks for each environment in both regional passes:
+
+```sh
+aws resourcegroupstaggingapi get-resources --region "$AWS_REGION" --tag-filters Key=project,Values=stagehand Key=environment,Values=testpilots
+aws resourcegroupstaggingapi get-resources --region "$AWS_REGION" --tag-filters Key=project,Values=stagehand Key=environment,Values=beta
+aws resourcegroupstaggingapi get-resources --region "$AWS_REGION" --tag-filters Key=project,Values=stagehand Key=environment,Values=stable
+aws resourcegroupstaggingapi get-resources --region us-east-1 --tag-filters Key=project,Values=stagehand Key=environment,Values=testpilots
+aws resourcegroupstaggingapi get-resources --region us-east-1 --tag-filters Key=project,Values=stagehand Key=environment,Values=beta
+aws resourcegroupstaggingapi get-resources --region us-east-1 --tag-filters Key=project,Values=stagehand Key=environment,Values=stable
+```
+
+Filtered results prove tag presence only; they cannot show a project resource whose environment
+tag is absent. Compare the unfiltered inventory and every filtered result with the reviewed plan
+and state. The Tagging API also omits some global or unsupported resource types, so complete the
+audit by comparing the plan/state resource list and inspecting those services directly.
 
 ## Safety boundary
 

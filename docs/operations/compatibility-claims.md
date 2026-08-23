@@ -21,8 +21,8 @@ set. Put known qualifications in `limitations`; do not hide them in prose elsewh
 
 Set `last_verified` to the calendar date on which the cited evidence was actually reviewed or the
 test was actually run. A record is fresh for 365 days. On day 366 it is stale and must be
-re-verified, narrowed, marked with an appropriate non-supported status, or removed. Editing the
-date without reviewing evidence is not verification.
+re-verified against evidence with a truthful new `last_verified` date, or removed. Changing status, scope, or version range does not refresh evidence.
+Editing the date without reviewing evidence is not verification.
 
 ## Pull-request checklist
 

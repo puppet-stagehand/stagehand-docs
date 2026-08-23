@@ -45,6 +45,29 @@ describe('operations documentation contract', () => {
     expect(guide).toContain('main');
     expect(guide).toContain('Prevent self-review');
     expect(guide).toContain('access-key secrets');
+    for (const environment of ['testpilots-plan', 'beta-plan', 'stable-plan']) {
+      expect(guide).toContain(`\`${environment}\``);
+      expect(guide).toContain(`repo:puppet-stagehand/stagehand-docs:environment:${environment}`);
+    }
+    for (const environment of ['testpilots', 'beta', 'stable']) {
+      expect(guide).toContain(`repo:puppet-stagehand/stagehand-docs:environment:${environment}`);
+    }
+    expect(guide).toContain('refs/pull/*/merge');
+    expect(guide).toContain('pull_request_target');
+
+    const planVariables = guide.match(
+      /Define only these variables in each matching plan Environment:([\s\S]*?)Define only these variables in each matching deployment\/apply Environment:/u,
+    )?.[1];
+    const deploymentVariables = guide.match(
+      /Define only these variables in each matching deployment\/apply Environment:([\s\S]*?)The deployment workflow/u,
+    )?.[1];
+    expect(planVariables).toBeDefined();
+    expect(deploymentVariables).toBeDefined();
+    expect(planVariables).toContain('AWS_INFRASTRUCTURE_PLAN_ROLE_ARN');
+    expect(planVariables).not.toMatch(/AWS_DEPLOY_ROLE_ARN|AWS_INFRASTRUCTURE_APPLY_ROLE_ARN/u);
+    expect(deploymentVariables).toContain('AWS_INFRASTRUCTURE_APPLY_ROLE_ARN');
+    expect(deploymentVariables).toContain('AWS_DEPLOY_ROLE_ARN');
+    expect(deploymentVariables).not.toContain('AWS_INFRASTRUCTURE_PLAN_ROLE_ARN');
   });
 
   it('documents exact tag audits and the no-apply boundary', () => {
@@ -56,6 +79,30 @@ describe('operations documentation contract', () => {
     }
     expect(guide).toContain('does not run `tofu apply`');
     expect(guide).toMatch(/does not perform a\s+DNS cutover/u);
+    expect(guide).toContain('tofu -chdir=infra/bootstrap output -raw github_oidc_provider_arn');
+    expect(guide).toContain('tofu -chdir=infra/bootstrap output -json state_bucket_names');
+    for (const environment of ['testpilots', 'beta', 'stable']) {
+      expect(guide).toContain(`jq -r '.${environment}'`);
+    }
+    expect(guide).toContain('output -raw content_bucket_name');
+    expect(guide).toContain('output -raw distribution_id');
+    expect(guide).toContain('output -raw deployment_role_arn');
+    expect(guide).toContain('without display quotes');
+    expect(guide).toContain('--region "$AWS_REGION"');
+    expect(guide).toContain('--region us-east-1');
+    expect(guide).toContain('global or unsupported resource types');
+    expect(guide).toContain('local bootstrap state');
+    expect(guide).toMatch(/one active\s+writer/u);
+    expect(guide).toMatch(
+      /organization-approved[\s\S]*encrypted[\s\S]*access-controlled[\s\S]*versioned/u,
+    );
+    expect(guide).toContain('restore test');
+    expect(guide).toContain('tofu import');
+
+    const unfilteredAudit =
+      'aws resourcegroupstaggingapi get-resources --region "$AWS_REGION" --tag-filters Key=project,Values=stagehand';
+    const filteredAudit = `${unfilteredAudit} Key=environment,Values=testpilots`;
+    expect(guide.indexOf(unfilteredAudit)).toBeLessThan(guide.indexOf(filteredAudit));
   });
 
   it('defines promotion, rollback, compatibility evidence, and freshness', () => {
@@ -64,11 +111,16 @@ describe('operations documentation contract', () => {
     expect(release).toContain('40-character');
     expect(release).toContain('last known-good SHA');
     expect(release).toContain('Never edit S3 objects manually');
+    expect(release).toContain('independently rebuilds the same locked commit');
+    expect(release).not.toContain('Do not rebuild');
+    expect(release).toMatch(/testpilots[\s\S]*revert or fix[\s\S]*new SHA[\s\S]*automatic/iu);
 
     const claims = read('docs/operations/compatibility-claims.md');
     expect(claims).toContain('365 days');
     expect(claims).toContain('CODEOWNER');
     expect(claims).toContain('npm run validate:data');
+    expect(claims).toMatch(/day 366[\s\S]*re-verified[\s\S]*removed/u);
+    expect(claims).toMatch(/Changing status, scope, or version range does not refresh evidence/u);
   });
 
   it('links every official pricing source and uses a formula instead of a promise', () => {
@@ -108,5 +160,16 @@ describe('operations documentation contract', () => {
         '',
       ].join('\n'),
     );
+    expect(read('CONTRIBUTING.md')).toMatch(
+      /Replace `@matthewrstone` only after[\s\S]*organization team[\s\S]*repository access/u,
+    );
+  });
+
+  it('requires private vulnerability reporting with a non-public fallback', () => {
+    const security = read('SECURITY.md');
+    const environments = read('docs/operations/github-environments.md');
+    expect(environments).toContain('Enable private vulnerability reporting');
+    expect(security).toMatch(/verified private\s+contact route to the repository owner/u);
+    expect(security).toContain('Do not open a public issue');
   });
 });

@@ -206,6 +206,13 @@ describe('GitHub Actions contracts', () => {
   };
 
   type WorkflowJob = {
+    environment?: string;
+    if?: string;
+    strategy?: {
+      matrix?: {
+        include?: Array<Record<string, string>>;
+      };
+    };
     steps?: WorkflowStep[];
   };
 
@@ -275,6 +282,25 @@ describe('GitHub Actions contracts', () => {
     expect(source).toContain('plan-summary.txt');
     expect(source).toContain("github.ref == 'refs/heads/main'");
     expect(source).toContain('if [[ "$WORKFLOW_REF" != \'refs/heads/main\' ]]');
+  });
+
+  it('maps each infrastructure root to a distinct least-privilege PR plan Environment', () => {
+    const source = workflow('infrastructure');
+    const jobs = workflowJobs('infrastructure');
+    const plan = jobs.plan;
+
+    expect(plan.if).toBe(
+      "github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository",
+    );
+    expect(plan.environment).toBe('${{ matrix.plan_environment }}');
+    expect(plan.strategy?.matrix?.include).toEqual([
+      { root: 'testpilots', plan_environment: 'testpilots-plan' },
+      { root: 'beta', plan_environment: 'beta-plan' },
+      { root: 'stable', plan_environment: 'stable-plan' },
+    ]);
+    expect(source).toContain('working-directory: infra/environments/${{ matrix.root }}');
+    expect(source).toContain('name: tofu-plan-${{ matrix.root }}');
+    expect(source).not.toContain('pull_request_target');
   });
 
   it('pins every OpenTofu setup and passes one region to backend and provider', () => {

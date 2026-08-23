@@ -9,7 +9,9 @@ order, and restore a known-good release without modifying storage by hand.
 Promotion order is always **testpilots → beta → stable**. The deployable unit is one full,
 lowercase, 40-character Git SHA reachable from `main`. Beta must receive the exact SHA already
 deployed successfully to testpilots; stable must receive the exact SHA already deployed
-successfully to beta. Do not rebuild or cherry-pick between environments.
+successfully to beta. Do not alter or cherry-pick the commit between environments. The workflow
+independently rebuilds the same locked commit in each environment; SHA identity does not prove
+that the separately built files are byte-identical.
 
 ## Promote a release
 
@@ -35,15 +37,22 @@ The workflow rejects a short SHA, a SHA not reachable from `origin/main`, and a 
 whose workflow ref is not `main`. The operator must still verify the prior environment's successful
 deployment; ancestry alone does not prove promotion history.
 
-## Roll back
+## Roll back beta or stable
 
 1. Identify the last known-good SHA from the target environment's GitHub deployment history.
 2. Confirm that it is a full SHA reachable from `main` and that its validation run passed.
 3. Dispatch **Deploy site** from the `main` workflow ref for the affected environment and enter the
    last known-good SHA.
 4. Obtain the normal protected-environment approval and verify the restored pages.
-5. If a lower environment is also affected, restore and verify it separately. Record the incident
-   and the SHA selected for each environment.
+5. Record the incident and the SHA selected for the environment.
+
+## Recover testpilots
+
+The manual workflow cannot dispatch testpilots or redeploy an old testpilots SHA. Submit a reviewed
+revert or fix against `main`, then merge it. That merge creates a new SHA and triggers the automatic
+testpilots deployment. Wait for validation and deployment to pass, verify the corrected pages, and
+record both the affected and recovery SHAs. If beta or stable is also affected, roll it back
+separately with the procedure above.
 
 Never edit S3 objects manually. A manual change bypasses the immutable SHA record, cache-control
 rules, CloudFront invalidation, review protection, and repeatable rollback path.

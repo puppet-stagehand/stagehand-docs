@@ -1,37 +1,53 @@
 # Configure protected GitHub Environments
 
 This guide is for a repository administrator connecting GitHub Actions to an already bootstrapped
-AWS account. After reading it, the administrator can configure all three environments without
+AWS account. After reading it, the administrator can configure all six environments without
 long-lived AWS credentials and can keep planning authority separate from apply authority.
 
 ## Create the environments
 
-Create GitHub Environments named exactly `testpilots`, `beta`, and `stable`. For all three, set the
-deployment branch policy to selected branches and allow `main` only. Do not allow tags or arbitrary
-branches.
+Create deployment/apply Environments named exactly `testpilots`, `beta`, and `stable`. For all
+three, set the deployment branch policy to selected branches and allow `main` only. Do not allow
+tags or arbitrary branches.
 
 Configure protection as follows:
 
-| Environment  | Required reviewers                                                | Prevent self-review | Deployment branch |
-| ------------ | ----------------------------------------------------------------- | ------------------- | ----------------- |
-| `testpilots` | Optional for content; recommended when it grants plan credentials | Recommended         | `main` only       |
-| `beta`       | Required                                                          | Recommended         | `main` only       |
-| `stable`     | Required                                                          | Required            | `main` only       |
+| Environment  | Required reviewers                           | Prevent self-review | Deployment branch |
+| ------------ | -------------------------------------------- | ------------------- | ----------------- |
+| `testpilots` | Optional for content or infrastructure apply | Recommended         | `main` only       |
+| `beta`       | Required                                     | Recommended         | `main` only       |
+| `stable`     | Required                                     | Required            | `main` only       |
 
-Use the smallest trusted reviewer group that can validate the change and target account. Keep
-credentialed plan environments protected: at minimum restrict them to trusted same-repository
-pull requests and authorized maintainers, and consider required reviewers where the plan role can
-read sensitive infrastructure metadata.
+Create three additional, least-privilege plan Environments named exactly `testpilots-plan`,
+`beta-plan`, and `stable-plan`. Set each to selected branches and tags with the custom deployment
+branch rule `refs/pull/*/merge`; do not allow `main`, tags, or other refs. GitHub evaluates a
+`pull_request` workflow against its merge ref, so a `main`-only rule would prevent the plan job
+from starting. Do not replace this workflow with `pull_request_target`: that event could expose AWS
+authority while running untrusted pull-request code.
+
+The workflow's job-level same-repository guard runs before a plan Environment is attached. The
+Environment rule and the AWS role trust are additional controls, not substitutes for that guard.
+Use the smallest trusted reviewer group that can validate the change and target account. Consider
+required reviewers where the plan role can read sensitive infrastructure metadata.
 
 ## Set the required variables
 
-Define these GitHub Environment variables in each of the three environments:
+Define only these variables in each matching plan Environment:
+
+| Variable                           | Purpose                                                                                            |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `AWS_REGION`                       | Regional AWS resources and the S3 state backend; currently `us-east-2` unless deliberately changed |
+| `AWS_INFRASTRUCTURE_PLAN_ROLE_ARN` | Read, refresh, state-lock, and describe-only role for pull-request plans                           |
+| `OIDC_PROVIDER_ARN`                | Shared `github_oidc_provider_arn` bootstrap output                                                 |
+| `HOSTED_ZONE_ID`                   | Route 53 hosted zone containing `puppetstagehand.com`                                              |
+| `TOFU_STATE_BUCKET`                | Matching `state_bucket_names` bootstrap output                                                     |
+
+Define only these variables in each matching deployment/apply Environment:
 
 | Variable                            | Purpose                                                                                            |
 | ----------------------------------- | -------------------------------------------------------------------------------------------------- |
 | `AWS_REGION`                        | Regional AWS resources and the S3 state backend; currently `us-east-2` unless deliberately changed |
 | `AWS_DEPLOY_ROLE_ARN`               | Content upload and CloudFront invalidation role created by that environment's site stack           |
-| `AWS_INFRASTRUCTURE_PLAN_ROLE_ARN`  | Read, refresh, state-lock, and describe-only role for pull-request plans                           |
 | `AWS_INFRASTRUCTURE_APPLY_ROLE_ARN` | Protected role allowed to create, update, and delete that environment's infrastructure             |
 | `OIDC_PROVIDER_ARN`                 | Shared `github_oidc_provider_arn` bootstrap output                                                 |
 | `HOSTED_ZONE_ID`                    | Route 53 hosted zone containing `puppetstagehand.com`                                              |
@@ -39,10 +55,11 @@ Define these GitHub Environment variables in each of the three environments:
 | `CONTENT_BUCKET`                    | `content_bucket_name` output from the environment site stack                                       |
 | `CLOUDFRONT_DISTRIBUTION_ID`        | `distribution_id` output from the environment site stack                                           |
 
-The deployment workflow uses the region, deploy role, content bucket, and distribution ID. The
-infrastructure workflow uses the region, both infrastructure roles, OIDC provider, hosted zone,
-and state bucket. Keep the full set on every environment so either workflow fails or skips safely
-instead of crossing environment boundaries.
+The deployment workflow uses the deployment/apply Environment's region, deploy role, content
+bucket, and distribution ID. Infrastructure apply uses its apply role, OIDC provider, hosted zone,
+and state bucket. Pull-request planning uses only the matching plan Environment and plan role. Do
+not copy an apply or deploy role into a plan Environment, and do not copy a plan role into a
+deployment/apply Environment.
 
 Do not create AWS access-key secrets. The workflows request short-lived credentials through
 GitHub OIDC and require only `id-token: write` plus the selected role ARN.
@@ -54,9 +71,18 @@ site stack creates only its content deployment role. Neither creates
 `AWS_INFRASTRUCTURE_PLAN_ROLE_ARN` nor `AWS_INFRASTRUCTURE_APPLY_ROLE_ARN`. An authorized AWS
 administrator must provision both after bootstrap and before enabling infrastructure automation.
 
-Trust each role only for the repository `puppet-stagehand/stagehand-docs` and the matching GitHub
-Environment subject. Require the expected `aud` value (`sts.amazonaws.com`) and environment name
-in the OIDC trust conditions.
+Trust each role only for the repository `puppet-stagehand/stagehand-docs` and its exact matching
+GitHub Environment subject. Require `aud` to equal `sts.amazonaws.com`. The plan-role subjects are:
+
+- `repo:puppet-stagehand/stagehand-docs:environment:testpilots-plan`
+- `repo:puppet-stagehand/stagehand-docs:environment:beta-plan`
+- `repo:puppet-stagehand/stagehand-docs:environment:stable-plan`
+
+The apply- and deploy-role subjects use the corresponding environment without `-plan`:
+`repo:puppet-stagehand/stagehand-docs:environment:testpilots`,
+`repo:puppet-stagehand/stagehand-docs:environment:beta`, or
+`repo:puppet-stagehand/stagehand-docs:environment:stable`. Never allow a wildcard Environment
+name in a role trust policy.
 
 Give the plan role only the permissions needed to read its state, acquire and release that state
 lock, refresh known resources, and call relevant `Get`, `List`, and `Describe` operations. It must
@@ -70,6 +96,14 @@ where AWS supports those conditions. Do not share either role across environment
 
 Have a second administrator review the trust and permission policies before storing the ARNs in
 GitHub.
+
+## Enable private security reports
+
+Enable private vulnerability reporting before publishing the repository. Open
+**Settings → Security → Code security** and enable private
+vulnerability reporting. Confirm that a non-maintainer can see **Security → Advisories → Report a
+vulnerability**. Keep the private fallback in [SECURITY.md](../../SECURITY.md) current as repository
+ownership changes.
 
 ## Verify configuration without changing AWS
 

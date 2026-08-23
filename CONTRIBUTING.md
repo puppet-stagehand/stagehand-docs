@@ -33,6 +33,10 @@ Compatibility claims are customer-facing product statements. Follow the
 freshness, and CODEOWNER approval. Infrastructure and workflow changes also require the owners
 listed in `CODEOWNERS`.
 
+Replace `@matthewrstone` only after a verified organization team has been created, granted the
+required repository access, and confirmed able to review every protected path. Update all four
+assignments together so ownership does not silently become partial.
+
 ## Report security problems privately
 
 Do not include vulnerabilities, credentials, account identifiers, or customer information in an

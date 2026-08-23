@@ -53,18 +53,21 @@ jobs:
           done
 
   plan:
-    name: Plan ${{ matrix.environment }}
+    name: Plan ${{ matrix.root }}
     if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
     needs: validate
     runs-on: ubuntu-latest
-    environment: ${{ matrix.environment }}
+    environment: ${{ matrix.plan_environment }}
     strategy:
       fail-fast: false
       matrix:
-        environment:
-          - testpilots
-          - beta
-          - stable
+        include:
+          - root: testpilots
+            plan_environment: testpilots-plan
+          - root: beta
+            plan_environment: beta-plan
+          - root: stable
+            plan_environment: stable-plan
     permissions:
       contents: read
       id-token: write
@@ -111,7 +114,7 @@ jobs:
           AWS_REGION: ${{ vars.AWS_REGION || 'us-east-2' }}
           TOFU_STATE_BUCKET: ${{ vars.TOFU_STATE_BUCKET }}
         shell: bash
-        working-directory: infra/environments/${{ matrix.environment }}
+        working-directory: infra/environments/${{ matrix.root }}
         run: |
           set -euo pipefail
           tofu init \
@@ -136,8 +139,8 @@ jobs:
         if: steps.plan_configuration.outputs.configured == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: tofu-plan-${{ matrix.environment }}
-          path: infra/environments/${{ matrix.environment }}/plan-summary.txt
+          name: tofu-plan-${{ matrix.root }}
+          path: infra/environments/${{ matrix.root }}/plan-summary.txt
           if-no-files-found: error
           retention-days: 7
 
