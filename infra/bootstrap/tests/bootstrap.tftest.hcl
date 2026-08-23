@@ -21,6 +21,62 @@ run "rejects_an_incomplete_environment_map" {
   expect_failures = [var.state_bucket_names]
 }
 
+run "rejects_bucket_names_with_adjacent_periods" {
+  command = plan
+
+  variables {
+    state_bucket_names = {
+      testpilots = "stagehand..testpilots-state-test"
+      beta       = "stagehand-beta-state-test"
+      stable     = "stagehand-stable-state-test"
+    }
+  }
+
+  expect_failures = [var.state_bucket_names]
+}
+
+run "rejects_ipv4_formatted_bucket_names" {
+  command = plan
+
+  variables {
+    state_bucket_names = {
+      testpilots = "192.168.5.4"
+      beta       = "stagehand-beta-state-test"
+      stable     = "stagehand-stable-state-test"
+    }
+  }
+
+  expect_failures = [var.state_bucket_names]
+}
+
+run "rejects_aws_reserved_bucket_name_prefixes" {
+  command = plan
+
+  variables {
+    state_bucket_names = {
+      testpilots = "xn--stagehand-testpilots"
+      beta       = "stagehand-beta-state-test"
+      stable     = "stagehand-stable-state-test"
+    }
+  }
+
+  expect_failures = [var.state_bucket_names]
+}
+
+run "rejects_aws_reserved_bucket_name_suffixes" {
+  command = plan
+
+  variables {
+    state_bucket_names = {
+      testpilots = "stagehand-testpilots-state-test"
+      beta       = "stagehand-beta-state-test"
+      stable     = "stagehand-stable--x-s3"
+    }
+  }
+
+  expect_failures = [var.state_bucket_names]
+}
+
 run "creates_private_encrypted_versioned_state_buckets" {
   command = plan
 
