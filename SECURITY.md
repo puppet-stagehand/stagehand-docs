@@ -7,10 +7,11 @@ tab, choose **Advisories**, and select **Report a vulnerability**. Include affec
 reproduction steps, impact, and a safe way to contact you. Do not open a public issue for an
 unpatched vulnerability.
 
-If **Report a vulnerability** is unavailable, do not publish the details. Use a verified private
-contact route to the repository owner and ask for a confidential reporting channel; send technical
-details only after that private channel is confirmed. Do not open a public issue or discussion as
-a fallback.
+If **Report a vulnerability** is unavailable, do not publish the details. Use
+`security@puppetstagehand.com` as a fallback only. Repository administrators must provision,
+monitor, and test delivery to this address before the repository is published; this policy does
+not claim that setup is already complete. Until the address has been verified, do not send
+technical details. Do not open a public issue or discussion as a fallback.
 
 Maintainers will acknowledge the report, investigate it privately, and coordinate remediation
 and disclosure with the reporter. Response time depends on severity and reproducibility.

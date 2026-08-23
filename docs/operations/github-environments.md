@@ -25,10 +25,20 @@ branch rule `refs/pull/*/merge`; do not allow `main`, tags, or other refs. GitHu
 from starting. Do not replace this workflow with `pull_request_target`: that event could expose AWS
 authority while running untrusted pull-request code.
 
+Configure every plan Environment with these protections:
+
+| Environment       | Required reviewers            | Prevent self-review | Deployment branch        |
+| ----------------- | ----------------------------- | ------------------- | ------------------------ |
+| `testpilots-plan` | At least one trusted reviewer | Required            | `refs/pull/*/merge` only |
+| `beta-plan`       | At least one trusted reviewer | Required            | `refs/pull/*/merge` only |
+| `stable-plan`     | At least one trusted reviewer | Required            | `refs/pull/*/merge` only |
+
 The workflow's job-level same-repository guard runs before a plan Environment is attached. The
 Environment rule and the AWS role trust are additional controls, not substitutes for that guard.
-Use the smallest trusted reviewer group that can validate the change and target account. Consider
-required reviewers where the plan role can read sensitive infrastructure metadata.
+Use the smallest trusted reviewer group that can validate the change and target account.
+
+Before approving a plan job, the trusted reviewer must inspect the workflow and infrastructure
+diff for unsafe code because the plan role can read sensitive infrastructure metadata.
 
 ## Set the required variables
 
@@ -102,8 +112,11 @@ GitHub.
 Enable private vulnerability reporting before publishing the repository. Open
 **Settings → Security → Code security** and enable private
 vulnerability reporting. Confirm that a non-maintainer can see **Security → Advisories → Report a
-vulnerability**. Keep the private fallback in [SECURITY.md](../../SECURITY.md) current as repository
-ownership changes.
+vulnerability**. For `security@puppetstagehand.com`, the repository administrators must provision
+the address, monitor it, and test delivery before publication. Record the successful test and
+retest it after mail-provider or repository-ownership changes. Keep this fallback in
+[SECURITY.md](../../SECURITY.md) current, and never redirect reporters to a public issue or
+discussion.
 
 ## Verify configuration without changing AWS
 

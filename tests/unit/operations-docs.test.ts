@@ -54,6 +54,20 @@ describe('operations documentation contract', () => {
     }
     expect(guide).toContain('refs/pull/*/merge');
     expect(guide).toContain('pull_request_target');
+    for (const environment of ['testpilots-plan', 'beta-plan', 'stable-plan']) {
+      const row = guide
+        .split('\n')
+        .find((line) => line.split('|').some((cell) => cell.trim() === `\`${environment}\``));
+      expect(row?.split('|').map((cell) => cell.trim())).toEqual([
+        '',
+        `\`${environment}\``,
+        'At least one trusted reviewer',
+        'Required',
+        '`refs/pull/*/merge` only',
+        '',
+      ]);
+    }
+    expect(guide).toMatch(/Before approving a plan job,[\s\S]*workflow and infrastructure\s+diff/u);
 
     const planVariables = guide.match(
       /Define only these variables in each matching plan Environment:([\s\S]*?)Define only these variables in each matching deployment\/apply Environment:/u,
@@ -169,7 +183,13 @@ describe('operations documentation contract', () => {
     const security = read('SECURITY.md');
     const environments = read('docs/operations/github-environments.md');
     expect(environments).toContain('Enable private vulnerability reporting');
-    expect(security).toMatch(/verified private\s+contact route to the repository owner/u);
+    expect(security).toContain('security@puppetstagehand.com');
+    expect(security).toMatch(/fallback only/u);
+    expect(environments).toMatch(
+      /security@puppetstagehand\.com[\s\S]*provision[\s\S]*monitor[\s\S]*test delivery[\s\S]*before publication/iu,
+    );
+    expect(security).not.toMatch(/(?:is|currently) monitored/iu);
     expect(security).toContain('Do not open a public issue');
+    expect(security).toContain('Do not open a public issue or discussion');
   });
 });
