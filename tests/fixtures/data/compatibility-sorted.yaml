@@ -1,0 +1,54 @@
+schema_version: 1
+records:
+  - id: zeta
+    platform: Zeta Cloud
+    puppet_versions: '>= 8.0 < 9.0'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: zeta
+    transport: ssh
+    operating_systems: [Ubuntu 24.04]
+    status: supported
+    limitations: []
+    docs_path: /docs/platforms/zeta/
+    evidence_url: https://example.com/evidence/zeta
+    last_verified: '2026-08-22'
+  - id: alpha-puppet-9
+    platform: Alpha Cloud
+    puppet_versions: '>= 9.0 < 10.0'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: alpha
+    transport: ssh
+    operating_systems: [Ubuntu 24.04]
+    status: compatible
+    limitations: []
+    docs_path: /docs/platforms/alpha/
+    evidence_url: https://example.com/evidence/alpha-puppet-9
+    last_verified: '2026-08-22'
+  - id: alpha-puppet-8-pe
+    platform: Alpha Cloud
+    puppet_versions: '>= 8.0 < 9.0'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-enterprise
+    provider: alpha
+    transport: ssh
+    operating_systems: [Ubuntu 24.04]
+    status: limited
+    limitations: [Manual setup]
+    docs_path: /docs/platforms/alpha/
+    evidence_url: https://example.com/evidence/alpha-puppet-8-pe
+    last_verified: '2026-08-22'
+  - id: alpha-puppet-8-core
+    platform: Alpha Cloud
+    puppet_versions: '>= 8.0 < 9.0'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: alpha
+    transport: ssh
+    operating_systems: [Ubuntu 24.04]
+    status: compatible
+    limitations: []
+    docs_path: /docs/platforms/alpha/
+    evidence_url: https://example.com/evidence/alpha-puppet-8-core
+    last_verified: '2026-08-22'

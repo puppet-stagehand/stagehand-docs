@@ -1,0 +1,71 @@
+@use 'sass:color';
+
+@import 'bootstrap/scss/functions';
+@import 'tokens';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/maps';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/utilities';
+
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/containers';
+@import 'bootstrap/scss/grid';
+@import 'bootstrap/scss/nav';
+@import 'bootstrap/scss/navbar';
+@import 'bootstrap/scss/tables';
+@import 'bootstrap/scss/badge';
+@import 'bootstrap/scss/accordion';
+@import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/forms';
+@import 'bootstrap/scss/helpers';
+@import 'bootstrap/scss/utilities/api';
+
+@import 'components/shell';
+@import 'components/status-mark';
+@import 'components/tier-card';
+@import 'components/compatibility';
+@import 'components/docs';
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 20rem;
+  min-height: 100vh;
+  background:
+    linear-gradient(to right, transparent calc(100% - 1px), rgba(244, 247, 249, 0.035) 1px) 0 0 /
+      min(8vw, 7.5rem) 100%,
+    var(--stagehand-navy);
+}
+
+a {
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--stagehand-warning);
+  outline-offset: 4px;
+}
+
+::selection {
+  color: var(--stagehand-navy);
+  background: var(--stagehand-cyan);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

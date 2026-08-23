@@ -1,0 +1,45 @@
+---
+import { primaryNavigation } from '../lib/navigation';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-wordmark" href="/" aria-label="Puppet Stagehand home">
+      <span class="site-wordmark__puppet">Puppet</span>
+      <span class="site-wordmark__product">Stagehand</span>
+    </a>
+
+    <nav class="site-header__desktop" aria-label="Primary navigation">
+      <ul class="site-nav">
+        {
+          primaryNavigation.map(({ href, label }) => (
+            <li>
+              <a href={href} aria-current={currentPath === href ? 'page' : undefined}>
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <details class="site-header__mobile">
+      <summary>Menu</summary>
+      <nav aria-label="Primary mobile navigation">
+        <ul class="site-nav site-nav--mobile">
+          {
+            primaryNavigation.map(({ href, label }) => (
+              <li>
+                <a href={href} aria-current={currentPath === href ? 'page' : undefined}>
+                  {label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </details>
+  </div>
+</header>

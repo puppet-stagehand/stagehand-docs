@@ -1,0 +1,279 @@
+---
+import { statusPresentation, type StatusPresentation } from '../lib/data/status';
+import type { CompatibilityRecord, SupportStatus, Tier } from '../lib/data/types';
+
+interface Props {
+  records: CompatibilityRecord[];
+}
+
+const { records } = Astro.props;
+const platforms = [...new Set(records.map((record) => record.platform))].sort((a, b) =>
+  a.localeCompare(b, 'en'),
+);
+const tiers = [...new Set(records.map((record) => record.tier))].sort((a, b) =>
+  a.localeCompare(b, 'en'),
+);
+const statuses = [...new Set(records.map((record) => record.status))].sort((a, b) =>
+  a.localeCompare(b, 'en'),
+);
+
+const statusSymbols: Record<StatusPresentation['symbol'], string> = {
+  'check-circle': '✓',
+  link: '↔',
+  'alert-triangle': '!',
+  clock: '◷',
+  'x-circle': '×',
+};
+
+const tierLabels: Record<Tier['id'], string> = {
+  openvox: 'OpenVox',
+  'puppet-core': 'Puppet Core',
+  'puppet-enterprise': 'Puppet Enterprise',
+  'pe-advanced': 'PE Advanced',
+};
+
+const presentStatus = (status: SupportStatus) => {
+  const presentation = statusPresentation(status);
+  return { ...presentation, glyph: statusSymbols[presentation.symbol] };
+};
+---
+
+<section class="compat-matrix" data-compatibility-matrix aria-labelledby="compat-results-count">
+  <form class="compat-filters" data-compatibility-filters>
+    <div class="compat-filters__heading">
+      <p>FILTER REGISTER</p>
+      <button type="reset">Clear filters</button>
+    </div>
+    <div class="compat-filters__controls">
+      <label>
+        <span>Platform</span>
+        <select name="platform">
+          <option value="">All platforms</option>
+          {platforms.map((platform) => <option value={platform}>{platform}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Customer tier</span>
+        <select name="tier">
+          <option value="">All tiers</option>
+          {tiers.map((tier) => <option value={tier}>{tierLabels[tier]}</option>)}
+        </select>
+      </label>
+      <label>
+        <span>Support status</span>
+        <select name="status">
+          <option value="">All statuses</option>
+          {
+            statuses.map((status) => (
+              <option value={status}>{statusPresentation(status).label}</option>
+            ))
+          }
+        </select>
+      </label>
+    </div>
+  </form>
+
+  <p id="compat-results-count" class="compat-results" aria-live="polite" aria-atomic="true">
+    Showing <strong data-result-count>{records.length}</strong> of {records.length} verified records
+  </p>
+
+  <div class="compat-table-frame">
+    <table class="compat-table">
+      <caption>
+        Verified Stagehand compatibility claims, including version ranges, limitations, and primary
+        evidence.
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Platform / provider</th>
+          <th scope="col">Version ranges</th>
+          <th scope="col">Tier / transport</th>
+          <th scope="col">Operating systems</th>
+          <th scope="col">Status / limitations</th>
+          <th scope="col">Evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          records.map((record) => {
+            const status = presentStatus(record.status);
+            return (
+              <tr
+                data-record-id={record.id}
+                data-platform={record.platform}
+                data-tier={record.tier}
+                data-status={record.status}
+              >
+                <th scope="row">
+                  <span class="compat-table__primary">{record.platform}</span>
+                  <span class="compat-table__meta">{record.provider}</span>
+                  <span class="compat-table__id">ID / {record.id}</span>
+                </th>
+                <td>
+                  <dl class="compat-versions">
+                    <div>
+                      <dt>Puppet</dt>
+                      <dd>{record.puppet_versions}</dd>
+                    </div>
+                    <div>
+                      <dt>Stagehand</dt>
+                      <dd>{record.stagehand_versions}</dd>
+                    </div>
+                  </dl>
+                </td>
+                <td>
+                  <span class="compat-table__primary">{tierLabels[record.tier]}</span>
+                  <span class="compat-table__mono">{record.transport}</span>
+                </td>
+                <td>
+                  <ul class="compat-list">
+                    {record.operating_systems.map((operatingSystem) => (
+                      <li>{operatingSystem}</li>
+                    ))}
+                  </ul>
+                </td>
+                <td>
+                  <span class={`compat-status compat-status--${record.status}`}>
+                    <span class="compat-status__symbol" aria-hidden="true">
+                      {status.glyph}
+                    </span>
+                    <span>{status.label}</span>
+                  </span>
+                  {record.limitations.length === 0 ? (
+                    <span class="compat-table__meta">No published limitations</span>
+                  ) : (
+                    <ul class="compat-list compat-list--limitations">
+                      {record.limitations.map((limitation) => (
+                        <li>{limitation}</li>
+                      ))}
+                    </ul>
+                  )}
+                </td>
+                <td>
+                  <div class="compat-table__links">
+                    <a href={record.evidence_url}>Primary evidence</a>
+                    <a href={record.docs_path}>Platform guidance</a>
+                  </div>
+                  <span class="compat-table__verified">
+                    VERIFIED / <time datetime={record.last_verified}>{record.last_verified}</time>
+                  </span>
+                </td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="compat-cards">
+    {
+      records.map((record) => {
+        const status = presentStatus(record.status);
+        return (
+          <article
+            class="compat-card"
+            data-record-id={record.id}
+            data-platform={record.platform}
+            data-tier={record.tier}
+            data-status={record.status}
+          >
+            <header class="compat-card__header">
+              <div>
+                <p>{record.provider}</p>
+                <h2>{record.platform}</h2>
+              </div>
+              <span class={`compat-status compat-status--${record.status}`}>
+                <span class="compat-status__symbol" aria-hidden="true">
+                  {status.glyph}
+                </span>
+                <span>{status.label}</span>
+              </span>
+            </header>
+            <dl class="compat-card__facts">
+              <div>
+                <dt>Record</dt>
+                <dd>{record.id}</dd>
+              </div>
+              <div>
+                <dt>Puppet</dt>
+                <dd class="compat-card__mono">{record.puppet_versions}</dd>
+              </div>
+              <div>
+                <dt>Stagehand</dt>
+                <dd class="compat-card__mono">{record.stagehand_versions}</dd>
+              </div>
+              <div>
+                <dt>Tier</dt>
+                <dd>{tierLabels[record.tier]}</dd>
+              </div>
+              <div>
+                <dt>Transport</dt>
+                <dd class="compat-card__mono">{record.transport}</dd>
+              </div>
+              <div>
+                <dt>Operating systems</dt>
+                <dd>{record.operating_systems.join(', ')}</dd>
+              </div>
+            </dl>
+            <section class="compat-card__limitations" aria-label="Limitations">
+              <h3>Limitations</h3>
+              {record.limitations.length === 0 ? (
+                <p>No published limitations</p>
+              ) : (
+                <ul>
+                  {record.limitations.map((limitation) => (
+                    <li>{limitation}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+            <footer class="compat-card__footer">
+              <div>
+                <a href={record.evidence_url}>Primary evidence</a>
+                <a href={record.docs_path}>Platform guidance</a>
+              </div>
+              <span>
+                VERIFIED / <time datetime={record.last_verified}>{record.last_verified}</time>
+              </span>
+            </footer>
+          </article>
+        );
+      })
+    }
+  </div>
+</section>
+
+<script>
+  const matrix = document.querySelector<HTMLElement>('[data-compatibility-matrix]');
+
+  if (matrix) {
+    const form = matrix.querySelector<HTMLFormElement>('[data-compatibility-filters]');
+    const count = matrix.querySelector<HTMLElement>('[data-result-count]');
+    const renderedRecords = matrix.querySelectorAll<HTMLElement>('[data-record-id]');
+
+    const applyFilters = () => {
+      if (!form || !count) return;
+
+      const values = new FormData(form);
+      const platform = String(values.get('platform') ?? '');
+      const tier = String(values.get('tier') ?? '');
+      const status = String(values.get('status') ?? '');
+      const visibleIds = new Set<string>();
+
+      for (const record of renderedRecords) {
+        const visible =
+          (!platform || record.dataset.platform === platform) &&
+          (!tier || record.dataset.tier === tier) &&
+          (!status || record.dataset.status === status);
+        record.hidden = !visible;
+        if (visible && record.dataset.recordId) visibleIds.add(record.dataset.recordId);
+      }
+
+      count.textContent = String(visibleIds.size);
+    };
+
+    form?.addEventListener('change', applyFilters);
+    form?.addEventListener('reset', () => requestAnimationFrame(applyFilters));
+  }
+</script>

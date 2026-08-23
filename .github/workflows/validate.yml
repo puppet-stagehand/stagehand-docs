@@ -1,0 +1,56 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  site:
+    name: Site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up site
+        uses: ./.github/actions/setup-site
+
+      - name: Verify site
+        run: npm run verify
+
+  infrastructure:
+    name: OpenTofu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up OpenTofu
+        uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version_file: .opentofu-version
+
+      - name: Check formatting and tags
+        run: |
+          tofu fmt -check -recursive infra
+          scripts/check-tofu-tags.sh
+
+      - name: Test static-site module
+        run: |
+          tofu -chdir=infra/modules/static-site init -backend=false
+          tofu -chdir=infra/modules/static-site test
+
+      - name: Validate bootstrap and environment roots
+        shell: bash
+        run: |
+          set -euo pipefail
+          for root in infra/bootstrap infra/environments/testpilots infra/environments/beta infra/environments/stable; do
+            tofu -chdir="$root" init -backend=false
+            tofu -chdir="$root" validate
+            tofu -chdir="$root" test
+          done

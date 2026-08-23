@@ -1,0 +1,64 @@
+{
+  "name": "@puppet-stagehand/docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11 <12"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "check:routes": "tsx scripts/check-built-routes.ts",
+    "check:links": "node --import tsx scripts/check-links.ts",
+    "check:e2e-isolation": "node --import tsx scripts/check-e2e-build-isolation.ts",
+    "lint": "eslint . && stylelint 'src/**/*.scss'",
+    "test": "vitest",
+    "test:unit": "vitest run",
+    "build:e2e": "env -u STAGEHAND_E2E_FIXTURES ASTRO_TELEMETRY_DISABLED=1 npm run build && STAGEHAND_E2E_FIXTURES=1 ASTRO_TELEMETRY_DISABLED=1 npm run build",
+    "test:e2e": "npm run build:e2e && env -u NO_COLOR playwright test && npm run check:e2e-isolation",
+    "test:a11y": "npm run build:e2e && env -u NO_COLOR playwright test tests/e2e/accessibility.spec.ts --project=production && npm run check:e2e-isolation",
+    "validate:data": "tsx scripts/validate-data.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "npm run format:check && npm run lint && npm run check && npm run validate:data && npm run test:unit && npm run build && npm run check:routes && npm run check:links && npm run test:e2e"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "astro": "7.2.4",
+    "bootstrap": "5.3.8",
+    "sass": "1.103.1",
+    "yaml": "2.9.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.62.1",
+    "@types/node": "24.13.3",
+    "eslint": "10.9.0",
+    "eslint-plugin-astro": "3.1.0",
+    "linkinator": "8.0.4",
+    "parse5": "8.0.1",
+    "prettier": "3.9.6",
+    "prettier-plugin-astro": "0.14.1",
+    "stylelint": "17.14.1",
+    "stylelint-config-standard-scss": "17.0.0",
+    "tsx": "4.23.12",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.61.0",
+    "vitest": "4.1.11"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-astro"
+    ],
+    "singleQuote": true,
+    "printWidth": 100
+  }
+}

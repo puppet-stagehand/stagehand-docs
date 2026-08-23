@@ -1,0 +1,75 @@
+schema_version: 1
+records:
+  - id: aws-openvox-supported
+    platform: AWS EC2
+    puppet_versions: '>= 8.0 < 9.0'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: aws
+    transport: ssh
+    operating_systems:
+      - Ubuntu 24.04
+    status: supported
+    limitations: []
+    docs_path: /docs/getting-started/
+    evidence_url: https://www.puppet.com/docs/puppet/8/release_notes_puppet
+    last_verified: '2026-08-22'
+  - id: azure-core-compatible
+    platform: Azure VM
+    puppet_versions: '>= 8.1 < 9.0'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: azure
+    transport: ssh
+    operating_systems:
+      - Red Hat Enterprise Linux 9
+    status: compatible
+    limitations: []
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2026-08-21'
+  - id: docker-openvox-limited
+    platform: Docker
+    puppet_versions: '>= 8.0 < 8.4'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: docker
+    transport: ssh
+    operating_systems:
+      - Debian 13
+    status: limited
+    limitations:
+      - Host networking is required by this test fixture.
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2026-08-20'
+  - id: google-enterprise-deprecated
+    platform: Google Cloud
+    puppet_versions: '>= 7.0 < 8.0'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-enterprise
+    provider: google
+    transport: ssh
+    operating_systems:
+      - Rocky Linux 9
+    status: deprecated
+    limitations:
+      - This fixture represents a deprecated version boundary.
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs
+    last_verified: '2026-08-19'
+  - id: vmware-advanced-unsupported
+    platform: VMware vSphere
+    puppet_versions: '>= 6.0 < 7.0'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: pe-advanced
+    provider: vmware
+    transport: pcp
+    operating_systems:
+      - AlmaLinux 9
+    status: unsupported
+    limitations:
+      - This fixture represents an unsupported combination.
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs
+    last_verified: '2026-08-18'

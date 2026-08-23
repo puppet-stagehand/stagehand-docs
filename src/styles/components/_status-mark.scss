@@ -1,0 +1,24 @@
+.status-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--stagehand-off-white);
+  font-family: var(--stagehand-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.status-mark__indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1px solid currentColor;
+  background: var(--stagehand-cyan);
+  box-shadow: 0 0 0 0.2rem rgba(32, 215, 231, 0.11);
+}
+
+.status-mark--purple .status-mark__indicator {
+  background: var(--stagehand-purple);
+  box-shadow: 0 0 0 0.2rem rgba(111, 60, 195, 0.18);
+}

@@ -1,0 +1,3 @@
+aws_region = "us-east-2"
+
+# Supply hosted_zone_id and github_oidc_provider_arn through TF_VAR_* environment variables.

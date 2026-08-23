@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entries: CollectionEntry<'docs'>[];
+  currentSlug: string;
+}
+
+const { entries, currentSlug } = Astro.props;
+const orderedEntries = [...entries].sort((left, right) => left.data.order - right.data.order);
+---
+
+<nav class="docs-nav" aria-label="Documentation navigation">
+  <p class="docs-nav__label">Documentation</p>
+  <ol>
+    {
+      orderedEntries.map((entry) => (
+        <li>
+          <a
+            href={`/docs/${entry.id}/`}
+            aria-current={entry.id === currentSlug ? 'page' : undefined}
+          >
+            <span aria-hidden="true">{entry.data.order.toString().padStart(2, '0')}</span>
+            {entry.data.title}
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>

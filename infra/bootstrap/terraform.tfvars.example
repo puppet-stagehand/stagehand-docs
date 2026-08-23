@@ -1,0 +1,8 @@
+aws_region = "us-east-2"
+
+# S3 bucket names are global. Replace these organization-scoped examples before applying.
+state_bucket_names = {
+  testpilots = "puppet-stagehand-testpilots-tofu-state"
+  beta       = "puppet-stagehand-beta-tofu-state"
+  stable     = "puppet-stagehand-stable-tofu-state"
+}

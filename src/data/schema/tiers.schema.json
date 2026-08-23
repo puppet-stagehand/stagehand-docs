@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "tiers"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "tiers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "audience", "entitlement", "summary", "features"],
+        "properties": {
+          "id": { "enum": ["openvox", "puppet-core", "puppet-enterprise", "pe-advanced"] },
+          "name": { "type": "string", "minLength": 1 },
+          "audience": { "type": "string", "minLength": 1 },
+          "entitlement": { "enum": ["community", "commercial", "advanced"] },
+          "summary": { "type": "string", "minLength": 1 },
+          "features": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    }
+  }
+}
