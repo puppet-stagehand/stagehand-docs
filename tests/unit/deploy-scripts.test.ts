@@ -259,6 +259,24 @@ describe('GitHub Actions contracts', () => {
       resolve(repositoryRoot, '.github/actions/setup-site/action.yml'),
       'utf8',
     );
+    expect(source).toMatch(/inputs:\s+[\s\S]*install-playwright:[\s\S]*default: ['"]true['"]/u);
+    expect(source).toContain("if: inputs.install-playwright == 'true'");
     expect(source).toContain('npx playwright install --with-deps chromium');
+
+    const deploy = workflow('deploy');
+    expect(deploy).toMatch(
+      /- name: Set up site\s+[\s\S]*?uses: \.\/\.github\/actions\/setup-site\s+[\s\S]*?with:\s+[\s\S]*?install-playwright: ['"]false['"]/u,
+    );
+  });
+
+  it('rejects an invalid apply confirmation before attaching the protected environment', () => {
+    const source = workflow('infrastructure');
+    const authorizationJob = source.match(/authorize_dispatch:[\s\S]*?\n  apply:/u)?.[0];
+
+    expect(authorizationJob).toBeDefined();
+    expect(authorizationJob).not.toMatch(/^\s{4}environment:/mu);
+    expect(authorizationJob).toContain('APPLY_CONFIRMATION: ${{ inputs.confirmation }}');
+    expect(authorizationJob).toContain(`if [[ "$APPLY_CONFIRMATION" != 'apply' ]]`);
+    expect(source).toContain("inputs.confirmation == 'apply'");
   });
 });

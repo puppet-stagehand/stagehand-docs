@@ -104,6 +104,8 @@ jobs:
       - name: Set up site
         if: steps.deployment_configuration.outputs.configured == 'true'
         uses: ./.github/actions/setup-site
+        with:
+          install-playwright: 'false'
 
       - name: Verify commit is promotable
         if: steps.deployment_configuration.outputs.configured == 'true'

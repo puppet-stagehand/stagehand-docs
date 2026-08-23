@@ -1,6 +1,12 @@
 name: Setup Stagehand site
 description: Install the pinned Node toolchain and site dependencies
 
+inputs:
+  install-playwright:
+    description: Install Chromium and its operating-system dependencies for browser verification
+    required: false
+    default: 'true'
+
 runs:
   using: composite
   steps:
@@ -15,5 +21,6 @@ runs:
       run: npm ci
 
     - name: Install Playwright Chromium
+      if: inputs.install-playwright == 'true'
       shell: bash
       run: npx playwright install --with-deps chromium

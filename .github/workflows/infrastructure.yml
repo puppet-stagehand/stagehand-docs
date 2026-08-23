@@ -156,6 +156,16 @@ jobs:
             exit 1
           fi
 
+      - name: Require exact apply confirmation
+        env:
+          APPLY_CONFIRMATION: ${{ inputs.confirmation }}
+        shell: bash
+        run: |
+          if [[ "$APPLY_CONFIRMATION" != 'apply' ]]; then
+            echo "Confirmation must be exactly 'apply'." >&2
+            exit 1
+          fi
+
   apply:
     name: Apply ${{ inputs.environment }}
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.confirmation == 'apply'
