@@ -5,6 +5,7 @@ export default [
   {
     ignores: [
       '.astro/**',
+      '.e2e-dist/**',
       '.superpowers/**',
       'coverage/**',
       'dist/**',

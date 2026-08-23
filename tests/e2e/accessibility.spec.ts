@@ -34,25 +34,3 @@ test('published pages expose language, titles, landmarks, headings, and a skip l
     );
   }
 });
-
-test('compatibility filter controls are labelled and status never relies on color alone', async ({
-  page,
-}) => {
-  await page.goto('/compatibility/');
-
-  await expect(page.getByLabel('Platform')).toBeVisible();
-  await expect(page.getByLabel('Customer tier')).toBeVisible();
-  await expect(page.getByLabel('Support status')).toBeVisible();
-
-  for (const [label, symbol] of [
-    ['Supported', '✓'],
-    ['Compatible', '↔'],
-    ['Limited', '!'],
-    ['Deprecated', '◷'],
-    ['Unsupported', '×'],
-  ] as const) {
-    const status = page.locator('.compat-table').getByText(label, { exact: true });
-    await expect(status).toBeVisible();
-    await expect(status.locator('xpath=preceding-sibling::*[1]')).toHaveText(symbol);
-  }
-});

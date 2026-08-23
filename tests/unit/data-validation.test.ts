@@ -1,10 +1,30 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { loadCompatibility } from '../../src/lib/data/compatibility';
 import { loadTiers } from '../../src/lib/data/tiers';
 
 const fixture = (name: string) => new URL(`../fixtures/data/${name}`, import.meta.url).pathname;
 
 describe('compatibility data validation', () => {
+  it('uses a fixed validation date only for the exact E2E fixture flag', () => {
+    const originalFlag = process.env.STAGEHAND_E2E_FIXTURES;
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2028-08-22T00:00:00.000Z'));
+
+    try {
+      process.env.STAGEHAND_E2E_FIXTURES = '1';
+      expect(loadCompatibility()).toHaveLength(5);
+
+      process.env.STAGEHAND_E2E_FIXTURES = 'true';
+      expect(() => loadCompatibility({ path: fixture('compatibility-e2e.yaml') })).toThrow(
+        'Compatibility evidence is older than 365 days',
+      );
+    } finally {
+      vi.useRealTimers();
+      if (originalFlag === undefined) delete process.env.STAGEHAND_E2E_FIXTURES;
+      else process.env.STAGEHAND_E2E_FIXTURES = originalFlag;
+    }
+  });
+
   it('normalizes a valid compatibility claim from a real YAML file', () => {
     // Catches a production change that returns raw YAML documents rather than validated records.
     expect(

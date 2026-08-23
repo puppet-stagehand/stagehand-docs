@@ -2,6 +2,7 @@ export default {
   extends: ['stylelint-config-standard-scss'],
   ignoreFiles: [
     '.astro/**',
+    '.e2e-dist/**',
     '.superpowers/**',
     'coverage/**',
     'dist/**',

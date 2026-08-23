@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "records": [
+    { "id": "one" },
+    { "id": "two" },
+    { "id": "three" },
+    { "id": "four" },
+    { "id": "five" }
+  ]
+}

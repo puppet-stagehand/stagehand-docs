@@ -2,35 +2,62 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-const checker = fileURLToPath(new URL('../../scripts/check-built-links.ts', import.meta.url));
-
-const runChecker = (fixture: string) =>
-  spawnSync(
-    process.execPath,
-    [
-      '--import',
-      'tsx',
-      checker,
-      fileURLToPath(new URL(`../fixtures/links/${fixture}/`, import.meta.url)),
-    ],
-    {
-      cwd: process.cwd(),
-      encoding: 'utf8',
+const runCombinedCheck = (fixture: string) => {
+  const fixturePath = fileURLToPath(new URL(`../fixtures/links/${fixture}/`, import.meta.url));
+  return spawnSync('npm', ['run', 'check:links', '--', fixturePath], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    env: {
+      ...process.env,
+      HTTP_PROXY: 'http://127.0.0.1:9',
+      HTTPS_PROXY: 'http://127.0.0.1:9',
+      NO_PROXY: '127.0.0.1,localhost',
     },
-  );
+    timeout: 15_000,
+  });
+};
 
 describe('built external-link policy', () => {
-  it('rejects a protocol-relative link after normalizing its external URL', () => {
-    const result = runChecker('protocol-relative-external');
+  it('rejects an entity-encoded unapproved HTTP link before linkinator starts', () => {
+    const result = runCombinedCheck('entity-encoded-external');
 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('https://evil.example/path');
+    expect(result.stdout).not.toContain('→ crawling');
   });
 
-  it('preserves internal and non-network links while exactly allowlisting an external URL', () => {
-    const result = runChecker('allowed-mixed-links');
+  it('rejects an entity-encoded unsupported scheme before linkinator starts', () => {
+    const result = runCombinedCheck('unsupported-scheme');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('javascript:alert(1)');
+    expect(result.stdout).not.toContain('→ crawling');
+  });
+
+  it('skips an approved protocol-relative external URL without requesting the dead proxy', () => {
+    const result = runCombinedCheck('allowed-mixed-links');
 
     expect(result.status, result.stderr).toBe(0);
     expect(result.stdout).toContain('Verified 1 exact external link targets');
+    expect(result.stdout).toMatch(/Successfully scanned [1-9]\d* internal generated links/u);
+    expect(result.stdout).not.toMatch(/\[\d+\].*github\.com/u);
+  });
+
+  it('rejects a broken entity-encoded canonical URL from the local build before crawling', () => {
+    const result = runCombinedCheck('broken-first-party');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Broken canonical first-party built links');
+    expect(result.stderr).toContain('https://www.puppetstagehand.com/missing/');
+    expect(result.stdout).not.toContain('→ crawling');
+  });
+
+  it('rejects an encoded canonical path that escapes the build root before crawling', () => {
+    const result = runCombinedCheck('canonical-path-escape');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Broken canonical first-party built links');
+    expect(result.stderr).toContain('%2e%2e%2fallowed-mixed-links/index.html');
+    expect(result.stdout).not.toContain('→ crawling');
   });
 });
