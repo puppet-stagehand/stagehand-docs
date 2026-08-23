@@ -334,6 +334,20 @@ describe('GitHub Actions contracts', () => {
     expect(optOuts).toEqual(['deploy/deploy']);
   });
 
+  it('bootstraps ripgrep before jobs invoke repository shell checks', () => {
+    const setupSite = readFileSync(
+      resolve(repositoryRoot, '.github/actions/setup-site/action.yml'),
+      'utf8',
+    );
+    const validate = workflow('validate');
+    const infrastructure = workflow('infrastructure');
+
+    for (const source of [setupSite, validate, infrastructure]) {
+      expect(source).toContain('command -v rg');
+      expect(source).toContain('sudo apt-get install --yes ripgrep');
+    }
+  });
+
   it('counts quoted and unquoted false as equivalent setup-site opt-outs', () => {
     const jobs = (
       parse(`
