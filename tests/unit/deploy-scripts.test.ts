@@ -1,12 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import {
-  chmodSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from 'node:fs';
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { delimiter, resolve } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -161,7 +154,7 @@ describe('GitHub Actions contracts', () => {
     expect(source).toContain('contents: read');
     expect(source).toContain('actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1');
     expect(source).toContain('npm run verify');
-    expect(source).toContain('tofu test');
+    expect(source).toMatch(/tofu[^\n]* test/u);
     expect(source).toContain('scripts/check-tofu-tags.sh');
   });
 
@@ -174,9 +167,10 @@ describe('GitHub Actions contracts', () => {
     expect(source).toContain('id-token: write');
     expect(source).toContain('role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}');
     expect(source).toContain('fetch-depth: 0');
-    expect(source).toContain("vars.AWS_DEPLOY_ROLE_ARN != ''");
-    expect(source).toContain("vars.CONTENT_BUCKET != ''");
-    expect(source).toContain("vars.CLOUDFRONT_DISTRIBUTION_ID != ''");
+    expect(source).toContain('AWS_DEPLOY_ROLE_ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}');
+    expect(source).toContain('CONTENT_BUCKET: ${{ vars.CONTENT_BUCKET }}');
+    expect(source).toContain('CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}');
+    expect(source).toContain("outputs.configured == 'true'");
   });
 
   it('keeps infrastructure plans non-secret and requires exact apply confirmation', () => {

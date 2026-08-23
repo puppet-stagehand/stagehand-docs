@@ -1,0 +1,121 @@
+name: Deploy site
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Protected environment to promote
+        required: true
+        type: choice
+        options:
+          - beta
+          - stable
+      git_sha:
+        description: Full 40-character SHA reachable from main
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stagehand-docs-${{ inputs.environment || 'testpilots' }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate selected commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate manual commit input
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          REQUESTED_GIT_SHA: ${{ inputs.git_sha }}
+        shell: bash
+        run: |
+          if [[ ! "$REQUESTED_GIT_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'git_sha must be a full lowercase 40-character Git SHA.' >&2
+            exit 1
+          fi
+
+      - name: Check out selected commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Set up site
+        uses: ./.github/actions/setup-site
+
+      - name: Verify site
+        run: npm run verify
+
+      - name: Verify commit is promotable
+        env:
+          DEPLOY_COMMIT: ${{ inputs.git_sha || github.sha }}
+          DEPLOY_ENVIRONMENT: ${{ inputs.environment || 'testpilots' }}
+        run: scripts/assert-promotable-commit.sh "$DEPLOY_ENVIRONMENT" "$DEPLOY_COMMIT"
+
+  deploy:
+    name: Deploy to ${{ inputs.environment || 'testpilots' }}
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'testpilots' }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check deployment configuration
+        id: deployment_configuration
+        env:
+          AWS_DEPLOY_ROLE_ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          CONTENT_BUCKET: ${{ vars.CONTENT_BUCKET }}
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+        shell: bash
+        run: |
+          if [[ -n "$AWS_DEPLOY_ROLE_ARN" && -n "$CONTENT_BUCKET" && -n "$CLOUDFRONT_DISTRIBUTION_ID" ]]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo 'Deployment skipped: configure all required variables in this GitHub Environment.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Check out selected commit
+        if: steps.deployment_configuration.outputs.configured == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.git_sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Set up site
+        if: steps.deployment_configuration.outputs.configured == 'true'
+        uses: ./.github/actions/setup-site
+
+      - name: Verify commit is promotable
+        if: steps.deployment_configuration.outputs.configured == 'true'
+        env:
+          DEPLOY_COMMIT: ${{ inputs.git_sha || github.sha }}
+          DEPLOY_ENVIRONMENT: ${{ inputs.environment || 'testpilots' }}
+        run: scripts/assert-promotable-commit.sh "$DEPLOY_ENVIRONMENT" "$DEPLOY_COMMIT"
+
+      - name: Build site
+        if: steps.deployment_configuration.outputs.configured == 'true'
+        run: npm run build
+
+      - name: Configure AWS credentials
+        if: steps.deployment_configuration.outputs.configured == 'true'
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-2' }}
+
+      - name: Upload site
+        if: steps.deployment_configuration.outputs.configured == 'true'
+        env:
+          CONTENT_BUCKET: ${{ vars.CONTENT_BUCKET }}
+          DEPLOY_ENVIRONMENT: ${{ inputs.environment || 'testpilots' }}
+          DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: scripts/deploy-site.sh
