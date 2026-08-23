@@ -8,17 +8,17 @@ function encodeQueryString(querystring) {
     var values = parameter.multiValue || [parameter];
 
     for (var valueIndex = 0; valueIndex < values.length; valueIndex += 1) {
-      pairs.push(encodeURIComponent(key) + "=" + encodeURIComponent(values[valueIndex].value));
+      pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(values[valueIndex].value));
     }
   }
 
-  return pairs.length > 0 ? "?" + pairs.join("&") : "";
+  return pairs.length > 0 ? '?' + pairs.join('&') : '';
 }
 
 function redirect(location) {
   return {
     statusCode: 301,
-    statusDescription: "Moved Permanently",
+    statusDescription: 'Moved Permanently',
     headers: {
       location: { value: location },
     },
@@ -31,17 +31,17 @@ function handler(event) {
   var query = encodeQueryString(request.querystring);
   var apexRedirectEnabled = __ENABLE_APEX_REDIRECT__;
 
-  if (apexRedirectEnabled && request.headers.host.value === "puppetstagehand.com") {
-    return redirect("https://www.puppetstagehand.com" + uri + query);
+  if (apexRedirectEnabled && request.headers.host.value === 'puppetstagehand.com') {
+    return redirect('https://www.puppetstagehand.com' + uri + query);
   }
 
-  var finalSegment = uri.substring(uri.lastIndexOf("/") + 1);
-  if (uri.charAt(uri.length - 1) !== "/" && finalSegment.indexOf(".") === -1) {
-    return redirect(uri + "/" + query);
+  var finalSegment = uri.substring(uri.lastIndexOf('/') + 1);
+  if (uri.charAt(uri.length - 1) !== '/' && finalSegment.indexOf('.') === -1) {
+    return redirect(uri + '/' + query);
   }
 
-  if (uri.charAt(uri.length - 1) === "/") {
-    request.uri = uri + "index.html";
+  if (uri.charAt(uri.length - 1) === '/') {
+    request.uri = uri + 'index.html';
   }
 
   return request;

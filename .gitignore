@@ -4,6 +4,7 @@ dist/
 .e2e-dist/
 .astro/
 .tofu/
+.terraform/
 *.tfstate*
 playwright-report/
 test-results/

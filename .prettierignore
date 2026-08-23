@@ -8,4 +8,5 @@ playwright-report/
 test-results/
 blob-report/
 .tofu/
+.terraform/
 *.tfstate*
