@@ -74,12 +74,16 @@ deployment/apply Environment.
 Do not create AWS access-key secrets. The workflows request short-lived credentials through
 GitHub OIDC and require only `id-token: write` plus the selected role ARN.
 
-## Provision separate infrastructure roles
+## Read the infrastructure roles from bootstrap
 
-The current OpenTofu bootstrap creates the state buckets and shared OIDC provider; the environment
-site stack creates only its content deployment role. Neither creates
-`AWS_INFRASTRUCTURE_PLAN_ROLE_ARN` nor `AWS_INFRASTRUCTURE_APPLY_ROLE_ARN`. An authorized AWS
-administrator must provision both after bootstrap and before enabling infrastructure automation.
+The bootstrap root now declares all six infrastructure roles — three plan roles and three apply
+roles, one pair per Stagehand environment — as OpenTofu resources alongside the state buckets and
+shared OIDC provider. Their ARNs are the `infrastructure_plan_role_arns` and
+`infrastructure_apply_role_arns` bootstrap outputs, keyed by Stagehand environment. After bootstrap
+is applied, read each environment's plan-role ARN from `infrastructure_plan_role_arns` and its
+apply-role ARN from `infrastructure_apply_role_arns`, then copy each ARN into its matching GitHub
+Environment — `AWS_INFRASTRUCTURE_PLAN_ROLE_ARN` into the `-plan` Environment,
+`AWS_INFRASTRUCTURE_APPLY_ROLE_ARN` into the unsuffixed Environment.
 
 Trust each role only for the repository `puppet-stagehand/stagehand-docs` and its exact matching
 GitHub Environment subject. Require `aud` to equal `sts.amazonaws.com`. The plan-role subjects are:
@@ -101,8 +105,19 @@ bucket and state key, including only the lock-object writes and deletes OpenTofu
 
 Give the apply role the same state access plus the minimum create, update, tag, and delete actions
 required by the reviewed static-site module. Scope permissions by known ARNs, hosted zone,
-resource-name prefixes, and the mandatory `project=stagehand` and matching `environment` tags
-where AWS supports those conditions. Do not share either role across environments.
+resource-name prefixes, and two service-specific condition keys: `acm:DomainNames` on the
+certificate request, and `route53:ChangeResourceRecordSetsNormalizedRecordNames` together with
+`route53:ChangeResourceRecordSetsRecordTypes` on record changes. Do not share either role across
+environments.
+
+Five CloudFront actions have no IAM resource type and so cannot be scoped by any lever above:
+`cloudfront:CreateDistribution`, `cloudfront:CreateCachePolicy`,
+`cloudfront:CreateResponseHeadersPolicy`, `cloudfront:CreateOriginAccessControl`, and
+`cloudfront:CreateFunction`. AWS grants these only on an unrestricted resource; this is a
+limitation of the service, not a choice made here, and nothing in this repository can change it.
+Three controls compensate for that residual and remain in force: bootstrap is applied by a human
+and by no CI job; CODEOWNERS review is required on `/infra/`; and a second administrator reviews
+the trust and permission policies before the ARNs are stored in GitHub.
 
 Have a second administrator review the trust and permission policies before storing the ARNs in
 GitHub.

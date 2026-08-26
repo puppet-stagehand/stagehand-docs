@@ -15,16 +15,20 @@ aws sts get-caller-identity
 ```
 
 The bootstrap requires initial local administrative authority. It creates three private,
-versioned state buckets and the shared GitHub OIDC provider. It does **not** create the plan and
-apply roles used by the infrastructure workflow; provision those roles separately with the
-least-privilege model in the [GitHub Environments guide](github-environments.md).
+versioned state buckets, the shared GitHub OIDC provider, and the six plan and apply IAM roles
+used by the infrastructure workflow, scoped per the least-privilege model in the
+[GitHub Environments guide](github-environments.md).
 
 S3 bucket names are globally unique. Choose account- or organization-scoped names, without
 putting an AWS account number or credential in Git.
 
 ## 1. Create the shared bootstrap resources
 
-Copy the ignored values file, edit all three bucket names, initialize, and review a saved plan:
+Copy the ignored values file, edit all three bucket names and the `hosted_zone_id` entry — the
+public hosted zone for `puppetstagehand.com` — in the same pass. `hosted_zone_id` is a required
+variable with no default; supply it either by filling in that `terraform.tfvars` entry or by
+exporting `TF_VAR_hosted_zone_id` in the shell that runs the plan — either path is sufficient, but
+the `plan` command below aborts without one. Then initialize and review a saved plan:
 
 ```sh
 cp infra/bootstrap/terraform.tfvars.example infra/bootstrap/terraform.tfvars
@@ -36,6 +40,8 @@ tofu -chdir=infra/bootstrap output -raw github_oidc_provider_arn
 tofu -chdir=infra/bootstrap output -json state_bucket_names | jq -r '.testpilots'
 tofu -chdir=infra/bootstrap output -json state_bucket_names | jq -r '.beta'
 tofu -chdir=infra/bootstrap output -json state_bucket_names | jq -r '.stable'
+tofu -chdir=infra/bootstrap output -json infrastructure_plan_role_arns
+tofu -chdir=infra/bootstrap output -json infrastructure_apply_role_arns
 rm -f infra/bootstrap/bootstrap.tfplan
 ```
 
@@ -43,8 +49,15 @@ Saved plan files are sensitive because they can contain account-specific or sens
 values. Delete each saved plan immediately after its apply or final review; do not archive, attach,
 or commit it. The cleanup command above removes the bootstrap plan after its last required use.
 
-Record the `github_oidc_provider_arn` and the three `state_bucket_names` outputs in the protected
+Record the `github_oidc_provider_arn`, the three `state_bucket_names` outputs, and the six role
+ARNs from `infrastructure_plan_role_arns` and `infrastructure_apply_role_arns` in the protected
 configuration system without display quotes. Do not commit the copied values or state.
+
+Each captured plan-role ARN goes into its matching `-plan` GitHub Environment as
+`AWS_INFRASTRUCTURE_PLAN_ROLE_ARN`; each captured apply-role ARN goes into its matching unsuffixed
+GitHub Environment as `AWS_INFRASTRUCTURE_APPLY_ROLE_ARN`. Never copy an ARN between environments.
+The six GitHub Environments do not exist yet — creating them is Phase 2 work — so treat this as
+instruction for when they do.
 
 The local bootstrap state is a sensitive foundational asset: it owns the remote-state buckets and
 shared OIDC provider. Before the first apply, designate one accountable owner and allow one active writer.
