@@ -39,7 +39,7 @@ not the goal of one.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Infrastructure Role Ownership** - Bootstrap creates and outputs the six plan and apply IAM roles, closing ADR-0003's deferral
+- [x] **Phase 1: Infrastructure Role Ownership** - Bootstrap creates and outputs the six plan and apply IAM roles, closing ADR-0003's deferral (completed 2026-08-26)
 - [ ] **Phase 2: First Real Publication** - Bootstrap and testpilots applied for real; the deploy pipeline stops silently skipping
 - [ ] **Phase 3: Real Documentation Content** - An operator can learn the product, pick a tier, and run it without leaving the site
 - [ ] **Phase 4: Evidence-Bearing Compatibility Register** - The register carries checkable claims, and the gates stop assuming it is empty
@@ -178,7 +178,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure Role Ownership | 4/4 | In Progress|  |
+| 1. Infrastructure Role Ownership | 4/4 | Complete    | 2026-08-26 |
 | 2. First Real Publication | 0/TBD | Not started | - |
 | 3. Real Documentation Content | 0/TBD | Not started | - |
 | 4. Evidence-Bearing Compatibility Register | 0/TBD | Not started | - |
