@@ -14,10 +14,12 @@ const nonexistentRoutePath = '/this-route-does-not-exist/';
 const brandedNotFoundMarker = 'Page not found';
 const commitStampPath = '/deployed-commit.txt';
 
+export type FetchLike = (url: string) => Promise<Response>;
+
 export interface VerifyLiveDeploymentOptions {
   siteUrl: string;
   expectedSha: string;
-  fetchImpl?: typeof fetch;
+  fetchImpl?: FetchLike;
   maxAttempts?: number;
   retryDelayMs?: number;
 }
@@ -44,7 +46,7 @@ const withRetry = async (
 export const verifyLiveDeployment = async ({
   siteUrl,
   expectedSha,
-  fetchImpl = fetch,
+  fetchImpl = (url) => fetch(url),
   maxAttempts = 3,
   retryDelayMs = 3_000,
 }: VerifyLiveDeploymentOptions): Promise<void> => {
