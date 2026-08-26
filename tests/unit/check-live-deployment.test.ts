@@ -37,7 +37,9 @@ const buildFetchStub = (overrides: Record<string, StubResponse | StubResponse[]>
     const attempt = callCounts.get(path) ?? 0;
     callCounts.set(path, attempt + 1);
     const entry = responses[path];
-    const resolved = Array.isArray(entry) ? (entry[Math.min(attempt, entry.length - 1)] ?? entry.at(-1)) : entry;
+    const resolved = Array.isArray(entry)
+      ? (entry[Math.min(attempt, entry.length - 1)] ?? entry.at(-1))
+      : entry;
     return new Response(resolved?.body ?? '', { status: resolved?.status ?? 200 });
   });
 };
