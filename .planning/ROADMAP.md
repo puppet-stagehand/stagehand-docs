@@ -60,7 +60,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. `npm run verify` is green on `main` and full OpenTofu verification passes — including new `tofu test` coverage asserting each role's trust subject and permission scope, and `./scripts/check-tofu-tags.sh` covering the bootstrap root.
   5. A reader of ADR-0002 is pointed to ADR-0003 for role ownership, and no source document still claims the site has three GitHub Environments or pins a TypeScript version the repository does not use.
 
-**Plans**: 1/4 plans executed
+**Plans**: 2/4 plans executed
 
 Plans:
 **Wave 1**
@@ -69,7 +69,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — The three apply roles: state write, scoped S3/IAM/CloudFront/ACM/Route 53 authority, and the named unscopable CloudFront exception
+- [x] 01-02-PLAN.md — The three apply roles: state write, scoped S3/IAM/CloudFront/ACM/Route 53 authority, and the named unscopable CloudFront exception
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -178,7 +178,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure Role Ownership | 1/4 | In Progress|  |
+| 1. Infrastructure Role Ownership | 2/4 | In Progress|  |
 | 2. First Real Publication | 0/TBD | Not started | - |
 | 3. Real Documentation Content | 0/TBD | Not started | - |
 | 4. Evidence-Bearing Compatibility Register | 0/TBD | Not started | - |
