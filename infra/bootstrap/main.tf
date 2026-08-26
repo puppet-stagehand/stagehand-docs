@@ -7,10 +7,7 @@ resource "aws_s3_bucket" "state" {
     prevent_destroy = true
   }
 
-  tags = {
-    project     = "stagehand"
-    environment = each.key
-  }
+  tags = merge(local.required_tags, { environment = each.key })
 }
 
 resource "aws_s3_bucket_ownership_controls" "state" {
@@ -79,7 +76,5 @@ resource "aws_iam_openid_connect_provider" "github" {
 
   client_id_list = ["sts.amazonaws.com"]
 
-  tags = {
-    project = "stagehand"
-  }
+  tags = local.required_tags
 }
