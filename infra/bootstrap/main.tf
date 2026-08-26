@@ -71,10 +71,13 @@ resource "aws_s3_bucket_lifecycle_configuration" "state" {
   depends_on = [aws_s3_bucket_versioning.state]
 }
 
-resource "aws_iam_openid_connect_provider" "github" {
+# This AWS account already has a shared GitHub Actions OIDC provider for this
+# exact URL, created and owned by an unrelated product (discocase). Rather
+# than create a colliding second provider (AWS forbids two providers with the
+# same URL in one account) or import the other team's resource into this
+# project's state, this project looks the existing provider up read-only and
+# reuses its ARN. Verified out-of-band that its client_id_list already
+# includes "sts.amazonaws.com", which every trust policy below requires.
+data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
-
-  client_id_list = ["sts.amazonaws.com"]
-
-  tags = local.required_tags
 }

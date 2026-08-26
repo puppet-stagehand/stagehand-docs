@@ -31,7 +31,7 @@ run "binds_each_plan_role_to_exactly_one_plan_environment" {
         Statement = [{
           Sid       = "GitHubActionsPlanEnvironment"
           Effect    = "Allow"
-          Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
+          Principal = { Federated = data.aws_iam_openid_connect_provider.github.arn }
           Action    = "sts:AssumeRoleWithWebIdentity"
           Condition = {
             StringEquals = {
@@ -164,7 +164,7 @@ run "binds_each_apply_role_to_exactly_one_apply_environment" {
         Statement = [{
           Sid       = "GitHubActionsApplyEnvironment"
           Effect    = "Allow"
-          Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
+          Principal = { Federated = data.aws_iam_openid_connect_provider.github.arn }
           Action    = "sts:AssumeRoleWithWebIdentity"
           Condition = {
             StringEquals = {

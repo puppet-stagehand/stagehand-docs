@@ -119,15 +119,28 @@ run "creates_private_encrypted_versioned_state_buckets" {
   }
 }
 
-run "creates_one_project_tagged_github_oidc_provider" {
+run "looks_up_the_shared_github_oidc_provider" {
   command = plan
 
+  # This account already has a GitHub Actions OIDC provider for this exact URL,
+  # owned by an unrelated product. Bootstrap looks it up via a data source
+  # rather than creating a second, colliding provider or importing someone
+  # else's resource into this project's state.
+  override_data {
+    target = data.aws_iam_openid_connect_provider.github
+    values = {
+      arn            = "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
+      client_id_list = ["sts.amazonaws.com"]
+    }
+  }
+
   assert {
-    condition = (
-      aws_iam_openid_connect_provider.github.url == "https://token.actions.githubusercontent.com" &&
-      aws_iam_openid_connect_provider.github.client_id_list == toset(["sts.amazonaws.com"]) &&
-      aws_iam_openid_connect_provider.github.tags == tomap({ project = "stagehand" })
-    )
-    error_message = "Bootstrap must create one shared, project-tagged GitHub Actions OIDC provider."
+    condition     = data.aws_iam_openid_connect_provider.github.url == "https://token.actions.githubusercontent.com"
+    error_message = "Bootstrap must look up the shared GitHub Actions OIDC provider by its well-known URL rather than create a new one."
+  }
+
+  assert {
+    condition     = contains(data.aws_iam_openid_connect_provider.github.client_id_list, "sts.amazonaws.com")
+    error_message = "The looked-up OIDC provider must already trust the sts.amazonaws.com audience these IAM role trust policies require."
   }
 }
