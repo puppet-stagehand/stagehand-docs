@@ -152,3 +152,176 @@ run "publishes_one_plan_role_arn_per_environment" {
     error_message = "infrastructure_plan_role_arns must publish exactly the testpilots, beta, and stable keys, each value equal to the matching plan role's own ARN."
   }
 }
+
+run "binds_each_apply_role_to_exactly_one_apply_environment" {
+  command = plan
+
+  assert {
+    condition = alltrue([
+      for e, role in aws_iam_role.infrastructure_apply :
+      jsondecode(role.assume_role_policy) == {
+        Version = "2012-10-17"
+        Statement = [{
+          Sid       = "GitHubActionsApplyEnvironment"
+          Effect    = "Allow"
+          Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
+          Action    = "sts:AssumeRoleWithWebIdentity"
+          Condition = {
+            StringEquals = {
+              "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+              "token.actions.githubusercontent.com:sub" = "repo:puppet-stagehand/stagehand-docs:environment:${e}"
+            }
+          }
+        }]
+      }
+    ])
+    error_message = "Each apply role must trust exactly one unsuffixed GitHub Environment subject, with the audience pinned to sts.amazonaws.com, no -plan suffix, no wildcard subject, and no extra statement."
+  }
+
+  assert {
+    condition = (
+      length(aws_iam_role.infrastructure_apply) == 3 &&
+      length(distinct([for role in aws_iam_role.infrastructure_apply : role.name])) == 3 &&
+      alltrue([
+        for role in aws_iam_role.infrastructure_apply :
+        length(role.name) <= 64 && can(regex("^[a-z0-9-]+$", role.name))
+      ]) &&
+      alltrue([
+        for role in aws_iam_role.infrastructure_apply :
+        length(role.assume_role_policy) < 2048
+      ])
+    )
+    error_message = "There must be exactly three infrastructure apply roles, one per Stagehand environment, each with a distinct name of at most 64 characters using only lowercase letters, digits, and hyphens, and a trust policy under 2048 characters."
+  }
+}
+
+run "scopes_each_apply_role_to_its_own_environment_resources" {
+  command = plan
+
+  # --- State: the apply role's own state and lock object keys only ---
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      length([
+        for statement in jsondecode(policy.policy).Statement :
+        statement
+        if contains(flatten([statement.Resource]), aws_s3_bucket.state[e].arn)
+      ]) > 0
+    ])
+    error_message = "Each apply role's permission policy must include a statement resolving against its own state bucket ARN, never another environment's."
+  }
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      (
+        length([
+          for statement in jsondecode(policy.policy).Statement :
+          statement
+          if(
+            contains(flatten([statement.Action]), "s3:PutObject") &&
+            contains(flatten([statement.Resource]), "${aws_s3_bucket.state[e].arn}/stagehand-docs/terraform.tfstate")
+          )
+        ]) > 0 &&
+        length([
+          for statement in jsondecode(policy.policy).Statement :
+          statement
+          if(
+            contains(flatten([statement.Action]), "s3:PutObject") &&
+            contains(flatten([statement.Resource]), "${aws_s3_bucket.state[e].arn}/stagehand-docs/terraform.tfstate.tflock")
+          )
+        ]) > 0
+      )
+    ])
+    error_message = "Each apply role must hold s3:PutObject on both its own terraform.tfstate key and its own .tflock key."
+  }
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      length([
+        for statement in jsondecode(policy.policy).Statement :
+        statement
+        if(
+          contains(flatten([statement.Action]), "s3:DeleteObject") &&
+          contains(flatten([statement.Resource]), "${aws_s3_bucket.state[e].arn}/stagehand-docs/terraform.tfstate")
+        )
+      ]) == 0
+    ])
+    error_message = "No apply-role statement may pair s3:DeleteObject with the bare terraform.tfstate object key; delete authority is confined to the .tflock key."
+  }
+
+  # --- Content bucket: own name-prefix only ---
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      length([
+        for statement in jsondecode(policy.policy).Statement :
+        statement
+        if contains(flatten([statement.Resource]), "arn:aws:s3:::stagehand-${e}-site-*")
+      ]) > 0
+    ])
+    error_message = "Each apply role's permission policy must include a statement scoped to its own content bucket's name prefix, ending in a hyphen before the wildcard."
+  }
+
+  # --- Deploy role: exactly the one named role, never role/* ---
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      length([
+        for statement in jsondecode(policy.policy).Statement :
+        statement
+        if contains(
+          flatten([statement.Resource]),
+          "arn:aws:iam::123456789012:role/stagehand-${e}-site-deploy"
+        )
+      ]) > 0
+    ])
+    error_message = "Each apply role's permission policy must include a statement scoped to exactly its own stagehand-<env>-site-deploy IAM role."
+  }
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      !contains(
+        flatten([
+          for statement in jsondecode(policy.policy).Statement :
+          flatten([statement.Resource])
+        ]),
+        "arn:aws:iam::123456789012:role/*"
+      )
+    ])
+    error_message = "No apply-role statement may reference role/* anywhere."
+  }
+}
+
+run "publishes_one_apply_role_arn_per_environment" {
+  command = plan
+
+  # See the note in "publishes_one_plan_role_arn_per_environment": mock_provider
+  # generates identical placeholder ARNs across for_each instances (and,
+  # empirically, across resource addresses too), so cross-family distinctness is
+  # proven via role names rather than raw ARN strings.
+  assert {
+    condition = (
+      length(keys(output.infrastructure_apply_role_arns)) == 3 &&
+      length(setsubtract(keys(output.infrastructure_apply_role_arns), ["testpilots", "beta", "stable"])) == 0 &&
+      alltrue([
+        for e, arn in output.infrastructure_apply_role_arns :
+        arn == aws_iam_role.infrastructure_apply[e].arn
+      ])
+    )
+    error_message = "infrastructure_apply_role_arns must publish exactly the testpilots, beta, and stable keys, each value equal to the matching apply role's own ARN."
+  }
+
+  assert {
+    condition = length(distinct(concat(
+      [for role in aws_iam_role.infrastructure_apply : role.name],
+      [for role in aws_iam_role.infrastructure_plan : role.name],
+    ))) == 6
+    error_message = "The six plan and apply role names must all be distinct, proving the plan and apply role families and the three environments never collide."
+  }
+}
