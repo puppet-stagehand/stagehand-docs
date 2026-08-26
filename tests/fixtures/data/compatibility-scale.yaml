@@ -1,0 +1,393 @@
+schema_version: 1
+records:
+  - id: scale-00-openvox-supported
+    platform: AWS EC2
+    puppet_versions: '>= 8.0 < 8.1'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: aws
+    transport: ssh
+    operating_systems:
+      - Ubuntu 24.04
+    status: supported
+    limitations: []
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2025-09-05'
+  - id: scale-01-puppet-core-compatible
+    platform: Azure VM
+    puppet_versions: '>= 8.1 < 8.2'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: azure
+    transport: ssh
+    operating_systems:
+      - Red Hat Enterprise Linux 9
+    status: compatible
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2025-10-12'
+  - id: scale-02-puppet-enterprise-limited
+    platform: Google Cloud
+    puppet_versions: '>= 8.2 < 8.3'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-enterprise
+    provider: google
+    transport: ssh
+    operating_systems:
+      - Debian 13
+    status: limited
+    limitations: []
+    docs_path: /docs/first-run/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2025-11-20'
+  - id: scale-03-pe-advanced-deprecated
+    platform: VMware vSphere
+    puppet_versions: '>= 8.3 < 8.4'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: pe-advanced
+    provider: vmware
+    transport: pcp
+    operating_systems:
+      - Rocky Linux 9
+    status: deprecated
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2025-12-15'
+  - id: scale-04-openvox-unsupported
+    platform: Docker
+    puppet_versions: '>= 8.4 < 8.5'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: docker
+    transport: ssh
+    operating_systems:
+      - AlmaLinux 9
+    status: unsupported
+    limitations: []
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2026-01-22'
+  - id: scale-05-puppet-core-supported
+    platform: Bare Metal
+    puppet_versions: '>= 8.5 < 8.6'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: baremetal
+    transport: pcp
+    operating_systems:
+      - Windows Server 2025
+    status: supported
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/first-run/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2026-03-10'
+  - id: scale-06-puppet-enterprise-compatible
+    platform: DigitalOcean Droplet
+    puppet_versions: '>= 8.6 < 8.7'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-enterprise
+    provider: digitalocean
+    transport: ssh
+    operating_systems:
+      - SUSE Linux Enterprise Server 15
+    status: compatible
+    limitations: []
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2026-04-18'
+  - id: scale-07-pe-advanced-limited
+    platform: Oracle Cloud Infrastructure
+    puppet_versions: '>= 8.7 < 8.8'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: pe-advanced
+    provider: oracle
+    transport: ssh
+    operating_systems:
+      - Amazon Linux 2023
+    status: limited
+    limitations:
+      - This fixture record intentionally carries a limitations sentence long enough to exercise the wrap backstop check across both the table cell and the card layout at realistic content volume.
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2026-06-05'
+  - id: scale-08-openvox-deprecated
+    platform: IBM Cloud
+    puppet_versions: '>= 8.8 < 8.9'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: ibm
+    transport: ssh
+    operating_systems:
+      - Ubuntu 24.04
+    status: deprecated
+    limitations: []
+    docs_path: /docs/first-run/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2026-08-24'
+  - id: scale-09-puppet-core-unsupported
+    platform: Proxmox VE
+    puppet_versions: '>= 8.9 < 8.10'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: proxmox
+    transport: pcp
+    operating_systems:
+      - Red Hat Enterprise Linux 9
+    status: unsupported
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2025-09-05'
+  - id: scale-10-puppet-enterprise-supported
+    platform: Kubernetes (Self-Managed)
+    puppet_versions: '>= 8.10 < 8.11'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-enterprise
+    provider: kubernetes
+    transport: ssh
+    operating_systems:
+      - Debian 13
+    status: supported
+    limitations: []
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2025-10-12'
+  - id: scale-11-pe-advanced-compatible
+    platform: AWS Outposts Rack (Customer-Managed On-Premises Extension of Amazon EC2)
+    puppet_versions: '>= 8.11 < 8.12'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: pe-advanced
+    provider: aws
+    transport: ssh
+    operating_systems:
+      - Rocky Linux 9
+    status: compatible
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/first-run/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2025-11-20'
+  - id: scale-12-openvox-limited
+    platform: AWS EC2
+    puppet_versions: '>= 8.12 < 8.13'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: aws
+    transport: ssh
+    operating_systems:
+      - AlmaLinux 9
+    status: limited
+    limitations: []
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2025-12-15'
+  - id: scale-13-puppet-core-deprecated
+    platform: Azure VM
+    puppet_versions: '>= 8.13 < 8.14'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: azure
+    transport: ssh
+    operating_systems:
+      - Windows Server 2025
+    status: deprecated
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2026-01-22'
+  - id: scale-14-puppet-enterprise-unsupported
+    platform: Google Cloud
+    puppet_versions: '>= 8.14 < 8.15'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-enterprise
+    provider: google
+    transport: ssh
+    operating_systems:
+      - SUSE Linux Enterprise Server 15
+    status: unsupported
+    limitations: []
+    docs_path: /docs/first-run/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2026-03-10'
+  - id: scale-15-pe-advanced-supported
+    platform: VMware vSphere
+    puppet_versions: '>= 8.15 < 8.16'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: pe-advanced
+    provider: vmware
+    transport: pcp
+    operating_systems:
+      - Amazon Linux 2023
+    status: supported
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2026-04-18'
+  - id: scale-16-openvox-compatible
+    platform: Docker
+    puppet_versions: '>= 8.16 < 8.17'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: docker
+    transport: ssh
+    operating_systems:
+      - Ubuntu 24.04
+    status: compatible
+    limitations: []
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2026-06-05'
+  - id: scale-17-puppet-core-limited
+    platform: Bare Metal
+    puppet_versions: '>= 8.17 < 8.18'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: baremetal
+    transport: pcp
+    operating_systems:
+      - Red Hat Enterprise Linux 9
+    status: limited
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/first-run/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2026-08-24'
+  - id: scale-18-puppet-enterprise-deprecated
+    platform: DigitalOcean Droplet
+    puppet_versions: '>= 8.18 < 8.19'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-enterprise
+    provider: digitalocean
+    transport: ssh
+    operating_systems:
+      - Debian 13
+    status: deprecated
+    limitations: []
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2025-09-05'
+  - id: scale-19-pe-advanced-unsupported
+    platform: Oracle Cloud Infrastructure
+    puppet_versions: '>= 8.19 < 8.20'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: pe-advanced
+    provider: oracle
+    transport: ssh
+    operating_systems:
+      - Rocky Linux 9
+    status: unsupported
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2025-10-12'
+  - id: scale-20-openvox-supported
+    platform: IBM Cloud
+    puppet_versions: '>= 8.20 < 8.21'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: ibm
+    transport: ssh
+    operating_systems:
+      - AlmaLinux 9
+    status: supported
+    limitations: []
+    docs_path: /docs/first-run/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2025-11-20'
+  - id: scale-21-puppet-core-compatible
+    platform: Proxmox VE
+    puppet_versions: '>= 8.21 < 8.22'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: proxmox
+    transport: pcp
+    operating_systems:
+      - Windows Server 2025
+    status: compatible
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2025-12-15'
+  - id: scale-22-puppet-enterprise-limited
+    platform: Kubernetes (Self-Managed)
+    puppet_versions: '>= 8.22 < 8.23'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-enterprise
+    provider: kubernetes
+    transport: ssh
+    operating_systems:
+      - SUSE Linux Enterprise Server 15
+    status: limited
+    limitations: []
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2026-01-22'
+  - id: scale-23-pe-advanced-deprecated
+    platform: AWS Outposts Rack (Customer-Managed On-Premises Extension of Amazon EC2)
+    puppet_versions: '>= 8.23 < 8.24'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: pe-advanced
+    provider: aws
+    transport: ssh
+    operating_systems:
+      - Amazon Linux 2023
+    status: deprecated
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/first-run/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2026-03-10'
+  - id: scale-24-openvox-unsupported
+    platform: AWS EC2
+    puppet_versions: '>= 8.24 < 8.25'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: openvox
+    provider: aws
+    transport: ssh
+    operating_systems:
+      - Ubuntu 24.04
+    status: unsupported
+    limitations: []
+    docs_path: /docs/getting-started/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2026-04-18'
+  - id: scale-25-puppet-core-supported
+    platform: Azure VM
+    puppet_versions: '>= 8.25 < 8.26'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-core
+    provider: azure
+    transport: ssh
+    operating_systems:
+      - Red Hat Enterprise Linux 9
+    status: supported
+    limitations:
+      - Scale fixture record; treat this limitation as synthetic test data, not a real constraint.
+    docs_path: /docs/security/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues/new
+    last_verified: '2026-06-05'
+  - id: scale-26-puppet-enterprise-compatible
+    platform: Google Cloud
+    puppet_versions: '>= 8.26 < 8.27'
+    stagehand_versions: '>= 0.1 < 0.2'
+    tier: puppet-enterprise
+    provider: google
+    transport: ssh
+    operating_systems:
+      - Debian 13
+    status: compatible
+    limitations: []
+    docs_path: /docs/first-run/
+    evidence_url: https://github.com/puppet-stagehand/stagehand-docs/issues
+    last_verified: '2026-08-24'

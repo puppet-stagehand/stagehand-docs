@@ -23,7 +23,9 @@ const sourceDataPath = (moduleRelativePath: string, projectRelativePath: string)
 
 const dataPath = sourceDataPath('../../data/compatibility.yaml', 'src/data/compatibility.yaml');
 const e2eDataPath = resolve(process.cwd(), 'tests/fixtures/data/compatibility-e2e.yaml');
+const scaleDataPath = resolve(process.cwd(), 'tests/fixtures/data/compatibility-scale.yaml');
 const e2eValidationDate = new Date('2026-08-22T00:00:00.000Z');
+const scaleValidationDate = new Date('2026-08-26T00:00:00.000Z');
 const schemaPath = sourceDataPath(
   '../../data/schema/compatibility.schema.json',
   'src/data/schema/compatibility.schema.json',
@@ -58,8 +60,14 @@ const utcToday = (today: Date): number =>
 export const loadCompatibility = (
   options: LoadCompatibilityOptions = {},
 ): CompatibilityRecord[] => {
-  const useE2eFixtures = process.env.STAGEHAND_E2E_FIXTURES === '1' && options.path === undefined;
-  const source = options.path ?? (useE2eFixtures ? e2eDataPath : dataPath);
+  const useScaleFixtures =
+    process.env.STAGEHAND_SCALE_FIXTURES === '1' && options.path === undefined;
+  const useE2eFixtures =
+    !useScaleFixtures &&
+    process.env.STAGEHAND_E2E_FIXTURES === '1' &&
+    options.path === undefined;
+  const source =
+    options.path ?? (useScaleFixtures ? scaleDataPath : useE2eFixtures ? e2eDataPath : dataPath);
   const document = loadYaml<CompatibilityDocument>(
     source,
     JSON.parse(readFileSync(schemaPath, 'utf8')),
@@ -68,7 +76,9 @@ export const loadCompatibility = (
   const validTiers = new Set(loadTiers(options.tiersPath).map((tier) => tier.id));
   const recordIds = new Set<string>();
   const identities = new Set<string>();
-  const currentDay = utcToday(options.today ?? (useE2eFixtures ? e2eValidationDate : new Date()));
+  const currentDay = utcToday(
+    options.today ?? (useScaleFixtures ? scaleValidationDate : useE2eFixtures ? e2eValidationDate : new Date()),
+  );
 
   for (const record of document.records) {
     if (recordIds.has(record.id)) {

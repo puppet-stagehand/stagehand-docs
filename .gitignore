@@ -2,6 +2,7 @@
 node_modules/
 dist/
 .e2e-dist/
+.scale-dist/
 .astro/
 .tofu/
 .terraform/

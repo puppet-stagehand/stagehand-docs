@@ -13,7 +13,7 @@ export default defineConfig({
   projects: [
     {
       name: 'production',
-      testIgnore: 'fixture-matrix.spec.ts',
+      testIgnore: ['fixture-matrix.spec.ts', 'fixture-matrix-scale.spec.ts'],
       use: {
         ...devices['Desktop Chrome'],
         baseURL: 'http://127.0.0.1:4321',
@@ -22,9 +22,19 @@ export default defineConfig({
     {
       name: 'fixture-matrix',
       testMatch: 'fixture-matrix.spec.ts',
+      testIgnore: 'fixture-matrix-scale.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
         baseURL: 'http://127.0.0.1:4322',
+      },
+    },
+    {
+      name: 'fixture-matrix-scale',
+      testMatch: 'fixture-matrix-scale.spec.ts',
+      testIgnore: 'fixture-matrix.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: 'http://127.0.0.1:4323',
       },
     },
   ],
@@ -39,6 +49,13 @@ export default defineConfig({
       command:
         'exec env -u NO_COLOR node --import tsx scripts/serve-static-build.ts .e2e-dist 4322',
       url: 'http://127.0.0.1:4322',
+      reuseExistingServer: false,
+      timeout: 120_000,
+    },
+    {
+      command:
+        'exec env -u NO_COLOR node --import tsx scripts/serve-static-build.ts .scale-dist 4323',
+      url: 'http://127.0.0.1:4323',
       reuseExistingServer: false,
       timeout: 120_000,
     },

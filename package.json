@@ -19,7 +19,7 @@
     "lint": "eslint . && stylelint 'src/**/*.scss'",
     "test": "vitest",
     "test:unit": "vitest run",
-    "build:e2e": "env -u STAGEHAND_E2E_FIXTURES ASTRO_TELEMETRY_DISABLED=1 npm run build && STAGEHAND_E2E_FIXTURES=1 ASTRO_TELEMETRY_DISABLED=1 npm run build",
+    "build:e2e": "env -u STAGEHAND_E2E_FIXTURES -u STAGEHAND_SCALE_FIXTURES ASTRO_TELEMETRY_DISABLED=1 npm run build && STAGEHAND_E2E_FIXTURES=1 ASTRO_TELEMETRY_DISABLED=1 npm run build && STAGEHAND_SCALE_FIXTURES=1 ASTRO_TELEMETRY_DISABLED=1 npm run build",
     "test:e2e": "npm run build:e2e && env -u NO_COLOR playwright test && npm run check:e2e-isolation",
     "test:a11y": "npm run build:e2e && env -u NO_COLOR playwright test tests/e2e/accessibility.spec.ts --project=production && npm run check:e2e-isolation",
     "validate:data": "tsx scripts/validate-data.ts",
