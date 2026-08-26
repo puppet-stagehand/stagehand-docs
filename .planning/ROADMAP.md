@@ -33,6 +33,7 @@ not the goal of one.
 ## Phases
 
 **Phase Numbering:**
+
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
@@ -47,71 +48,94 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Infrastructure Role Ownership
+
 **Goal**: An administrator can apply the bootstrap root once and walk away holding every AWS credential GitHub Actions needs, with nothing left to hand-craft.
 **Depends on**: Nothing (first phase)
 **Requirements**: INFRA-01, INFRA-02, INFRA-03, INFRA-04, INFRA-05, INFRA-06, DRIFT-01, DRIFT-02, DRIFT-03, GATE-01
 **Success Criteria** (what must be TRUE):
+
   1. Reading `infra/bootstrap/`, an administrator finds six named IAM roles whose trust policies each name exactly one GitHub Environment subject with no wildcard, and whose permissions match the least-privilege scoping in `docs/operations/github-environments.md` action for action.
   2. A bootstrap apply emits six role ARNs as outputs that paste directly into the six GitHub Environments, with no role reused across environments and no environment's output valid in another.
   3. An operator following `aws-bootstrap.md` and `github-environments.md` is no longer told to provision the plan and apply roles by hand, and is still told that bootstrap is human-applied under CODEOWNERS review plus a second administrator's review of the trust and permission policies.
   4. `npm run verify` is green on `main` and full OpenTofu verification passes — including new `tofu test` coverage asserting each role's trust subject and permission scope, and `./scripts/check-tofu-tags.sh` covering the bootstrap root.
   5. A reader of ADR-0002 is pointed to ADR-0003 for role ownership, and no source document still claims the site has three GitHub Environments or pins a TypeScript version the repository does not use.
+
 **Plans**: 4 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 01-01-PLAN.md — Tracer: the three infrastructure plan roles, wired from one `for_each` local through trust policy, state-scoped permission policy, and published output
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 01-02-PLAN.md — The three apply roles: state write, scoped S3/IAM/CloudFront/ACM/Route 53 authority, and the named unscopable CloudFront exception
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 01-03-PLAN.md — Bootstrap tags sourced from the shared local, and `check-tofu-tags.sh` extended to cover the bootstrap root
 - [ ] 01-04-PLAN.md — Runbooks moved onto the OpenTofu-owned role path, plus the three stale sentences closed (DRIFT-01/02/03)
 
 ### Phase 2: First Real Publication
+
 **Goal**: The delivery pipeline actually publishes — a merge to `main` puts bytes behind a CloudFront distribution and something answers on the internet.
 **Depends on**: Phase 1
 **Requirements**: PUB-01, PUB-02, PUB-03, PUB-04, PUB-05, PUB-06, PUB-07, GATE-02
 **Success Criteria** (what must be TRUE):
+
   1. A visitor can load `https://testpilots.puppetstagehand.com/` over HTTPS and reach every documented route, both JSON data endpoints, and the branded 404.
   2. Merging to `main` produces a `Deploy site` run whose `Upload site` step executes, and whose post-deploy check confirms the live host serves that exact commit — a skipped or failed upload now fails the run instead of reporting green.
   3. An administrator can open all six GitHub Environments and see the specified branch rules, reviewers, and variables, with no plan Environment holding an apply or deploy role ARN and no AWS access-key secret anywhere.
   4. Opening a same-repository pull request that touches `infra/**` produces a real, value-free OpenTofu plan summary for review through a plan Environment, behind the job-level same-repository guard.
   5. The repository still contains no AWS account identifier, credential, state file, saved plan, `terraform.tfvars`, or `backend.hcl` value, and the bootstrap state sits in its approved custody location with one named owner.
+
 **Plans**: TBD
 
 ### Phase 3: Real Documentation Content
+
 **Goal**: A first-time Stagehand operator can learn what the product does, work out which tier they need, and get it running — without leaving the site.
 **Depends on**: Phase 2
 **Requirements**: CONT-01, CONT-02, CONT-03, CONT-04, CONT-05, CONT-06, CONT-07, GATE-03
 **Success Criteria** (what must be TRUE):
+
   1. A first-time operator can travel from the home page to a documented first run without hitting a placeholder, a stub, or a dead end.
   2. `/tiers/` explains in a customer's own terms what OpenVox, Puppet Core, Puppet Enterprise, and PE Advanced each entitle them to, and `/support/` says where to take a problem publicly and where to take one privately.
   3. Adding a documentation page updates navigation, the route gate, and the CloudFront invalidation list together — and CI fails when the invalidation list is missed.
   4. Axe reports zero serious or critical violations on `/`, `/tiers/`, `/compatibility/`, and `/docs/` with the new content in place, and every page is fully keyboard-operable with visible focus.
   5. No page collects credentials, asserts a customer entitlement, loads a third-party runtime script, or presents planned behaviour as behaviour that ships today.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 4: Evidence-Bearing Compatibility Register
+
 **Goal**: The compatibility register carries claims a reader can check for themselves — and the build stops assuming the register is empty.
 **Depends on**: Phase 3
 **Requirements**: COMP-01, COMP-02, COMP-03, COMP-04, COMP-05, DRIFT-04, GATE-04
 **Success Criteria** (what must be TRUE):
+
   1. Every record on `/compatibility/` links primary evidence a reader can open and check, and carries a `last_verified` date that is the day a maintainer actually reviewed that evidence.
   2. `npm run verify` passes with records present in `src/data/compatibility.yaml` — the isolation gate now proves no fixture-derived record reached the production build, rather than proving the register is empty, and no evidence validation was weakened to get there.
   3. The populated matrix stays readable, filterable with a visible result count, keyboard-operable, and identifiable without colour at realistic record volume, and collapses to stacked comparison cards on a narrow screen.
   4. `/data/compatibility.json` returns exactly the records the rendered page shows, with `generated_at` still `null`.
   5. When no claim qualifies, `/compatibility/` still renders the honest empty state, no fixture record has been promoted to fill it, and every sentence in the design specification about "representative content" agrees with that boundary.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 5: Production Launch
+
 **Goal**: Customers read the site at `www.puppetstagehand.com`, and a maintainer can take a bad release back.
 **Depends on**: Phase 4
 **Requirements**: LAUN-01, LAUN-02, LAUN-03, LAUN-04, LAUN-05, GATE-05
 **Success Criteria** (what must be TRUE):
+
   1. A customer can load `https://www.puppetstagehand.com/` and read the tiers, the compatibility register, and the documentation.
   2. `https://puppetstagehand.com/` and any path beneath it redirect to the `www` host with the path and query string intact — and a test enforces that automatically, instead of a human checking it once per release.
   3. The commit verified in testpilots is the commit serving beta, and the commit verified in beta is the commit serving stable, with recorded release evidence at each step and no commit altered between environments.
   4. A maintainer can roll stable back to a known-good SHA through the protected dispatch path and see the previous pages restored, without editing a single S3 object by hand.
   5. A non-maintainer can file a private security advisory and reach a monitored address whose delivery has been tested and the test recorded.
+
 **Plans**: TBD
 
 ## Progress
