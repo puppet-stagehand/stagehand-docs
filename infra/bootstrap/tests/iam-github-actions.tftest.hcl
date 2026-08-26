@@ -296,6 +296,131 @@ run "scopes_each_apply_role_to_its_own_environment_resources" {
     ])
     error_message = "No apply-role statement may reference role/* anywhere."
   }
+
+  # --- CloudFront function: exactly this environment's function name ---
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      length([
+        for statement in jsondecode(policy.policy).Statement :
+        statement
+        if contains(
+          flatten([statement.Resource]),
+          "arn:aws:cloudfront::123456789012:function/stagehand-${e}-site-paths"
+        )
+      ]) > 0
+    ])
+    error_message = "Each apply role must hold a statement scoped to exactly its own CloudFront function ARN."
+  }
+
+  # --- ACM: Null guard plus ForAllValues:StringEquals domain-names condition ---
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      length([
+        for statement in jsondecode(policy.policy).Statement :
+        statement
+        if(
+          statement.Action == "acm:RequestCertificate" &&
+          try(statement.Condition["Null"]["acm:DomainNames"], null) == "false" &&
+          try(statement.Condition["ForAllValues:StringEquals"]["acm:DomainNames"], null) == local.site[e].domain_names
+        )
+      ]) > 0
+    ])
+    error_message = "Each apply role's acm:RequestCertificate statement must carry both a Null guard and a ForAllValues:StringEquals condition on acm:DomainNames, scoped to exactly that environment's domain names."
+  }
+
+  # --- Route 53: hosted-zone ARN plus an exact A/AAAA/CNAME record-types condition ---
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      length([
+        for statement in jsondecode(policy.policy).Statement :
+        statement
+        if(
+          statement.Action == "route53:ChangeResourceRecordSets" &&
+          contains(flatten([statement.Resource]), "arn:aws:route53:::hostedzone/Z0123456789ABCDEFGHIJ") &&
+          try(statement.Condition["ForAllValues:StringEquals"]["route53:ChangeResourceRecordSetsRecordTypes"], null) == ["A", "AAAA", "CNAME"]
+        )
+      ]) > 0
+    ])
+    error_message = "Each apply role's route53:ChangeResourceRecordSets statement must resolve against the hosted-zone ARN and carry a record-types condition of exactly A, AAAA, and CNAME."
+  }
+
+  # --- The apex-exclusion trap: stable's record names must not be a strict subset of beta's shape ---
+
+  assert {
+    condition = (
+      length(setintersection(
+        toset(local.apply_record_names.stable),
+        toset(["www.puppetstagehand.com", "puppetstagehand.com"])
+      )) == 2 &&
+      length(local.apply_record_names.stable) >= length(local.apply_record_names.beta)
+    )
+    error_message = "stable's allowed Route 53 record names must include both the www alias and the bare apex, and must not be shorter than beta's list."
+  }
+}
+
+run "forbids_escalation_actions_in_every_role_policy" {
+  command = plan
+
+  assert {
+    condition = alltrue(flatten([
+      for policy in concat(values(aws_iam_role_policy.infrastructure_plan), values(aws_iam_role_policy.infrastructure_apply)) : [
+        for statement in jsondecode(policy.policy).Statement : (
+          !contains(flatten([statement.Action]), "*") &&
+          !contains(flatten([statement.Action]), "iam:PassRole") &&
+          !contains(flatten([statement.Action]), "sts:AssumeRole") &&
+          !contains(flatten([statement.Resource]), "arn:aws:iam::123456789012:role/*")
+        )
+      ]
+    ]))
+    error_message = "No role's permission policy anywhere in the phase may grant a bare wildcard action, a role-passing action, a role-assumption action, or an unscoped role resource."
+  }
+
+  assert {
+    condition = alltrue([
+      for e in ["testpilots", "beta", "stable"] :
+      alltrue([
+        for other in setsubtract(["testpilots", "beta", "stable"], [e]) :
+        !strcontains(aws_iam_role_policy.infrastructure_plan[e].policy, other) &&
+        !strcontains(aws_iam_role_policy.infrastructure_apply[e].policy, other)
+      ])
+    ])
+    error_message = "No role's rendered permission policy for a given environment may contain the name of another Stagehand environment."
+  }
+
+  assert {
+    condition = alltrue(flatten([
+      for policy in concat(values(aws_iam_role_policy.infrastructure_plan), values(aws_iam_role_policy.infrastructure_apply)) : [
+        for statement in jsondecode(policy.policy).Statement :
+        alltrue([
+          for key in try(keys(statement.Condition["ForAllValues:StringEquals"]), []) :
+          try(statement.Condition["Null"][key], null) == "false"
+        ])
+      ]
+    ]))
+    error_message = "Every set-operator condition in an Effect: Allow statement must carry a sibling Null guard set to false on the same condition key."
+  }
+
+  assert {
+    condition = alltrue([
+      for e, policy in aws_iam_role_policy.infrastructure_apply :
+      length(policy.policy) < 10240
+    ])
+    error_message = "Every apply role's rendered permission policy must fit the 10240-character inline budget."
+  }
+
+  assert {
+    condition = alltrue([
+      for e, role in aws_iam_role.infrastructure_apply :
+      length(role.assume_role_policy) < 2048
+    ])
+    error_message = "Every apply role's rendered trust policy must fit the 2048-character budget."
+  }
 }
 
 run "publishes_one_apply_role_arn_per_environment" {
