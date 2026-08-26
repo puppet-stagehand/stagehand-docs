@@ -25,6 +25,26 @@ describe('compatibility data validation', () => {
     }
   });
 
+  it('uses a fixed validation date only for the exact scale-fixture flag', () => {
+    const originalFlag = process.env.STAGEHAND_SCALE_FIXTURES;
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2028-08-22T00:00:00.000Z'));
+
+    try {
+      process.env.STAGEHAND_SCALE_FIXTURES = '1';
+      expect(loadCompatibility()).toHaveLength(27);
+
+      process.env.STAGEHAND_SCALE_FIXTURES = 'true';
+      expect(() => loadCompatibility({ path: fixture('compatibility-scale.yaml') })).toThrow(
+        'Compatibility evidence is older than 365 days',
+      );
+    } finally {
+      vi.useRealTimers();
+      if (originalFlag === undefined) delete process.env.STAGEHAND_SCALE_FIXTURES;
+      else process.env.STAGEHAND_SCALE_FIXTURES = originalFlag;
+    }
+  });
+
   it('normalizes a valid compatibility claim from a real YAML file', () => {
     // Catches a production change that returns raw YAML documents rather than validated records.
     expect(
