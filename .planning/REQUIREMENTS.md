@@ -64,37 +64,37 @@ buckets and the shared OIDC provider — no IAM roles at all.
 Retires the highest-value debt in the repository: the deploy job reports green while publishing
 nothing, and no AWS resource has ever been created.
 
-- [ ] **PUB-01**: An authorized administrator has applied `infra/bootstrap/` from a reviewed saved
+- [x] **PUB-01**: An authorized administrator has applied `infra/bootstrap/` from a reviewed saved
       plan, captured `github_oidc_provider_arn`, `state_bucket_names`, and the six role ARNs,
       deleted the saved plan immediately, and placed the bootstrap state in the approved
       encrypted, access-controlled, versioned custody location with one named accountable owner.
       *Source: `docs/operations/aws-bootstrap.md`; ADR-0003 rule 4*
 
-- [ ] **PUB-02**: All six GitHub Environments exist with the branch policies, reviewer rules, and
+- [x] **PUB-02**: All six GitHub Environments exist with the branch policies, reviewer rules, and
       exact variable sets specified — apply Environments restricted to `main` with reviewers
       required on `beta` and `stable` and self-review prevented on `stable`; plan Environments
       restricted to `refs/pull/*/merge` with a trusted reviewer and self-review prevented. No plan
       Environment holds an apply or deploy role ARN, and no AWS access-key secret exists.
       *Source: ADR-0002 rule 3 (LOCKED); `docs/operations/github-environments.md`*
 
-- [ ] **PUB-03**: The `testpilots` environment root is applied and its `content_bucket_name`,
+- [x] **PUB-03**: The `testpilots` environment root is applied and its `content_bucket_name`,
       `distribution_id`, and `deployment_role_arn` outputs are set as `CONTENT_BUCKET`,
       `CLOUDFRONT_DISTRIBUTION_ID`, and `AWS_DEPLOY_ROLE_ARN` in the matching Environment, with no
       output copied between environments.
       *Source: `docs/operations/aws-bootstrap.md`; static-site module interface*
 
-- [ ] **PUB-04**: A merge to `main` runs `Deploy site` through to an *executed* `Upload site` step —
+- [x] **PUB-04**: A merge to `main` runs `Deploy site` through to an *executed* `Upload site` step —
       `assets/*` synced at `public,max-age=31536000,immutable`, HTML and JSON at
       `public,max-age=0,must-revalidate`, upload completing before CloudFront invalidation, and no
       upload occurring if validation or build fails.
       *Source: cache-control policy; failure behavior and recovery constraints*
 
-- [ ] **PUB-05**: `testpilots.puppetstagehand.com` resolves over HTTPS and serves every initial
+- [x] **PUB-05**: `testpilots.puppetstagehand.com` resolves over HTTPS and serves every initial
       route (`/`, `/tiers/`, `/compatibility/`, `/docs/`, `/docs/getting-started/`,
       `/docs/security/`, `/support/`), both JSON data endpoints, and the branded 404.
       *Source: initial route surface constraint; `docs/operations/release.md` verification checks*
 
-- [ ] **PUB-06**: The `Infrastructure` workflow's plan job runs for real on a same-repository pull
+- [x] **PUB-06**: The `Infrastructure` workflow's plan job runs for real on a same-repository pull
       request touching `infra/**`, producing a value-free plan summary through a plan Environment,
       with the job-level same-repository guard still running before the Environment is attached and
       no binary plan uploaded.
@@ -253,7 +253,7 @@ constraint in PROJECT.md and a success criterion of every phase, not a requireme
       and `./scripts/check-tofu-tags.sh` all pass over the bootstrap root.
       *Source: testing strategy; release-candidate verification gate constraints*
 
-- [ ] **GATE-02**: A post-deploy step asserts the deployed environment answers its public routes and
+- [x] **GATE-02**: A post-deploy step asserts the deployed environment answers its public routes and
       serves the deployed commit, so a skipped or failed upload can no longer report green.
       *Source: `docs/operations/release.md` release evidence; failure behavior and recovery
       constraint; verified 2026-08-26 — `deploy.yml` soft-gates every AWS step and reports success when skipped*
@@ -391,14 +391,14 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | DRIFT-02 | Phase 1 | Complete |
 | DRIFT-03 | Phase 1 | Complete |
 | GATE-01 | Phase 1 | Complete |
-| PUB-01 | Phase 2 | Pending |
-| PUB-02 | Phase 2 | Pending |
-| PUB-03 | Phase 2 | Pending |
-| PUB-04 | Phase 2 | Pending |
-| PUB-05 | Phase 2 | Pending |
-| PUB-06 | Phase 2 | Pending |
-| PUB-07 | Phase 2 | Pending |
-| GATE-02 | Phase 2 | Pending |
+| PUB-01 | Phase 2 | Complete |
+| PUB-02 | Phase 2 | Complete |
+| PUB-03 | Phase 2 | Complete |
+| PUB-04 | Phase 2 | Complete |
+| PUB-05 | Phase 2 | Complete |
+| PUB-06 | Phase 2 | Complete |
+| PUB-07 | Phase 2 | Complete |
+| GATE-02 | Phase 2 | Complete |
 | CONT-01 | Phase 3 | Pending |
 | CONT-02 | Phase 3 | Pending |
 | CONT-03 | Phase 3 | Pending |
