@@ -33,7 +33,7 @@ describe('docs collection source', () => {
     const entries = loadDocsFrontmatter();
     const orders = entries.map(({ data }) => data.order);
 
-    expect(entries.map(({ slug }) => slug).sort()).toEqual(['getting-started', 'security']);
+    expect(entries.map(({ slug }) => slug).sort()).toEqual(['first-run', 'getting-started', 'security']);
     expect(entries.every(({ data }) => typeof data.description === 'string')).toBe(true);
     expect(entries.every(({ data }) => String(data.description).trim().length > 0)).toBe(true);
     expect(orders.every((order) => Number.isInteger(order) && Number(order) > 0)).toBe(true);
