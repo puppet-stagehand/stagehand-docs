@@ -1,19 +1,19 @@
 ---
 gsd_state_version: 1.0
+milestone: v0.2.3
 current_phase: 1
 current_phase_name: Infrastructure Role Ownership
 status: executing
 stopped_at: Roadmap created and requirement coverage validated at 39/39
-last_updated: "2026-08-26T14:51:35.541Z"
+last_updated: "2026-08-26T15:15:34.052Z"
 last_activity: 2026-08-26
 last_activity_desc: PROJECT.md, REQUIREMENTS.md, and ROADMAP.md created from doc ingest
-state_head: e605546d79e93e23e703d9ec02f65c5711430355
+state_head: 2072db953b009f4904e6576f64569fef071b8d82
 progress:
-  total_phases: 5
+  total_phases: 7
   completed_phases: 0
   total_plans: 4
   completed_plans: 0
-  percent: 0
 ---
 
 # Project State
@@ -97,6 +97,11 @@ None yet.
 - **`.planning/config.json` does not exist.** Roadmap was written with GSD defaults: granularity
   `standard`, sequential phase IDs, no `project_code`. Run `/gsd-config` if different settings are
   wanted before planning begins.
+
+### Roadmap Evolution
+
+- Phase 04.1 inserted after Phase 4: Gated Tester Access — shared-password edge gate over testing guides and installer
+- Phase 04.2 inserted after Phase 04.1: Tester Downloads — ghcr container plus private-S3 installer, behind the 04.1 gate
 
 ## Deferred Items
 

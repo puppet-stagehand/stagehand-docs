@@ -60,12 +60,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. `npm run verify` is green on `main` and full OpenTofu verification passes — including new `tofu test` coverage asserting each role's trust subject and permission scope, and `./scripts/check-tofu-tags.sh` covering the bootstrap root.
   5. A reader of ADR-0002 is pointed to ADR-0003 for role ownership, and no source document still claims the site has three GitHub Environments or pins a TypeScript version the repository does not use.
 
-**Plans**: 4 plans
+**Plans**: 1/4 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Tracer: the three infrastructure plan roles, wired from one `for_each` local through trust policy, state-scoped permission policy, and published output
+- [x] 01-01-PLAN.md — Tracer: the three infrastructure plan roles, wired from one `for_each` local through trust policy, state-scoped permission policy, and published output
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -123,6 +123,39 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
+### Phase 04.1: Gated Tester Access (INSERTED)
+
+**Goal**: A tester with the shared password reaches the testing guides and the installer; anyone without it is refused at the edge, and the password is nowhere in the public repository.
+**Depends on**: Phase 4
+**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, GATE-06
+**Success Criteria** (what must be TRUE):
+
+  1. A request to a gated path without credentials is refused by the CloudFront viewer-request function with `401` and a `WWW-Authenticate` challenge, before any S3 origin is reached; a request carrying the shared password is served normally.
+  2. The shared password exists only in a CloudFront KeyValueStore and in the operator runbook's rotation procedure — `git grep` over the working tree and history finds no credential, no hash of one, and no placeholder that is actually live, and the repository stays public.
+  3. Rotating the credential is a KeyValueStore write documented in a runbook, and does not require republishing the CloudFront function or redeploying the site.
+  4. `npm run verify` is green with the gate live: `check:links` and the Playwright e2e suite either carry the credential or exclude the gated paths by an explicit, recorded rule — neither silently reports success because it stopped crawling, and neither is weakened for unrelated paths.
+  5. Which paths are gated is declared in exactly one place that both the function and the verification tooling read, so an ungated testing guide is a build-visible error rather than a discovery in production.
+
+**Plans**: TBD
+
+### Phase 04.2: Tester Downloads (INSERTED)
+
+**Goal**: A tester behind the gate can obtain Stagehand two ways — pull the container or download the installer — and each route names the exact version it will give them.
+**Depends on**: Phase 04.1
+**Requirements**: DOWN-01, DOWN-02, DOWN-03, DOWN-04, GATE-07
+**Success Criteria** (what must be TRUE):
+
+  1. `/downloads/` presents both channels side by side — a copyable `docker pull` command for the ghcr image, and a download link for the installer binary — with the version each resolves to stated on the page, not implied.
+  2. The installer is served from a private S3 origin through the existing CloudFront distribution using the origin-access-control pattern already in `infra/modules/static-site`; the bucket denies public access, and a direct S3 URL fails while the CloudFront path succeeds.
+  3. The installer path sits behind the Phase 04.1 gate — an unauthenticated request for it is refused with the same `401` as a gated guide, proving one gate covers both surfaces rather than two mechanisms drifting apart.
+  4. The page states the artifact's checksum and publication date, and a reader can verify the downloaded file against the stated checksum.
+  5. When no artifact has been published for a channel, that channel renders an honest unavailable state naming what is missing — the page never presents a dead link or a version it cannot substantiate.
+
+**Cross-repo prerequisite**: The artifacts are produced by `puppet-stagehand/stagehand` (latest release `v0.2.3`, 2026-08-21), which today has **zero release assets**, and no ghcr container has been confirmed. Producing and publishing both artifacts is outside this repository. This phase cannot reach criteria 1 and 4 until that upstream work exists; criteria 2, 3 and 5 are reachable without it.
+
+**Plans**: TBD
+**UI hint**: yes
+
 ### Phase 5: Production Launch
 
 **Goal**: Customers read the site at `www.puppetstagehand.com`, and a maintainer can take a bad release back.
@@ -145,7 +178,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure Role Ownership | 0/4 | Planned | - |
+| 1. Infrastructure Role Ownership | 1/4 | In Progress|  |
 | 2. First Real Publication | 0/TBD | Not started | - |
 | 3. Real Documentation Content | 0/TBD | Not started | - |
 | 4. Evidence-Bearing Compatibility Register | 0/TBD | Not started | - |
