@@ -119,14 +119,14 @@ Plans:
   4. Axe reports zero serious or critical violations on `/`, `/tiers/`, `/compatibility/`, and `/docs/` with the new content in place, and every page is fully keyboard-operable with visible focus.
   5. No page collects credentials, asserts a customer entitlement, loads a third-party runtime script, or presents planned behaviour as behaviour that ships today.
 
-**Plans**: 4 plans
+**Plans**: 3/4 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Tracer: the "first run" doc page wired through the content collection, the build-routes gate, the deploy invalidation list, and code-block styling
-- [ ] 03-02-PLAN.md — TDD: the GATE-03 invalidation-coverage checker, wired into `npm run verify`
-- [ ] 03-03-PLAN.md — Home, tiers, and support content: real positioning, comparative entitlement copy, and the product lifecycle section
+- [x] 03-01-PLAN.md — Tracer: the "first run" doc page wired through the content collection, the build-routes gate, the deploy invalidation list, and code-block styling
+- [x] 03-02-PLAN.md — TDD: the GATE-03 invalidation-coverage checker, wired into `npm run verify`
+- [x] 03-03-PLAN.md — Home, tiers, and support content: real positioning, comparative entitlement copy, and the product lifecycle section
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -207,7 +207,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Infrastructure Role Ownership | 4/4 | Complete    | 2026-08-26 |
 | 2. First Real Publication | 5/5 | Complete    | 2026-08-26 |
-| 3. Real Documentation Content | 0/4 | Not started | - |
+| 3. Real Documentation Content | 3/4 | In Progress|  |
 | 4. Evidence-Bearing Compatibility Register | 0/TBD | Not started | - |
 | 5. Production Launch | 0/TBD | Not started | - |
 
