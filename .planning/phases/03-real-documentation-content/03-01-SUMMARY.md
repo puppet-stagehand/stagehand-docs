@@ -172,6 +172,15 @@ None - no external service configuration required.
 - `markdown.syntaxHighlight: false` is now a site-wide Astro config decision; any future doc page relying on language-aware syntax coloring would need this revisited (none currently planned).
 - Ready for the phase's remaining plans (03-02's GATE-03 regression test, 03-03's other route content, 03-04) to proceed.
 
+## Self-Check: PASSED
+
+- `src/content/docs/first-run.md` — FOUND
+- `.planning/phases/03-real-documentation-content/03-01-SUMMARY.md` — FOUND
+- Commit `82ba2bb` (Task 1) — FOUND in `git log --oneline --all`
+- Commit `40d7fbf` (Task 2) — FOUND in `git log --oneline --all`
+- Commit `5fae1e5` (SUMMARY) — FOUND in `git log --oneline --all`
+- Plan-level `<verification>` re-run and passing: `npm run build:e2e`, `npm run check:routes`, `npx vitest run tests/unit/docs-collection.test.ts tests/unit/deploy-scripts.test.ts` (23/23), `npx playwright test tests/e2e/accessibility.spec.ts --project=production` (6/6, zero serious/critical violations on `/docs/first-run/`)
+
 ---
 *Phase: 03-real-documentation-content*
 *Completed: 2026-08-26*
