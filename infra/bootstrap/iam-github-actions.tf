@@ -191,6 +191,22 @@ resource "aws_iam_role" "infrastructure_apply" {
   tags = merge(local.required_tags, { environment = each.key })
 }
 
+locals {
+  # Per-environment allowed Route 53 record names: the exact alias name and an
+  # underscore-prefixed DNS-validation form, lowercase and with no trailing
+  # dot, for every domain in that environment's local.site entry. Building
+  # this from local.site[each.key].domain_names (rather than a separate list)
+  # is what keeps stable's apex included — Pitfall 4.
+  apply_record_names = {
+    for environment, site in local.site : environment => distinct(flatten([
+      for domain in site.domain_names : [
+        lower(trimsuffix(domain, ".")),
+        "_${lower(trimsuffix(domain, "."))}",
+      ]
+    ]))
+  }
+}
+
 # Apply-time authority: everything the reviewed static-site module needs to
 # create, update, tag, and delete its own environment's resources, scoped as
 # tightly as AWS permits and no tighter. See RESEARCH § Code Examples Pattern 5
@@ -299,6 +315,156 @@ resource "aws_iam_role_policy" "infrastructure_apply" {
           "iam:ListInstanceProfilesForRole",
         ]
         Resource = "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:role/stagehand-${each.key}-site-deploy"
+      },
+      # --- CloudFront: five actions AWS provides no resource type for, isolated
+      # in one named statement so a reviewer can see the residual surface at a
+      # glance. No condition block: whether the provider sends tags on the
+      # create call is provider-internal behaviour the research did not
+      # confirm, and a wrong condition denies a legitimate apply with an error
+      # naming an action the policy visibly grants. Accepted residual, user
+      # decision D-A (T-01-09) — compensating controls are human apply,
+      # CODEOWNERS review on /infra/, and a second administrator's review.
+      {
+        Sid    = "CreateUnscopableCloudFrontResources"
+        Effect = "Allow"
+        Action = [
+          "cloudfront:CreateDistribution",
+          "cloudfront:CreateCachePolicy",
+          "cloudfront:CreateResponseHeadersPolicy",
+          "cloudfront:CreateOriginAccessControl",
+          "cloudfront:CreateFunction",
+          "cloudfront:TagResource",
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "ManageSiteDistribution"
+        Effect = "Allow"
+        Action = [
+          "cloudfront:UpdateDistribution",
+          "cloudfront:DeleteDistribution",
+          "cloudfront:GetDistribution",
+          "cloudfront:GetDistributionConfig",
+          "cloudfront:ListTagsForResource",
+        ]
+        Resource = "arn:${data.aws_partition.current.partition}:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*"
+      },
+      {
+        Sid    = "ManageSiteCachePolicies"
+        Effect = "Allow"
+        Action = [
+          "cloudfront:GetCachePolicy",
+          "cloudfront:UpdateCachePolicy",
+          "cloudfront:DeleteCachePolicy",
+        ]
+        Resource = "arn:${data.aws_partition.current.partition}:cloudfront::${data.aws_caller_identity.current.account_id}:cache-policy/*"
+      },
+      {
+        Sid    = "ManageSiteResponseHeadersPolicies"
+        Effect = "Allow"
+        Action = [
+          "cloudfront:GetResponseHeadersPolicy",
+          "cloudfront:UpdateResponseHeadersPolicy",
+          "cloudfront:DeleteResponseHeadersPolicy",
+        ]
+        Resource = "arn:${data.aws_partition.current.partition}:cloudfront::${data.aws_caller_identity.current.account_id}:response-headers-policy/*"
+      },
+      {
+        Sid    = "ManageSiteOriginAccessControls"
+        Effect = "Allow"
+        Action = [
+          "cloudfront:GetOriginAccessControl",
+          "cloudfront:UpdateOriginAccessControl",
+          "cloudfront:DeleteOriginAccessControl",
+        ]
+        Resource = "arn:${data.aws_partition.current.partition}:cloudfront::${data.aws_caller_identity.current.account_id}:origin-access-control/*"
+      },
+      # The CloudFront function ARN is by name, so — unlike the distribution,
+      # cache-policy, response-headers-policy, and OAC families above — this
+      # one is precisely scopable to this environment's own function.
+      {
+        Sid    = "ManageSiteFunction"
+        Effect = "Allow"
+        Action = [
+          "cloudfront:DescribeFunction",
+          "cloudfront:GetFunction",
+          "cloudfront:UpdateFunction",
+          "cloudfront:PublishFunction",
+          "cloudfront:DeleteFunction",
+        ]
+        Resource = "arn:${data.aws_partition.current.partition}:cloudfront::${data.aws_caller_identity.current.account_id}:function/stagehand-${each.key}-site-paths"
+      },
+      # --- ACM: RequestCertificate has no resource type but does support the
+      # domain-names condition key, the strongest lever available anywhere in
+      # this policy. The Null guard is mandatory: in an Allow statement,
+      # ForAllValues evaluates true when the context key is absent, so without
+      # it a request carrying no domain names would be allowed (Pitfall 3).
+      {
+        Sid      = "RequestSiteCertificate"
+        Effect   = "Allow"
+        Action   = "acm:RequestCertificate"
+        Resource = "*"
+        Condition = {
+          Null = {
+            "acm:DomainNames" = "false"
+          }
+          "ForAllValues:StringEquals" = {
+            "acm:DomainNames" = local.site[each.key].domain_names
+          }
+          StringEquals = {
+            "acm:ValidationMethod" = "DNS"
+            "aws:RequestedRegion"  = "us-east-1"
+          }
+        }
+      },
+      {
+        Sid    = "ManageSiteCertificate"
+        Effect = "Allow"
+        Action = [
+          "acm:DescribeCertificate",
+          "acm:DeleteCertificate",
+          "acm:ListCertificates",
+          "acm:AddTagsToCertificate",
+          "acm:ListTagsForCertificate",
+        ]
+        Resource = "arn:${data.aws_partition.current.partition}:acm:*:${data.aws_caller_identity.current.account_id}:certificate/*"
+      },
+      # --- Route 53: ChangeResourceRecordSets scopes to the hosted-zone ARN and
+      # supports a record-types and a normalized-record-names condition, each
+      # paired with its own Null guard (Pitfall 3). The record-name list is
+      # built from local.site[each.key].domain_names so stable's apex is
+      # included automatically rather than excluded by a wildcard subdomain
+      # pattern (Pitfall 4).
+      {
+        Sid      = "ChangeHostedZoneRecords"
+        Effect   = "Allow"
+        Action   = "route53:ChangeResourceRecordSets"
+        Resource = "arn:${data.aws_partition.current.partition}:route53:::hostedzone/${var.hosted_zone_id}"
+        Condition = {
+          Null = {
+            "route53:ChangeResourceRecordSetsNormalizedRecordNames" = "false"
+            "route53:ChangeResourceRecordSetsRecordTypes"           = "false"
+          }
+          "ForAllValues:StringEquals" = {
+            "route53:ChangeResourceRecordSetsNormalizedRecordNames" = local.apply_record_names[each.key]
+            "route53:ChangeResourceRecordSetsRecordTypes"           = ["A", "AAAA", "CNAME"]
+          }
+        }
+      },
+      {
+        Sid    = "ReadHostedZone"
+        Effect = "Allow"
+        Action = [
+          "route53:GetHostedZone",
+          "route53:ListResourceRecordSets",
+        ]
+        Resource = "arn:${data.aws_partition.current.partition}:route53:::hostedzone/${var.hosted_zone_id}"
+      },
+      {
+        Sid      = "ReadRoute53Changes"
+        Effect   = "Allow"
+        Action   = "route53:GetChange"
+        Resource = "arn:${data.aws_partition.current.partition}:route53:::change/*"
       },
       {
         Sid      = "GetCallerIdentity"

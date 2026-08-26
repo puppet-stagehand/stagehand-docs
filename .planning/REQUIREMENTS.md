@@ -253,6 +253,7 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 - **OPS-10**: Split CI into parallel lint/unit/e2e jobs and cache the Astro build, once wall-clock becomes a friction point
 - **OPS-11**: Client-side filtering or per-tier splitting of the matrix, before the record count reaches the low hundreds
 - **OPS-12**: Raise the CloudFront price class above `PriceClass_100` if APAC/South America latency matters
+- **OPS-13**: Permissions boundary on the apply role's IAM role-creation and inline-policy actions — deferred because both actions support the boundary condition key but ADR-0003 didn't call for a seventh managed policy, and adding one silently would change the deploy role's effective permissions
 
 ## Out of Scope
 
