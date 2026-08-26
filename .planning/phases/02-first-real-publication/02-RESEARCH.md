@@ -488,10 +488,10 @@ a `[VERIFIED: ...]` tag was confirmed this session either by reading the cited f
 running the cited local, read-only command (`tofu version`, `aws sts get-caller-identity`, `aws
 route53 list-hosted-zones`, `dig`, `gh --version`, `aws --version`).
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **What should happen to `puppetstagehand.com`'s live NS delegation and its current GitHub Pages
-   content at the apex/`www` during this phase?**
+1. **RESOLVED — see `02-CONTEXT.md` D-01/D-02/D-03.** What should happen to `puppetstagehand.com`'s
+   live NS delegation and its current GitHub Pages content at the apex/`www` during this phase?
    - What we know: the domain is live today via Cloudflare NS, serving `puppetlabs-seteam.github.io`
      content at both the apex and `www`. `testpilots`/`beta` currently resolve to nothing. The
      current IAM/OpenTofu design requires one shared Route 53 hosted zone across all three
@@ -506,7 +506,7 @@ route53 list-hosted-zones`, `dig`, `gh --version`, `aws --version`).
    - Recommendation: raise explicitly in `/gsd-discuss-phase` before planning proceeds — this is a
      product/ops decision, not an implementation detail, and it gates the very first `tofu apply`.
 
-2. **Is the AWS CLI version inside the GitHub Actions `ubuntu-latest` runner image sufficient for
+2. **RESOLVED — non-blocking, deferred.** Is the AWS CLI version inside the GitHub Actions `ubuntu-latest` runner image sufficient for
    `aws s3 sync`/`aws cloudfront create-invalidation`, and is it pinned anywhere?**
    - What we know: `deploy.yml` calls `scripts/deploy-site.sh`, which shells out to `aws` directly,
      relying on whatever AWS CLI ships in the `ubuntu-latest` image (no explicit `aws-actions/*`
@@ -517,7 +517,9 @@ route53 list-hosted-zones`, `dig`, `gh --version`, `aws --version`).
    - Recommendation: not blocking; note as a plan-time nice-to-have to pin the AWS CLI version
      explicitly if reproducibility becomes a concern later (v2 territory, not this phase).
 
-3. **Exact `gh api` field names/endpoints for Environment configuration were not freshly verified.**
+3. **RESOLVED — mitigated in plan 02-02 (pilots `testpilots-plan` first, then reuses the verified
+   shape for the remaining five).** Exact `gh api` field names/endpoints for Environment
+   configuration were not freshly verified.
    - What we know: `gh` 2.98.0 is installed locally and has a general `gh api` escape hatch but no
      dedicated `gh environment` subcommand `[VERIFIED: local \`gh --version\`; \`gh environment
      --help\` fell through to \`gh\`'s generic help text rather than showing environment-specific
