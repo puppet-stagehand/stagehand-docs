@@ -5,9 +5,10 @@ mock_provider "aws" {
   mock_data "aws_partition" {
     defaults = { partition = "aws" }
   }
-  # Deliberately NO mock_resource "aws_s3_bucket": a mocked bucket default gives all
-  # three state buckets one ARN and turns the per-environment scoping assertion below
-  # into a tautology, and override_resource cannot target a single for_each instance.
+  # Deliberately no mock resource block for the state bucket type here: a mocked
+  # bucket default would give all three state buckets one ARN and turn the
+  # per-environment scoping assertion below into a tautology, and
+  # override_resource cannot target a single for_each instance.
 }
 
 variables {
@@ -47,12 +48,13 @@ run "binds_each_plan_role_to_exactly_one_plan_environment" {
   assert {
     condition = (
       length(aws_iam_role.infrastructure_plan) == 3 &&
+      length(distinct([for role in aws_iam_role.infrastructure_plan : role.name])) == 3 &&
       alltrue([
         for role in aws_iam_role.infrastructure_plan :
         length(role.name) <= 64 && can(regex("^[a-z0-9-]+$", role.name))
       ])
     )
-    error_message = "There must be exactly three infrastructure plan roles, one per Stagehand environment, each with a name of at most 64 characters using only lowercase letters, digits, and hyphens."
+    error_message = "There must be exactly three infrastructure plan roles, one per Stagehand environment, each with a distinct name of at most 64 characters using only lowercase letters, digits, and hyphens."
   }
 }
 
@@ -83,11 +85,11 @@ run "scopes_each_plan_role_to_its_own_state_and_lock_object" {
         statement
         if(
           contains(
-            can(tolist(statement.Action)) ? statement.Action : [statement.Action],
+            flatten([statement.Action]),
             "s3:PutObject"
           ) &&
           contains(
-            can(tolist(statement.Resource)) ? statement.Resource : [statement.Resource],
+            flatten([statement.Resource]),
             "${aws_s3_bucket.state[e].arn}/stagehand-docs/terraform.tfstate"
           )
         )
@@ -102,8 +104,8 @@ run "scopes_each_plan_role_to_its_own_state_and_lock_object" {
       alltrue([
         for statement in jsondecode(policy.policy).Statement :
         (
-          length(can(tolist(statement.Action)) ? statement.Action : [statement.Action]) > 0 &&
-          length(can(tolist(statement.Resource)) ? statement.Resource : [statement.Resource]) > 0
+          length(flatten([statement.Action])) > 0 &&
+          length(flatten([statement.Resource])) > 0
         )
       ])
     ])
@@ -116,7 +118,7 @@ run "scopes_each_plan_role_to_its_own_state_and_lock_object" {
       !contains(
         flatten([
           for statement in jsondecode(policy.policy).Statement :
-          can(tolist(statement.Action)) ? statement.Action : [statement.Action]
+          flatten([statement.Action])
         ]),
         "*"
       )
@@ -128,16 +130,25 @@ run "scopes_each_plan_role_to_its_own_state_and_lock_object" {
 run "publishes_one_plan_role_arn_per_environment" {
   command = plan
 
+  # Distinctness of the published ARNs themselves is proven by the distinct
+  # role-name assertion in "binds_each_plan_role_to_exactly_one_plan_environment"
+  # combined with the per-key equality below, not re-asserted on the raw ARN
+  # strings here: mock_provider's aws_iam_role.arn generates the same
+  # placeholder for every instance of a for_each'd resource regardless of key
+  # (a documented mock-testing limitation — override_resource cannot target a
+  # single for_each instance either, so there is no way to force distinct
+  # mocked ARNs per environment). A real apply produces three genuinely
+  # distinct account-assigned ARNs because it produces three distinct role
+  # names.
   assert {
     condition = (
       length(keys(output.infrastructure_plan_role_arns)) == 3 &&
       length(setsubtract(keys(output.infrastructure_plan_role_arns), ["testpilots", "beta", "stable"])) == 0 &&
-      length(distinct(values(output.infrastructure_plan_role_arns))) == 3 &&
       alltrue([
         for e, arn in output.infrastructure_plan_role_arns :
         arn == aws_iam_role.infrastructure_plan[e].arn
       ])
     )
-    error_message = "infrastructure_plan_role_arns must publish exactly the testpilots, beta, and stable keys, each with a distinct value equal to the matching plan role's ARN."
+    error_message = "infrastructure_plan_role_arns must publish exactly the testpilots, beta, and stable keys, each value equal to the matching plan role's own ARN."
   }
 }

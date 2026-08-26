@@ -7,3 +7,8 @@ output "state_bucket_names" {
   description = "State bucket names keyed by Stagehand environment."
   value       = { for environment, bucket in aws_s3_bucket.state : environment => bucket.id }
 }
+
+output "infrastructure_plan_role_arns" {
+  description = "Plan role ARNs keyed by Stagehand environment; paste into the matching -plan GitHub Environment."
+  value       = { for environment, role in aws_iam_role.infrastructure_plan : environment => role.arn }
+}

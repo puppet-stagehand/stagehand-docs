@@ -36,3 +36,24 @@ variable "state_bucket_names" {
     error_message = "state_bucket_names must contain exactly testpilots, beta, and stable with three unique valid S3 bucket names."
   }
 }
+
+variable "github_repository" {
+  description = "GitHub repository allowed to assume the infrastructure plan and apply roles."
+  type        = string
+  default     = "puppet-stagehand/stagehand-docs"
+
+  validation {
+    condition     = var.github_repository == "puppet-stagehand/stagehand-docs"
+    error_message = "github_repository must be puppet-stagehand/stagehand-docs."
+  }
+}
+
+variable "hosted_zone_id" {
+  description = "Route 53 hosted zone that owns every Stagehand DNS name."
+  type        = string
+
+  validation {
+    condition     = can(regex("^Z[A-Z0-9]{1,31}$", var.hosted_zone_id))
+    error_message = "hosted_zone_id must be a valid Route 53 hosted zone ID."
+  }
+}
