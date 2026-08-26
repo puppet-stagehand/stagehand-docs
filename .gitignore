@@ -11,6 +11,7 @@ terraform.tfvars
 *.tfplan
 tfplan
 plan-summary.txt
+.captured-outputs.json
 playwright-report/
 test-results/
 blob-report/
