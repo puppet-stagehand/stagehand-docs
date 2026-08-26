@@ -102,7 +102,7 @@ esac
     expect(readFileSync(log, 'utf8').trim().split('\n')).toEqual([
       's3 sync dist/assets s3://stagehand-content-test/assets --cache-control public,max-age=31536000,immutable --delete',
       's3 sync dist s3://stagehand-content-test --exclude assets/* --cache-control public,max-age=0,must-revalidate --delete',
-      'cloudfront create-invalidation --distribution-id EDIST123 --paths /index.html /tiers/index.html /compatibility/index.html /docs/index.html /docs/getting-started/index.html /docs/security/index.html /support/index.html /404.html /data/*',
+      'cloudfront create-invalidation --distribution-id EDIST123 --paths /index.html /tiers/index.html /compatibility/index.html /docs/index.html /docs/getting-started/index.html /docs/security/index.html /support/index.html /404.html /deployed-commit.txt /data/*',
     ]);
   });
 
@@ -203,6 +203,7 @@ describe('GitHub Actions contracts', () => {
     name?: string;
     uses?: string;
     with?: Record<string, unknown>;
+    if?: string;
   };
 
   type WorkflowJob = {
@@ -265,6 +266,45 @@ describe('GitHub Actions contracts', () => {
     expect(source).toContain("outputs.configured == 'true'");
     expect(source).toContain('WORKFLOW_REF: ${{ github.ref }}');
     expect(source).toContain('if [[ "$WORKFLOW_REF" != \'refs/heads/main\' ]]');
+  });
+
+  it('hard-fails deployment configuration instead of soft-skipping (GATE-02)', () => {
+    const source = workflow('deploy');
+    const configurationStep = source.match(
+      /name: Check deployment configuration[\s\S]*?\n {6}- name:/u,
+    )?.[0];
+
+    expect(configurationStep).toBeDefined();
+    expect(configurationStep).not.toContain('configured=false');
+    expect(configurationStep).not.toContain('Deployment skipped');
+    expect(configurationStep).toMatch(/else\s*\n\s*echo 'Deployment misconfigured[\s\S]*exit 1/u);
+  });
+
+  it('stamps the deployed commit and verifies the live deployment after upload', () => {
+    const source = workflow('deploy');
+    const deploySteps = workflowJobs('deploy').deploy.steps ?? [];
+    const stepNames = deploySteps.map((step) => step.name);
+    const stampIndex = stepNames.indexOf('Stamp deployed commit');
+    const buildIndex = stepNames.indexOf('Build site');
+    const credentialsIndex = stepNames.indexOf('Configure AWS credentials');
+    const uploadIndex = stepNames.indexOf('Upload site');
+    const verifyIndex = stepNames.indexOf('Verify live deployment');
+
+    expect(stampIndex).toBeGreaterThan(buildIndex);
+    expect(stampIndex).toBeLessThan(credentialsIndex);
+    expect(verifyIndex).toBeGreaterThan(uploadIndex);
+    expect(source).toContain(
+      'echo "${{ inputs.git_sha || github.sha }}" > dist/deployed-commit.txt',
+    );
+    expect(source).toContain('run: npx tsx scripts/check-live-deployment.ts');
+    expect(source).toContain('SITE_URL: https://${{ vars.SITE_CHECK_URL }}');
+    expect(source).toContain('EXPECTED_SHA: ${{ inputs.git_sha || github.sha }}');
+    for (const step of ['Stamp deployed commit', 'Verify live deployment']) {
+      const stepBlock = deploySteps.find(({ name }) => name === step);
+      expect(stepBlock?.if, `${step} must be gated by the configuration check`).toBe(
+        "steps.deployment_configuration.outputs.configured == 'true'",
+      );
+    }
   });
 
   it('keeps plan and apply credentials distinct and excludes forks before environments', () => {

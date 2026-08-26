@@ -90,8 +90,8 @@ jobs:
           if [[ -n "$AWS_DEPLOY_ROLE_ARN" && -n "$CONTENT_BUCKET" && -n "$CLOUDFRONT_DISTRIBUTION_ID" ]]; then
             echo 'configured=true' >> "$GITHUB_OUTPUT"
           else
-            echo 'configured=false' >> "$GITHUB_OUTPUT"
-            echo 'Deployment skipped: configure all required variables in this GitHub Environment.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Deployment misconfigured: configure all required variables in this GitHub Environment.' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
 
       - name: Check out selected commit
@@ -118,6 +118,10 @@ jobs:
         if: steps.deployment_configuration.outputs.configured == 'true'
         run: npm run build
 
+      - name: Stamp deployed commit
+        if: steps.deployment_configuration.outputs.configured == 'true'
+        run: echo "${{ inputs.git_sha || github.sha }}" > dist/deployed-commit.txt
+
       - name: Configure AWS credentials
         if: steps.deployment_configuration.outputs.configured == 'true'
         uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
@@ -132,3 +136,10 @@ jobs:
           DEPLOY_ENVIRONMENT: ${{ inputs.environment || 'testpilots' }}
           DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
         run: scripts/deploy-site.sh
+
+      - name: Verify live deployment
+        if: steps.deployment_configuration.outputs.configured == 'true'
+        env:
+          SITE_URL: https://${{ vars.SITE_CHECK_URL }}
+          EXPECTED_SHA: ${{ inputs.git_sha || github.sha }}
+        run: npx tsx scripts/check-live-deployment.ts
