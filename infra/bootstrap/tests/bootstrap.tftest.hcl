@@ -6,6 +6,7 @@ variables {
     beta       = "stagehand-beta-state-test"
     stable     = "stagehand-stable-state-test"
   }
+  hosted_zone_id = "Z0123456789ABCDEFGHIJ"
 }
 
 run "rejects_an_incomplete_environment_map" {
