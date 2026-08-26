@@ -136,6 +136,5 @@ to apply time, on `main`, against a real account.
   `var.environment` scoping
 - `docs/superpowers/plans/2026-08-22-stagehand-docs-site.md` — the global constraint amended by
   rule 2
-- Ownership of `AWS_INFRASTRUCTURE_PLAN_ROLE_ARN` and `AWS_INFRASTRUCTURE_APPLY_ROLE_ARN` is not
-  settled by this ADR. Neither role is created by the bootstrap or the site stack; see
-  `docs/operations/github-environments.md` until a separate ADR records an owner.
+- `docs/adr/0003-infrastructure-iam-role-ownership.md` — settles ownership of the plan and apply
+  role ARNs these Environments carry

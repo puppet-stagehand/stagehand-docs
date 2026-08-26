@@ -29,6 +29,16 @@ const createTagFixture = () => {
     'resource "aws_s3_bucket" "content" {\n  tags = local.required_tags\n}\n',
   );
 
+  mkdirSync(resolve(directory, 'infra/bootstrap'), { recursive: true });
+  writeFileSync(
+    resolve(directory, 'infra/bootstrap/main.tf'),
+    'resource "aws_iam_openid_connect_provider" "github" {\n  tags = local.required_tags\n}\n',
+  );
+  writeFileSync(
+    resolve(directory, 'infra/bootstrap/providers.tf'),
+    'provider "aws" {\n  default_tags {\n    tags = {\n      project = "stagehand"\n    }\n  }\n}\n',
+  );
+
   for (const environment of Object.keys(environments)) {
     const rootDirectory = resolve(directory, `infra/environments/${environment}`);
     mkdirSync(rootDirectory, { recursive: true });

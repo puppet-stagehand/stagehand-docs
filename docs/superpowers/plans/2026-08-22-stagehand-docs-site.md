@@ -6,7 +6,7 @@
 
 **Architecture:** Astro 7 emits static HTML, CSS, JavaScript, and JSON from Markdown and schema-validated YAML. A reusable OpenTofu module creates a private S3 origin, CloudFront distribution, Route 53 records, ACM certificate, security headers, and a narrowly scoped GitHub deployment role for each environment. GitHub Actions validates every change and promotes an immutable commit through protected environments.
 
-**Tech Stack:** Node.js 24, npm 11, Astro 7.2.4, TypeScript 7.0.2, Bootstrap 5.3.8, Sass 1.103.1, Fontsource IBM Plex 5.3.0, YAML 2.9.0, Ajv 8.20.0, Vitest 4.1.11, Playwright 1.62.1, axe-core, OpenTofu 1.12.6, AWS, and GitHub Actions.
+**Tech Stack:** Node.js 24, npm 11, Astro 7.2.4, TypeScript 6.0.3, Bootstrap 5.3.8, Sass 1.103.1, Fontsource IBM Plex 5.3.0, YAML 2.9.0, Ajv 8.20.0, Vitest 4.1.11, Playwright 1.62.1, axe-core, OpenTofu 1.12.6, AWS, and GitHub Actions.
 
 **Spec:** `docs/superpowers/specs/2026-08-22-stagehand-docs-site-design.md`
 
@@ -18,7 +18,7 @@
 - Treat `src/data/compatibility.yaml` as a customer claim registry. Every claim must include a primary evidence URL and `last_verified`; absence of approved claims renders an honest empty state.
 - Never infer current compatibility from an upstream version number. A maintainer must intentionally add or revise the record.
 - Every taggable environment-owned OpenTofu resource must receive `project = "stagehand"` and `environment = var.environment` from a module-local mandatory tag map. Environment provider `default_tags` repeat the same values as defense-in-depth. Shared resources receive only `project = "stagehand"`.
-- Environment names are exactly `testpilots`, `beta`, and `stable`.
+- The three-value enum binds `var.environment` only — `testpilots`, `beta`, and `stable` are the complete set of OpenTofu environments and of `environment` tag values (ADR-0002 rule 2). The GitHub Environment namespace is separate and has six members: the same three unsuffixed apply Environments plus three `-plan` Environments (ADR-0002 rule 3).
 - Use test-driven development: add a failing test, observe the intended failure, implement the smallest change, rerun the focused test, then run the relevant broader check.
 - Use one commit per task unless the task explicitly includes two commits.
 
@@ -102,7 +102,7 @@ Expected: failure because `package.json`, Vitest, and `astro.config.mjs` have no
     "@astrojs/check": "0.9.10",
     "prettier": "3.9.6",
     "prettier-plugin-astro": "0.14.1",
-    "typescript": "7.0.2",
+    "typescript": "6.0.3",
     "vitest": "4.1.11"
   }
 }

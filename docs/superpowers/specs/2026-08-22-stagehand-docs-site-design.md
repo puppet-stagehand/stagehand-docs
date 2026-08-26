@@ -175,8 +175,13 @@ the application stack cannot create or modify its own state bucket.
 ## GitHub and deployment flow
 
 The repository is public. Branch protection requires the validation workflow
-before merge. GitHub Environments are named `testpilots`, `beta`, and `stable`.
-Environment protection rules control who may deploy beta and stable.
+before merge. Six GitHub Environments exist: three apply Environments named
+`testpilots`, `beta`, and `stable`, restricted to `main`; and three `-plan`
+Environments (`testpilots-plan`, `beta-plan`, `stable-plan`), restricted to
+the pull-request merge-ref branch rule, carrying only the plan role ARN.
+Environment protection rules control who may deploy beta and stable. See
+`docs/adr/0002-github-environment-model.md` for the full reviewer and
+variable rules.
 
 Pull requests run:
 
