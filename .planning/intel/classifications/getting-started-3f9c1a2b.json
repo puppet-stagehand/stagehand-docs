@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/src/content/docs/getting-started.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": false,
+  "title": "Getting started",
+  "summary": "Onboarding guide for preparing an OpenVox environment and understanding the current Stagehand SSH execution boundary.",
+  "scope": ["OpenVox environment", "SSH execution path", "compatibility register", "Puppet Console", "Stagehand release records"],
+  "cross_refs": ["/compatibility/", "/docs/security/", "/support/"],
+  "locked": false,
+  "precedence": null,
+  "notes": ""
+}

@@ -1,0 +1,31 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/docs/adr/0001-compatibility-scaffold.md",
+  "type": "ADR",
+  "confidence": "high",
+  "manifest_override": false,
+  "title": "ADR-0001: Ship an empty, evidence-bearing compatibility registry",
+  "summary": "Locks the published compatibility registry as empty, confining representative records to test fixtures and requiring primary evidence plus truthful verification dates.",
+  "scope": [
+    "compatibility registry",
+    "src/data/compatibility.yaml",
+    "test fixtures",
+    "compatibility claims policy",
+    "empty state rendering",
+    "schema validation",
+    "build-time isolation check"
+  ],
+  "cross_refs": [
+    "docs/superpowers/specs/2026-08-22-stagehand-docs-site-design.md",
+    "docs/operations/compatibility-claims.md",
+    "docs/superpowers/plans/2026-08-22-stagehand-docs-site.md",
+    "src/data/compatibility.yaml",
+    "src/data/schema/compatibility.schema.json",
+    "src/lib/data/compatibility.ts",
+    "src/components/CompatibilityEmptyState.astro",
+    "tests/fixtures/data/compatibility-e2e.yaml",
+    "scripts/check-e2e-build-isolation.ts"
+  ],
+  "locked": true,
+  "precedence": null,
+  "notes": ""
+}

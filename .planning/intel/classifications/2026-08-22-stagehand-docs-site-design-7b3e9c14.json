@@ -1,0 +1,36 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/docs/superpowers/specs/2026-08-22-stagehand-docs-site-design.md",
+  "type": "SPEC",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Puppet Stagehand website and documentation design",
+  "summary": "Technical design for the Puppet Stagehand static Astro site, compatibility data model, AWS/OpenTofu infrastructure, CI validation, and promotion-based deployment.",
+  "scope": [
+    "Astro static site",
+    "Bootstrap 5 / Sass",
+    "compatibility matrix",
+    "src/data/compatibility.yaml",
+    "src/data/tiers.yaml",
+    "JSON Schema validation",
+    "product tiers",
+    "WCAG 2.1 AA accessibility",
+    "S3",
+    "CloudFront",
+    "ACM",
+    "Route 53",
+    "OpenTofu modules",
+    "GitHub OIDC deployment roles",
+    "GitHub Actions workflows",
+    "testpilots/beta/stable environments",
+    "Playwright and axe testing"
+  ],
+  "cross_refs": [
+    "puppet-console/docs",
+    "infra/bootstrap/",
+    "src/data/compatibility.yaml",
+    "src/data/tiers.yaml"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Path under **/specs/** gives a strong SPEC signal, and content is dominated by implementation contracts (schema fields, environment table, IAM/CDN behavior, CI gates). Competing ADR signals exist ('Status: Approved for implementation planning', 'Chosen approach' with rejected alternatives) but the status value is not an ADR status vocabulary term and the document covers many decisions plus success criteria and non-goals rather than one architectural decision. Also carries PRD-like 'Success criteria' and 'Non-goals' sections. Resolved to SPEC; not locked."
+}

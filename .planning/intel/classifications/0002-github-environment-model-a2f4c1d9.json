@@ -1,0 +1,29 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/docs/adr/0002-github-environment-model.md",
+  "type": "ADR",
+  "confidence": "high",
+  "manifest_override": false,
+  "title": "ADR-0002: Six GitHub Environments, three OpenTofu environments",
+  "summary": "Separates three naming namespaces and locks six GitHub Environments (three apply, three plan) against three OpenTofu environments to preserve plan/apply privilege separation.",
+  "scope": [
+    "GitHub Environments",
+    "OpenTofu environments",
+    "var.environment",
+    "infrastructure.yml workflow",
+    "deploy.yml workflow",
+    "AWS IAM role ARNs",
+    "pull-request infrastructure planning",
+    "environment resource tag"
+  ],
+  "cross_refs": [
+    "infra/modules/static-site/variables.tf",
+    ".github/workflows/infrastructure.yml",
+    ".github/workflows/deploy.yml",
+    "docs/operations/github-environments.md",
+    "docs/superpowers/specs/2026-08-22-stagehand-docs-site-design.md",
+    "docs/superpowers/plans/2026-08-22-stagehand-docs-site.md"
+  ],
+  "locked": true,
+  "precedence": null,
+  "notes": ""
+}

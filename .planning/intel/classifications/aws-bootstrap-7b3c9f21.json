@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/docs/operations/aws-bootstrap.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": false,
+  "title": "Bootstrap and apply the AWS site",
+  "summary": "Operator runbook for bootstrapping AWS remote state and OIDC, configuring per-environment backends, applying OpenTofu, and auditing resource tags.",
+  "scope": ["OpenTofu bootstrap", "S3 remote state buckets", "GitHub OIDC provider", "testpilots/beta/stable environments", "Route 53 DNS cutover", "resource tagging audit", "CloudFront distribution", "deployment role"],
+  "cross_refs": ["github-environments.md"],
+  "locked": false,
+  "precedence": null,
+  "notes": ""
+}

@@ -1,0 +1,36 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/docs/superpowers/plans/2026-08-22-stagehand-docs-site.md",
+  "type": "SPEC",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Puppet Stagehand Website and Documentation Implementation Plan",
+  "summary": "Task-by-task implementation plan for a static Astro Stagehand site with data contracts, OpenTofu AWS environments, and GitHub Actions deployment.",
+  "scope": [
+    "Astro static site",
+    "compatibility.yaml claim registry",
+    "tiers and compatibility data contracts",
+    "JSON endpoints",
+    "docs content collection",
+    "accessibility and link quality gates",
+    "OpenTofu static-site module",
+    "S3/CloudFront/Route 53/ACM",
+    "GitHub OIDC deployment roles",
+    "testpilots/beta/stable environments",
+    "GitHub Actions workflows"
+  ],
+  "cross_refs": [
+    "docs/superpowers/specs/2026-08-22-stagehand-docs-site-design.md",
+    "docs/operations/aws-bootstrap.md",
+    "docs/operations/github-environments.md",
+    "docs/operations/release.md",
+    "docs/operations/compatibility-claims.md",
+    "docs/operations/cost-model.md",
+    "README.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "locked": false,
+  "precedence": null,
+  "notes": "Path is docs/superpowers/plans/ (no adr/prd/spec directory signal). Content is dominated by implementation contracts: explicit interface lists, JSON Schemas, TypeScript types, HCL variable validation, cache-control rules, and named enums. Also carries binding 'Global Constraints' (static-only, no analytics, evidence-bearing compatibility claims, mandatory tags, exact environment names) which read as technical constraints rather than user-facing requirements. No Decision/Consequences sections and no status field, so not an ADR; no user stories or acceptance criteria, so not a PRD. Classified SPEC over DOC because it defines contracts the system must honor. Task/step checkbox structure is execution scaffolding, not a separate type."
+}

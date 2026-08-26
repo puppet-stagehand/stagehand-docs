@@ -1,0 +1,33 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/docs/adr/0003-infrastructure-iam-role-ownership.md",
+  "type": "ADR",
+  "confidence": "high",
+  "manifest_override": false,
+  "title": "ADR-0003: The bootstrap root owns the infrastructure plan and apply roles",
+  "summary": "Bootstrap root creates six OpenTofu-managed plan and apply IAM roles, one per environment per tier, remaining human-applied.",
+  "scope": [
+    "infra/bootstrap",
+    "AWS_INFRASTRUCTURE_PLAN_ROLE_ARN",
+    "AWS_INFRASTRUCTURE_APPLY_ROLE_ARN",
+    "IAM roles",
+    "GitHub OIDC trust policies",
+    "GitHub Environments",
+    "OpenTofu",
+    "static-site module",
+    "CODEOWNERS"
+  ],
+  "cross_refs": [
+    ".github/workflows/infrastructure.yml",
+    ".github/workflows/validate.yml",
+    "infra/bootstrap/main.tf",
+    "infra/bootstrap/outputs.tf",
+    "infra/modules/static-site/iam.tf",
+    "docs/operations/github-environments.md",
+    "docs/operations/aws-bootstrap.md",
+    "CODEOWNERS",
+    "docs/adr/0002-github-environment-model.md"
+  ],
+  "locked": true,
+  "precedence": null,
+  "notes": ""
+}

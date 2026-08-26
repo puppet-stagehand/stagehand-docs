@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/docs/operations/compatibility-claims.md",
+  "type": "SPEC",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Review compatibility claims",
+  "summary": "Policy defining evidence, 365-day freshness, and validation rules for customer-facing Puppet/OpenVox/Stagehand compatibility records.",
+  "scope": ["compatibility records", "evidence URLs", "last_verified freshness", "data validation", "schema changes", "pull-request checklist", "Puppet", "OpenVox", "Stagehand", "providers", "transports", "operating systems"],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Prose policy with no frontmatter and no ADR/PRD markers, but content states enforceable constraints the system must honor (required evidence types, HTTPS primary-source URL policy, unique IDs and claim tuples, ordering, future-date rejection, 365-day staleness boundary enforced by npm run validate:data). Competing DOC (runbook/checklist) signal; resolved to SPEC per ADR > SPEC > PRD > DOC precedence rule. Mentions commands 'npm run validate:data' and 'npm run verify' but no document paths, so cross_refs is empty."
+}

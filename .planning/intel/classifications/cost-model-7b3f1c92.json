@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/docs/operations/cost-model.md",
+  "type": "DOC",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Estimate AWS site cost",
+  "summary": "Maintainer procedure for estimating the static site's monthly AWS bill from measured traffic inputs and current published unit rates.",
+  "scope": ["AWS cost estimation", "CloudFront", "S3", "Route 53", "AWS Certificate Manager", "static site hosting", "publication checklist"],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": "Runbook/procedure prose with a calculation formula block. No status frontmatter, no decision/consequences, no user stories or acceptance criteria, no API/schema contracts — formula is guidance, not an implementation contract. Classified DOC."
+}

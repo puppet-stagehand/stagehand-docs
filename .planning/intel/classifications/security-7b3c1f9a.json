@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/matthew/Code/orco/stagehand-docs/src/content/docs/security.md",
+  "type": "DOC",
+  "confidence": "medium",
+  "manifest_override": false,
+  "title": "Security and trust boundaries",
+  "summary": "Guidance on credential ownership, SSH host verification, future PCP trust boundaries, Forge entitlement limits, and redaction and vulnerability reporting.",
+  "scope": ["credential ownership", "SSH host verification", "OpenVox execution path", "PCP/orchestrator trust boundaries", "Puppet Console", "Forge entitlement", "redaction", "security reporting"],
+  "cross_refs": ["https://github.com/puppet-stagehand/stagehand-docs/issues", "https://github.com/puppet-stagehand/stagehand-docs/security/advisories/new"],
+  "locked": false,
+  "precedence": null,
+  "notes": "Published site page under src/content/docs/ with title/description/order frontmatter; prose guidance, no ADR status or Decision/Consequences sections, no user stories, no endpoint or schema tables. Contains normative constraints (PCP unavailable until a compatibility record exists; required release-doc contents) that read SPEC-like, but dominant form is explanatory documentation, so classified DOC."
+}
