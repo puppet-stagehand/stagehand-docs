@@ -6,6 +6,27 @@ long-lived AWS credentials and can keep planning authority separate from apply a
 
 ## Create the environments
 
+**As of Phase 2 of the `v0.2.3` milestone, all six Environments below exist for real** on
+`puppet-stagehand/stagehand-docs`, applied via the `gh api` procedure this section describes,
+reading every role ARN, the OIDC provider ARN, and the state bucket names from the real
+`infra/bootstrap` outputs. Two platform-behavior notes from that real application, both worth
+knowing before touching these Environments again:
+
+- **Solo-maintainer self-review friction (known, intentional).** This repository currently has one
+  named administrator (`@matthewrstone`, per CODEOWNERS). "Prevent self-review" blocks the same
+  GitHub identity that triggered a run from approving its own pending deployment — for a solo
+  maintainer this means `beta`, `stable`, and all three `-plan` Environments have no one able to
+  approve a run they themselves triggered until a second trusted reviewer exists. This is the
+  intended behavior of ADR-0002's multi-administrator design, not a bug to route around.
+- **`prevent_self_review` cannot be set without at least one configured reviewer (platform
+  constraint, confirmed live).** GitHub's environment-protection API rejects
+  `prevent_self_review=true` with a 422 when no reviewers are configured. `testpilots` has no
+  required reviewers by design (see the "Optional" row below), so its `prevent_self_review` cannot
+  be technically enabled — this does not violate ADR-0002 rule 3 (LOCKED), which requires
+  self-review prevention only on `stable` and treats it as a non-binding recommendation elsewhere.
+  `beta` and `stable` both have a required reviewer configured, so `prevent_self_review` applies
+  there without issue.
+
 Create deployment/apply Environments named exactly `testpilots`, `beta`, and `stable`. For all
 three, set the deployment branch policy to selected branches and allow `main` only. Do not allow
 tags or arbitrary branches.
@@ -64,6 +85,7 @@ Define only these variables in each matching deployment/apply Environment:
 | `TOFU_STATE_BUCKET`                 | Matching `state_bucket_names` bootstrap output                                                     |
 | `CONTENT_BUCKET`                    | `content_bucket_name` output from the environment site stack                                       |
 | `CLOUDFRONT_DISTRIBUTION_ID`        | `distribution_id` output from the environment site stack                                           |
+| `SITE_CHECK_URL`                    | HTTPS origin the post-deploy live-check targets; the CloudFront default domain until the DNS cutover (D-01/D-03) makes the custom hostname reachable |
 
 The deployment workflow uses the deployment/apply Environment's region, deploy role, content
 bucket, and distribution ID. Infrastructure apply uses its apply role, OIDC provider, hosted zone,
