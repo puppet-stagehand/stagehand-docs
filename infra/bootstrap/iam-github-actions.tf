@@ -76,6 +76,20 @@ resource "aws_iam_role_policy" "infrastructure_plan" {
           "s3:GetLifecycleConfiguration",
           "s3:GetBucketPolicy",
           "s3:GetBucketAcl",
+          # The AWS provider's aws_s3_bucket refresh reads every one of these
+          # sub-configurations unconditionally, regardless of whether this
+          # module manages them, so a read-only plan role needs all of them
+          # (not just the ones the module explicitly sets) or every real
+          # `tofu plan` fails one AccessDenied at a time. Matches the
+          # ManageSiteBucket (apply role) Get* set below exactly.
+          "s3:GetBucketCORS",
+          "s3:GetBucketWebsite",
+          "s3:GetBucketLogging",
+          "s3:GetAccelerateConfiguration",
+          "s3:GetBucketRequestPayment",
+          "s3:GetReplicationConfiguration",
+          "s3:GetBucketObjectLockConfiguration",
+          "s3:GetBucketNotification",
         ]
         Resource = "arn:${data.aws_partition.current.partition}:s3:::stagehand-${each.key}-site-*"
       },
