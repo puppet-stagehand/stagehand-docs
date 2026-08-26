@@ -4,6 +4,10 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
+# Must be the same Route 53 hosted zone 02-01 (phase 02-first-real-publication,
+# plan 01) created for puppetstagehand.com (Z00971888M7QXUPNS7H8) — this
+# environment root never creates or owns the zone itself, only records within
+# it (see infra/bootstrap/main.tf for the zone resource).
 variable "hosted_zone_id" {
   description = "Route 53 hosted zone ID for puppetstagehand.com."
   type        = string
