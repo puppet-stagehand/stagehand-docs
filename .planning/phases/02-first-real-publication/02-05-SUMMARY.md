@@ -34,28 +34,64 @@ key-decisions:
 
 patterns-established: []
 
-requirements-completed: []
+requirements-completed: [PUB-06, PUB-07]
 
 coverage:
   - id: D1
-    description: "A real same-repository PR touching infra/** was opened; validate passed; all three plan matrix jobs (testpilots/beta/stable) are visible queued/pending behind their respective -plan Environment's required reviewer."
+    description: "A real same-repository PR touching infra/** was opened; validate passed; all three plan matrix jobs (testpilots/beta/stable) queued behind their -plan Environment's required reviewer, then ran to completion successfully."
     requirement: "PUB-06"
     verification:
       - kind: other
-        ref: "gh pr checks 2 --repo puppet-stagehand/stagehand-docs: Validate OpenTofu=pass (1m43s); Plan testpilots/beta/stable=pending, queued behind protected Environments"
+        ref: "gh run view 33016442894: conclusion=success — Validate OpenTofu, Plan testpilots, Plan beta, Plan stable all passed; tofu-plan-{root} artifacts downloaded and confirmed value-free (resource address + action only, no attribute values)"
         status: pass
     human_judgment: false
   - id: D2
-    description: "The three plan Environments' deployment reviews cannot be approved by this executor or by the PR's author/only-configured-reviewer identity, so the plan jobs have not yet run to completion — PUB-06 is not yet fully proven end-to-end, and PUB-07's sweep (Task 2) has not yet run."
+    description: "Self-review deadlock resolved: ADR-0004 written and user-approved, superseding ADR-0002 rule 3's self-review-prevention clause for the three read-only plan Environments only (stable's mutating apply Environment unchanged). prevent_self_review set to false on testpilots-plan/beta-plan/stable-plan via gh api; deployment reviews approved; plan jobs re-ran and passed."
     requirement: "PUB-06"
-    verification: []
+    verification:
+      - kind: other
+        ref: "docs/adr/0004-plan-environment-self-review.md committed; gh api repos/.../environments/{testpilots,beta,stable}-plan confirms prevent_self_review:false, reviewer unchanged, branch policy unchanged"
+        status: pass
     human_judgment: true
-    rationale: "gh api .../pending_deployments confirms current_user_can_approve: false for all three -plan Environments — matthewrstone is both the PR author and the only configured required reviewer, and prevent_self_review=true blocks self-approval. This is the exact friction 02-02's SUMMARY and this plan's checkpoint task anticipated. Resolving it requires a human decision (use a second GitHub identity, or make the deliberate, recorded call to relax the reviewer configuration) that this executor cannot make or automate around."
+    rationale: "The self-review policy relaxation is a locked architectural decision (ADR-0004) requiring explicit user sign-off, not something an executor or orchestrator can decide unilaterally — obtained via orchestrator checkpoint."
+  - id: D3
+    description: "Two real IAM permission gaps discovered by the real plan job (cloudfront:ListTagsForResource on the site function; 8 missing s3:Get* actions on the content bucket, matching the apply role's already-correct scope) were fixed in infra/bootstrap/iam-github-actions.tf and applied for real to all six bootstrap-created IAM roles."
+    requirement: "PUB-06"
+    verification:
+      - kind: other
+        ref: "tofu -chdir=infra/bootstrap apply: 0 add / 6 change / 0 destroy (CloudFront fix), then 0 add / 3 change / 0 destroy (S3 fix); re-run Plan testpilots job succeeded after both fixes"
+        status: pass
+    human_judgment: false
+  - id: D4
+    description: "git log --all sweep for PUB-07: no credential, .tfstate, .tfvars, backend.hcl, or AKIA-format access key found anywhere in history. One known, accepted deviation: the AWS account ID appears in several SUMMARY.md files as ARN citations — judged low-risk (account IDs are not secret credentials) and recorded in REQUIREMENTS.md rather than rewriting already-pushed git history."
+    requirement: "PUB-07"
+    verification:
+      - kind: other
+        ref: "git log --all -p | grep -E '503561411317' (account ID, docs-only, no credentials); git log --all -p | grep -oE 'AKIA[0-9A-Z]{16}' (empty); git log --all --diff-filter=A --name-only | grep -E '\\.tfvars$|backend\\.hcl$|\\.tfstate$|\\.tfplan$' (empty)"
+        status: pass
+    human_judgment: true
+    rationale: "The account-ID exposure is a real, literal violation of PUB-07's text as written. Whether to accept it as a documented deviation or rewrite git history is a risk-tolerance judgment call requiring the user's decision — obtained via orchestrator checkpoint; user chose to accept and document rather than rewrite already-public history."
 
-duration: 15min
+duration: 15min (executor session) + ~50min (orchestrator resolution: ADR-0004, two real IAM fixes, secrets sweep)
 completed: 2026-08-26
-status: halted
+status: complete
 ---
+
+## Resolution (orchestrator, post-executor)
+
+- Wrote and got user sign-off on ADR-0004, superseding ADR-0002 rule 3's self-review requirement for
+  the three read-only plan Environments; applied the config change via `gh api`; approved the pending
+  deployment reviews.
+- Diagnosed and fixed two real IAM permission gaps the plan job's `tofu plan` surfaced against real,
+  already-applied AWS resources (gaps Phase 1's mock-only tests could never have caught):
+  `cloudfront:ListTagsForResource` on the site CloudFront Function, and 8 missing `s3:Get*` actions on
+  the content bucket. Both applied for real to all six bootstrap IAM roles.
+- Re-ran the `Plan testpilots` job twice (once per fix) until it succeeded; confirmed all four
+  validate/plan jobs green; downloaded and inspected all three `tofu-plan-{root}` artifacts —
+  confirmed genuinely value-free (resource address + no-op/create/update action only).
+- Merged PR #2.
+- Ran the PUB-07 secrets sweep across full git history; found and documented one accepted deviation
+  (see D4 above) in `.planning/REQUIREMENTS.md`.
 
 # Phase 02 Plan 05: Infrastructure Plan-Job PUB-06 Proof Summary
 

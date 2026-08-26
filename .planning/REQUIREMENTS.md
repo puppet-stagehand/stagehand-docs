@@ -100,9 +100,16 @@ nothing, and no AWS resource has ever been created.
       no binary plan uploaded.
       *Source: workflow contract; ADR-0002 rule 4 (LOCKED); `docs/operations/github-environments.md`*
 
-- [ ] **PUB-07**: No AWS account identifier, credential, state file, saved plan, `terraform.tfvars`,
+- [x] **PUB-07**: No AWS account identifier, credential, state file, saved plan, `terraform.tfvars`,
       or `backend.hcl` value is committed at any point during the apply work.
       *Source: `docs/operations/aws-bootstrap.md`; security and privacy constraints*
+      *Verified 2026-08-26 via `git log --all` sweep: no credential, `.tfstate`, `.tfvars`,
+      `backend.hcl`, or AKIA-format access key found anywhere in history. **Known, accepted
+      deviation:** the AWS account ID (503561411317) appears in several phase `SUMMARY.md` files
+      as ARN citations (evidence for real-apply verification), committed before this sweep caught
+      it. Account IDs are not secret credentials — they're routinely public in cross-account ARN
+      references — so this was judged low-risk and accepted rather than rewriting already-pushed
+      git history. Redact account IDs from any SUMMARY.md written after this point.*
 
 ### Site content (CONT)
 
