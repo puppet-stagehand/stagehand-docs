@@ -3,6 +3,7 @@ set -eu
 
 environments_dir="infra/environments"
 module_dir="infra/modules/static-site"
+bootstrap_dir="infra/bootstrap"
 expected_environments="beta stable testpilots"
 
 if ! command -v rg >/dev/null 2>&1; then
@@ -88,4 +89,43 @@ if offending=$(rg -n --pcre2 '^[[:space:]]*tags[[:space:]]*=(?![[:space:]]*local
   exit 1
 fi
 
-printf '%s\n' "Verified OpenTofu tag policy for testpilots, beta, and stable."
+if offending=$(rg -n --pcre2 '^[[:space:]]*tags[[:space:]]*=(?![[:space:]]*local\.required_tags[[:space:]]*$)(?![[:space:]]*merge\(local\.required_tags,)' "$bootstrap_dir" --glob '*.tf' --glob '!providers.tf'); then
+  printf '%s\n' "$offending" | while IFS= read -r finding; do
+    printf '%s\n' "$finding: bootstrap tags must use local.required_tags or merge(local.required_tags, { environment = each.key })" >&2
+  done
+  exit 1
+fi
+
+bootstrap_providers="$bootstrap_dir/providers.tf"
+
+if ! awk '
+  /default_tags[[:space:]]*\{/ {
+    in_block = 1
+    depth = 0
+    has_project = 0
+    has_environment = 0
+    block_count++
+  }
+
+  in_block {
+    line = $0
+    opens = gsub(/\{/, "{", line)
+    closes = gsub(/\}/, "}", line)
+    depth += opens - closes
+
+    if ($0 ~ /project[[:space:]]*=[[:space:]]*"stagehand"/) has_project = 1
+    if ($0 ~ /environment[[:space:]]*=/) has_environment = 1
+
+    if (depth == 0) {
+      if (!has_project || has_environment) invalid_block = 1
+      in_block = 0
+    }
+  }
+
+  END { exit !(block_count == 1 && !invalid_block) }
+' "$bootstrap_providers"; then
+  printf '%s\n' "$bootstrap_providers: default_tags block must carry project=stagehand and no fabricated environment key" >&2
+  exit 1
+fi
+
+printf '%s\n' "Verified OpenTofu tag policy for infra/bootstrap, testpilots, beta, and stable."
