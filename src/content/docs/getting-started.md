@@ -34,4 +34,5 @@ Before using a Console workflow, require both released product instructions and 
 
 1. Review the [security and trust boundaries](/docs/security/).
 2. Confirm your exact environment in the [compatibility register](/compatibility/).
-3. Use the [support page](/support/) to choose public issue reporting or your commercial support channel.
+3. [Run Stagehand for the first time](/docs/first-run/).
+4. Use the [support page](/support/) to choose public issue reporting or your commercial support channel.

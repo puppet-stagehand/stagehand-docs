@@ -8,6 +8,7 @@ const requiredOutputs = [
   'docs/index.html',
   'docs/getting-started/index.html',
   'docs/security/index.html',
+  'docs/first-run/index.html',
   'support/index.html',
   'data/tiers.json',
   'data/compatibility.json',

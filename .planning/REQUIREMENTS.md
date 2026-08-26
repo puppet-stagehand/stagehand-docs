@@ -130,13 +130,13 @@ copy. A "documentation site" needs documentation.
       channel for anything sensitive.
       *Source: initial route surface; `SECURITY.md` / `src/content/docs/security.md` reporting boundary*
 
-- [ ] **CONT-04**: `src/content/docs/` carries the documentation a first-time operator actually
+- [x] **CONT-04**: `src/content/docs/` carries the documentation a first-time operator actually
       needs to install, first-run, and reason about the trust boundaries of Stagehand, each entry
       with `title`, `description`, a unique positive `order`, and an `updated` date, listed in
       `order` order on `/docs/`.
       *Source: documentation content collection contract*
 
-- [ ] **CONT-05**: Every added route and documentation entry is registered in
+- [x] **CONT-05**: Every added route and documentation entry is registered in
       `src/lib/navigation.ts`, `scripts/check-built-routes.ts`, and the invalidation list in
       `scripts/deploy-site.sh` within the same change.
       *Source: repository layout; cache-control policy; codebase architecture anti-pattern*
@@ -402,8 +402,8 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | CONT-01 | Phase 3 | Pending |
 | CONT-02 | Phase 3 | Pending |
 | CONT-03 | Phase 3 | Pending |
-| CONT-04 | Phase 3 | Pending |
-| CONT-05 | Phase 3 | Pending |
+| CONT-04 | Phase 3 | Complete |
+| CONT-05 | Phase 3 | Complete |
 | CONT-06 | Phase 3 | Pending |
 | CONT-07 | Phase 3 | Pending |
 | GATE-03 | Phase 3 | Complete |
