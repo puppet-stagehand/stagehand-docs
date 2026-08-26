@@ -41,7 +41,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Infrastructure Role Ownership** - Bootstrap creates and outputs the six plan and apply IAM roles, closing ADR-0003's deferral (completed 2026-08-26)
 - [x] **Phase 2: First Real Publication** - Bootstrap and testpilots applied for real; the deploy pipeline stops silently skipping (completed 2026-08-26)
-- [ ] **Phase 3: Real Documentation Content** - An operator can learn the product, pick a tier, and run it without leaving the site
+- [x] **Phase 3: Real Documentation Content** - An operator can learn the product, pick a tier, and run it without leaving the site (completed 2026-08-26)
 - [ ] **Phase 4: Evidence-Bearing Compatibility Register** - The register carries checkable claims, and the gates stop assuming it is empty
 - [ ] **Phase 5: Production Launch** - www.puppetstagehand.com serves customers, with apex redirect and a proven rollback
 
@@ -207,7 +207,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Infrastructure Role Ownership | 4/4 | Complete    | 2026-08-26 |
 | 2. First Real Publication | 5/5 | Complete    | 2026-08-26 |
-| 3. Real Documentation Content | 4/4 | In Progress|  |
+| 3. Real Documentation Content | 4/4 | Complete    | 2026-08-26 |
 | 4. Evidence-Bearing Compatibility Register | 0/TBD | Not started | - |
 | 5. Production Launch | 0/TBD | Not started | - |
 

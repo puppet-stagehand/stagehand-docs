@@ -116,16 +116,16 @@ nothing, and no AWS resource has ever been created.
 The site currently ships 70 lines of documentation across two files and placeholder-grade marketing
 copy. A "documentation site" needs documentation.
 
-- [ ] **CONT-01**: `/` presents product positioning, principal capabilities, and clear tier paths in
+- [x] **CONT-01**: `/` presents product positioning, principal capabilities, and clear tier paths in
       customer-ready copy rather than scaffold placeholders.
       *Source: initial route surface constraint*
 
-- [ ] **CONT-02**: `/tiers/` explains what OpenVox, Puppet Core, Puppet Enterprise, and PE Advanced
+- [x] **CONT-02**: `/tiers/` explains what OpenVox, Puppet Core, Puppet Enterprise, and PE Advanced
       each entitle a customer to, rendered from `loadTiers()` so the page and `/data/tiers.json`
       cannot disagree.
       *Source: initial route surface; JSON data endpoints constraint*
 
-- [ ] **CONT-03**: `/support/` states the product lifecycle, the support boundary, and where to
+- [x] **CONT-03**: `/support/` states the product lifecycle, the support boundary, and where to
       report issues — public tracker for documentation defects, private advisory or commercial
       channel for anything sensitive.
       *Source: initial route surface; `SECURITY.md` / `src/content/docs/security.md` reporting boundary*
@@ -141,12 +141,12 @@ copy. A "documentation site" needs documentation.
       `scripts/deploy-site.sh` within the same change.
       *Source: repository layout; cache-control policy; codebase architecture anti-pattern*
 
-- [ ] **CONT-06**: New content keeps the site's stated boundaries — it collects no credentials,
+- [x] **CONT-06**: New content keeps the site's stated boundaries — it collects no credentials,
       asserts no entitlement, loads no third-party runtime script, adds no analytics, and never
       presents planned behaviour (such as premium PCP/orchestrator workflows) as shipped.
       *Source: static-only site boundary; security and privacy constraints; `src/content/docs/getting-started.md`*
 
-- [ ] **CONT-07**: With the expanded content in place, axe still reports zero serious or critical
+- [x] **CONT-07**: With the expanded content in place, axe still reports zero serious or critical
       violations on `/`, `/tiers/`, `/compatibility/`, and `/docs/`, and keyboard navigation,
       visible focus, semantic landmarks, and heading order still hold.
       *Source: accessibility target constraint*
@@ -399,13 +399,13 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | PUB-06 | Phase 2 | Complete |
 | PUB-07 | Phase 2 | Complete |
 | GATE-02 | Phase 2 | Complete |
-| CONT-01 | Phase 3 | Pending |
-| CONT-02 | Phase 3 | Pending |
-| CONT-03 | Phase 3 | Pending |
+| CONT-01 | Phase 3 | Complete |
+| CONT-02 | Phase 3 | Complete |
+| CONT-03 | Phase 3 | Complete |
 | CONT-04 | Phase 3 | Complete |
 | CONT-05 | Phase 3 | Complete |
-| CONT-06 | Phase 3 | Pending |
-| CONT-07 | Phase 3 | Pending |
+| CONT-06 | Phase 3 | Complete |
+| CONT-07 | Phase 3 | Complete |
 | GATE-03 | Phase 3 | Complete |
 | COMP-01 | Phase 4 | Pending |
 | COMP-02 | Phase 4 | Pending |
