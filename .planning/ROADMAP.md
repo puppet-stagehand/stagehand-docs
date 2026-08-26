@@ -119,7 +119,7 @@ Plans:
   4. Axe reports zero serious or critical violations on `/`, `/tiers/`, `/compatibility/`, and `/docs/` with the new content in place, and every page is fully keyboard-operable with visible focus.
   5. No page collects credentials, asserts a customer entitlement, loads a third-party runtime script, or presents planned behaviour as behaviour that ships today.
 
-**Plans**: 3/4 plans executed
+**Plans**: 4/4 plans executed
 
 Plans:
 **Wave 1**
@@ -130,7 +130,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-04-PLAN.md — Phase-closing full `npm run verify` pass and automated CONT-06 boundary sweep
+- [x] 03-04-PLAN.md — Phase-closing full `npm run verify` pass and automated CONT-06 boundary sweep
 
 **UI hint**: yes
 
@@ -207,7 +207,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Infrastructure Role Ownership | 4/4 | Complete    | 2026-08-26 |
 | 2. First Real Publication | 5/5 | Complete    | 2026-08-26 |
-| 3. Real Documentation Content | 3/4 | In Progress|  |
+| 3. Real Documentation Content | 4/4 | In Progress|  |
 | 4. Evidence-Bearing Compatibility Register | 0/TBD | Not started | - |
 | 5. Production Launch | 0/TBD | Not started | - |
 
