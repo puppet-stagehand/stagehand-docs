@@ -113,6 +113,7 @@ resource "aws_iam_role_policy" "infrastructure_plan" {
         Action = [
           "cloudfront:DescribeFunction",
           "cloudfront:GetFunction",
+          "cloudfront:ListTagsForResource",
         ]
         Resource = "arn:${data.aws_partition.current.partition}:cloudfront::${data.aws_caller_identity.current.account_id}:function/stagehand-${each.key}-site-paths"
       },
@@ -391,6 +392,7 @@ resource "aws_iam_role_policy" "infrastructure_apply" {
           "cloudfront:UpdateFunction",
           "cloudfront:PublishFunction",
           "cloudfront:DeleteFunction",
+          "cloudfront:ListTagsForResource",
         ]
         Resource = "arn:${data.aws_partition.current.partition}:cloudfront::${data.aws_caller_identity.current.account_id}:function/stagehand-${each.key}-site-paths"
       },
