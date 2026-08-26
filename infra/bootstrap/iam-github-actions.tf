@@ -18,7 +18,7 @@ resource "aws_iam_role" "infrastructure_plan" {
       Condition = {
         StringEquals = {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-          "token.actions.githubusercontent.com:sub" = "repo:${local.github_repository}:environment:${each.key}-plan"
+          "token.actions.githubusercontent.com:sub" = "repo:${local.github_repository_oidc_subject}:environment:${each.key}-plan"
         }
       }
     }]
@@ -182,7 +182,7 @@ resource "aws_iam_role" "infrastructure_apply" {
       Condition = {
         StringEquals = {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-          "token.actions.githubusercontent.com:sub" = "repo:${local.github_repository}:environment:${each.key}"
+          "token.actions.githubusercontent.com:sub" = "repo:${local.github_repository_oidc_subject}:environment:${each.key}"
         }
       }
     }]

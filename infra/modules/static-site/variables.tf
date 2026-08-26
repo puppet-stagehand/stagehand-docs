@@ -66,6 +66,25 @@ variable "github_repository" {
   }
 }
 
+# GitHub issues OIDC token `sub` claims using this org/repo's immutable
+# numeric IDs, not the name-based "puppet-stagehand/stagehand-docs" slug —
+# confirmed via `gh api repos/puppet-stagehand/stagehand-docs/actions/oidc/customization/sub`.
+# Trust-policy `sub` conditions must match this exact prefix or every
+# AssumeRoleWithWebIdentity call fails with "Not authorized to perform
+# sts:AssumeRoleWithWebIdentity". `github_repository` above stays as the
+# name-based slug for anything that isn't a trust-policy condition; only
+# `github_repository_oidc_subject` feeds `token.actions.githubusercontent.com:sub`.
+variable "github_repository_oidc_subject" {
+  description = "GitHub's immutable-ID OIDC subject prefix (org@id/repo@id) for this repository, used only in the deploy role's trust-policy sub condition."
+  type        = string
+  default     = "puppet-stagehand@319121253/stagehand-docs@1342992313"
+
+  validation {
+    condition     = var.github_repository_oidc_subject == "puppet-stagehand@319121253/stagehand-docs@1342992313"
+    error_message = "github_repository_oidc_subject must be puppet-stagehand@319121253/stagehand-docs@1342992313 (GitHub's immutable-ID OIDC subject prefix for this repo)."
+  }
+}
+
 variable "github_oidc_provider_arn" {
   description = "ARN of the account's GitHub Actions OIDC provider."
   type        = string

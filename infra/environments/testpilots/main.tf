@@ -42,12 +42,13 @@ module "site" {
     aws.us_east_1 = aws.us_east_1
   }
 
-  environment              = "testpilots"
-  domain_name              = "testpilots.puppetstagehand.com"
-  alternate_domain_names   = []
-  hosted_zone_id           = var.hosted_zone_id
-  github_oidc_provider_arn = var.github_oidc_provider_arn
-  enable_redirect_function = true
+  environment                    = "testpilots"
+  domain_name                    = "testpilots.puppetstagehand.com"
+  alternate_domain_names         = []
+  hosted_zone_id                 = var.hosted_zone_id
+  github_oidc_provider_arn       = var.github_oidc_provider_arn
+  github_repository_oidc_subject = var.github_repository_oidc_subject
+  enable_redirect_function       = true
 }
 
 output "content_bucket_name" {

@@ -8,6 +8,10 @@ locals {
 
   github_repository = var.github_repository
 
+  # Immutable-ID OIDC subject prefix — the value trust-policy sub conditions
+  # must actually use. See variables.tf's github_repository_oidc_subject.
+  github_repository_oidc_subject = var.github_repository_oidc_subject
+
   # Single source of the six infrastructure roles' for_each. domain_names is
   # unused by the plan role and is carried here because plan 01-02's ACM and
   # Route 53 conditions consume it from the same source.

@@ -270,7 +270,7 @@ run "limits_github_trust_and_deployment_permissions" {
         Condition = {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-            "token.actions.githubusercontent.com:sub" = "repo:puppet-stagehand/stagehand-docs:environment:beta"
+            "token.actions.githubusercontent.com:sub" = "repo:puppet-stagehand@319121253/stagehand-docs@1342992313:environment:beta"
           }
         }
       }]
