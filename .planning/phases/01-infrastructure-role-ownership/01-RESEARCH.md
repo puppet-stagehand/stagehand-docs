@@ -898,7 +898,10 @@ source document still claims the site has three GitHub Environments"):
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+All four were carried into plan review and settled there. Each carries its resolution inline below.
+None remains open; nothing in this section is an outstanding decision for an executor to make.
 
 1. **How should CloudFront's unscopable creates be characterised in the runbook?**
    - *What we know:* `cloudfront:CreateDistribution`, `CreateCachePolicy`, `CreateResponseHeadersPolicy`,
@@ -912,6 +915,12 @@ source document still claims the site has three GitHub Environments"):
      explicitly and why. ADR-0003 rule 3 authorises amending the runbook ("the runbook is amended or the
      OpenTofu is corrected"). Surface this to the user at plan review — it is a visible weakening of a
      documented security promise, even though it is the honest description of what AWS permits.
+   - **RESOLVED — user decision D-A.** Recommendation accepted. The five actions are granted unscoped
+     and isolated in one named `Sid` (plan 01-02, threat `T-01-09`, disposition `accept`), and plan
+     01-04 Task 1 amends `github-environments.md` to name them, name the three compensating controls,
+     and replace the unkeepable tag-scoping clause with the levers actually used. D-A also forbids the
+     two escape hatches: no create-time tag conditions on those five actions, and no splitting of the
+     apply role.
 
 2. **Should the plan role's `Describe`/`Get`/`List` set be enumerated or wildcarded per service?**
    - *What we know:* `docs/operations/github-environments.md:97-99` says "relevant `Get`, `List`, and
@@ -921,6 +930,10 @@ source document still claims the site has three GitHub Environments"):
    - *Recommendation:* enumerate. The `tofu test` assertion style the repo already uses makes an
      enumerated list cheap to maintain and a wildcard impossible to sneak past review. If the character
      budget forces a choice, wildcard only the read-only verbs, never a mutating one.
+   - **RESOLVED — user decision D-C.** Recommendation accepted in full; the fallback was not needed.
+     Every read verb is enumerated, not wildcarded, in both role families — plan 01-01 Task 2 for the
+     plan roles and plan 01-02 Task 2 for the apply roles — and the exact-JSON `tofu test` assertions
+     pin the lists positionally, so adding a wildcard is a test failure rather than a silent widening.
 
 3. **Should the apply role carry a permissions boundary on `iam:CreateRole`?**
    - *What we know:* the apply role must create and policy-attach `stagehand-<env>-site-deploy`. That is
@@ -931,6 +944,10 @@ source document still claims the site has three GitHub Environments"):
      maintenance surface; ADR-0003 did not call for one.
    - *Recommendation:* out of scope for v1 (nothing requires it), but worth capturing as an OPS-class v2
      backlog item. Do not silently add it — it changes the deploy role's effective permissions.
+   - **RESOLVED — user decision D-C.** Recommendation accepted. No permissions boundary is added in
+     this phase. The residual is recorded explicitly rather than silently, as plan 01-02 threat
+     `T-01-15` with disposition `accept`, and captured as backlog requirement `OPS-13` in
+     `.planning/REQUIREMENTS.md`. An executor must not add a boundary policy opportunistically.
 
 4. **Does `beta`/`stable` need the `us-east-1` ACM scoping condition?**
    - *What we know:* the certificate is created through the `aws.us_east_1` provider alias
@@ -939,6 +956,11 @@ source document still claims the site has three GitHub Environments"):
      services. It is cheap, verified-supported, and materially narrows the role. Cross-check against the
      runbook's §4 tag-audit prose, which already reasons in two regions
      (`aws-bootstrap.md:121-128`).
+   - **RESOLVED — plan 01-02 Task 2.** Recommendation accepted and implemented rather than escalated:
+     the ACM statement carries an `aws:RequestedRegion` condition pinning it to `us-east-1`, matching
+     the `aws.us_east_1` provider alias the certificate is created through. This needed no user
+     decision — it narrows the role without changing any stated posture, so it is an implementation
+     detail of INFRA-03 rather than a choice between options.
 
 ---
 
