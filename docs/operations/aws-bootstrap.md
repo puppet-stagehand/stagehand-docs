@@ -24,6 +24,26 @@ putting an AWS account number or credential in Git.
 
 ## 1. Create the shared bootstrap resources
 
+The Route 53 public hosted zone for `puppetstagehand.com` does not exist by default; this
+repository's OpenTofu never creates it, so create it first:
+
+```sh
+aws route53 create-hosted-zone --name puppetstagehand.com --caller-reference "<unique-value>"
+```
+
+The returned `HostedZone.Id` (with its `/hostedzone/` prefix stripped) is the value
+`hosted_zone_id` expects below. Creating this zone does not delegate the live domain to it —
+`puppetstagehand.com`'s registrar/NS records keep pointing wherever they already do until a
+separate, deliberate, human-driven cutover happens later. The zone exists inert until then; see
+phase 2's `02-CONTEXT.md` decisions D-01 through D-03 for the full reasoning.
+
+Bootstrap also expects a GitHub Actions OIDC provider for
+`https://token.actions.githubusercontent.com` to already exist in the target AWS account —
+`infra/bootstrap/main.tf` looks it up with a data source rather than creating one, because an
+account can only have one such provider per URL and this one may already be owned by another
+product sharing the account. If the account genuinely has none yet, create it once, out of band,
+before the first bootstrap apply.
+
 Copy the ignored values file, edit all three bucket names and the `hosted_zone_id` entry — the
 public hosted zone for `puppetstagehand.com` — in the same pass. `hosted_zone_id` is a required
 variable with no default; supply it either by filling in that `terraform.tfvars` entry or by
@@ -160,5 +180,9 @@ audit by comparing the plan/state resource list and inspecting those services di
 
 Creating, validating, or testing this scaffold does not run `tofu apply` and does not perform a
 DNS cutover. Only an operator running the explicit apply commands above—or approving the
-protected infrastructure workflow—changes AWS. No scaffold task has performed an AWS apply or
-DNS cutover.
+protected infrastructure workflow—changes AWS. No scaffold task has performed a DNS cutover.
+
+As of phase 2, `infra/bootstrap/` has been applied for real: the hosted zone, three state
+buckets, and the six plan/apply IAM roles exist in AWS under a confirmed non-root identity. This
+does not extend to `testpilots`, `beta`, or `stable` — those environment applies remain separate,
+later plans/phases, and the live domain's NS delegation still has not moved.
