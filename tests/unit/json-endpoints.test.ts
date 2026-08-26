@@ -6,7 +6,8 @@ const expectedTiers = [
   {
     id: 'openvox',
     name: 'OpenVox',
-    audience: 'OpenVox operators running the community-governed, open-source continuation of Puppet',
+    audience:
+      'OpenVox operators running the community-governed, open-source continuation of Puppet',
     entitlement: 'community',
     summary:
       'OpenVox is the community-governed, open-source continuation of Puppet — the free path for operators managing their own environment without a commercial support contract.',
