@@ -51,13 +51,7 @@ ${pathsBlock}
 function runChecker(distDir: string, scriptPath: string) {
   return spawnSync(
     process.execPath,
-    [
-      '--import',
-      'tsx',
-      resolve('scripts/check-invalidation-coverage.ts'),
-      distDir,
-      scriptPath,
-    ],
+    ['--import', 'tsx', resolve('scripts/check-invalidation-coverage.ts'), distDir, scriptPath],
     { cwd: process.cwd(), encoding: 'utf8' },
   );
 }
