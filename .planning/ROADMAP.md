@@ -56,7 +56,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. An operator following `aws-bootstrap.md` and `github-environments.md` is no longer told to provision the plan and apply roles by hand, and is still told that bootstrap is human-applied under CODEOWNERS review plus a second administrator's review of the trust and permission policies.
   4. `npm run verify` is green on `main` and full OpenTofu verification passes — including new `tofu test` coverage asserting each role's trust subject and permission scope, and `./scripts/check-tofu-tags.sh` covering the bootstrap root.
   5. A reader of ADR-0002 is pointed to ADR-0003 for role ownership, and no source document still claims the site has three GitHub Environments or pins a TypeScript version the repository does not use.
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Tracer: the three infrastructure plan roles, wired from one `for_each` local through trust policy, state-scoped permission policy, and published output
+- [ ] 01-02-PLAN.md — The three apply roles: state write, scoped S3/IAM/CloudFront/ACM/Route 53 authority, and the named unscopable CloudFront exception
+- [ ] 01-03-PLAN.md — Bootstrap tags sourced from the shared local, and `check-tofu-tags.sh` extended to cover the bootstrap root
+- [ ] 01-04-PLAN.md — Runbooks moved onto the OpenTofu-owned role path, plus the three stale sentences closed (DRIFT-01/02/03)
 
 ### Phase 2: First Real Publication
 **Goal**: The delivery pipeline actually publishes — a merge to `main` puts bytes behind a CloudFront distribution and something answers on the internet.
@@ -115,7 +121,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Infrastructure Role Ownership | 0/TBD | Not started | - |
+| 1. Infrastructure Role Ownership | 0/4 | Planned | - |
 | 2. First Real Publication | 0/TBD | Not started | - |
 | 3. Real Documentation Content | 0/TBD | Not started | - |
 | 4. Evidence-Bearing Compatibility Register | 0/TBD | Not started | - |
