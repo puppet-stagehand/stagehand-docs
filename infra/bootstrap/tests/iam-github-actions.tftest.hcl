@@ -36,7 +36,7 @@ run "binds_each_plan_role_to_exactly_one_plan_environment" {
           Condition = {
             StringEquals = {
               "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-              "token.actions.githubusercontent.com:sub" = "repo:puppet-stagehand/stagehand-docs:environment:${e}-plan"
+              "token.actions.githubusercontent.com:sub" = "repo:puppet-stagehand@319121253/stagehand-docs@1342992313:environment:${e}-plan"
             }
           }
         }]
@@ -169,7 +169,7 @@ run "binds_each_apply_role_to_exactly_one_apply_environment" {
           Condition = {
             StringEquals = {
               "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-              "token.actions.githubusercontent.com:sub" = "repo:puppet-stagehand/stagehand-docs:environment:${e}"
+              "token.actions.githubusercontent.com:sub" = "repo:puppet-stagehand@319121253/stagehand-docs@1342992313:environment:${e}"
             }
           }
         }]

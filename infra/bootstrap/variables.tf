@@ -48,6 +48,28 @@ variable "github_repository" {
   }
 }
 
+# GitHub issues OIDC token `sub` claims using this org/repo's immutable
+# numeric IDs, not the name-based "puppet-stagehand/stagehand-docs" slug —
+# confirmed via `gh api repos/puppet-stagehand/stagehand-docs/actions/oidc/customization/sub`
+# (use_immutable_subject: false is the *token format* default; GitHub's actual
+# sub claim still carries the "org@id/repo@id" prefix for this org/repo, with
+# no org-level override present). Trust-policy `sub` conditions must match
+# this exact prefix or every AssumeRoleWithWebIdentity call fails with
+# "Not authorized to perform sts:AssumeRoleWithWebIdentity", regardless of how
+# correct the name-based condition looks on paper. `github_repository` above
+# stays as the name-based slug for anything that isn't a trust-policy
+# condition; only `github_repository_oidc_subject` feeds `token.actions.githubusercontent.com:sub`.
+variable "github_repository_oidc_subject" {
+  description = "GitHub's immutable-ID OIDC subject prefix (org@id/repo@id) for this repository, used only in trust-policy sub conditions."
+  type        = string
+  default     = "puppet-stagehand@319121253/stagehand-docs@1342992313"
+
+  validation {
+    condition     = var.github_repository_oidc_subject == "puppet-stagehand@319121253/stagehand-docs@1342992313"
+    error_message = "github_repository_oidc_subject must be puppet-stagehand@319121253/stagehand-docs@1342992313 (GitHub's immutable-ID OIDC subject prefix for this repo)."
+  }
+}
+
 variable "hosted_zone_id" {
   description = "Route 53 hosted zone that owns every Stagehand DNS name."
   type        = string
