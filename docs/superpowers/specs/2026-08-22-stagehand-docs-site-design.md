@@ -17,8 +17,10 @@ static site; no application server is required.
 ## Success criteria
 
 - `www.puppetstagehand.com` serves a fast, responsive, accessible static site.
-- Product tiers and compatibility claims are customer-facing and generated
-  from schema-validated structured data.
+- Product tiers are customer-facing and generated from schema-validated
+  structured data. Compatibility claims follow the same schema-validated
+  pipeline once they complete evidence review (ADR-0001); until then, the
+  register renders its supported empty state.
 - Pull requests run build, content, link, accessibility, and OpenTofu checks.
 - Merges deploy through short-lived GitHub OIDC credentials; no long-lived AWS
   access keys are stored in GitHub.
@@ -74,7 +76,10 @@ Initial routes:
 - `/docs/security/` — credentials, transports, and trust model overview.
 - `/support/` — lifecycle, support boundary, and issue-reporting links.
 
-The initial scaffold includes representative content for every route. Bulk
+The initial scaffold includes representative content for every route; for the
+compatibility register specifically, representative data means representative
+fixture data exercised by the test suite, together with a rendered empty state
+on the published site — it does not mean seeded customer-facing records. Bulk
 migration from `puppet-console/docs` is a later reviewed content project and is
 not part of the scaffold.
 
@@ -266,7 +271,7 @@ OpenTofu plan, while apply requires the matching protected GitHub Environment.
 ## Delivery boundary
 
 The scaffold is complete when the repository contains the working static site,
-representative content and compatibility data, validation tests, GitHub Actions
+representative content and compatibility test fixtures, validation tests, GitHub Actions
 workflows, OpenTofu modules/environment roots, and operator documentation for
 first-time AWS bootstrap and deployment. Actual AWS apply and DNS cutover require
 the target AWS account and are a separate authorized production operation.
