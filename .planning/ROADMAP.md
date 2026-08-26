@@ -89,7 +89,7 @@ Plans:
   4. Opening a same-repository pull request that touches `infra/**` produces a real, value-free OpenTofu plan summary for review through a plan Environment, behind the job-level same-repository guard.
   5. The repository still contains no AWS account identifier, credential, state file, saved plan, `terraform.tfvars`, or `backend.hcl` value, and the bootstrap state sits in its approved custody location with one named owner.
 
-**Plans**: 4/5 plans executed
+**Plans**: 5/5 plans executed
 
 Plans:
 **Wave 1**
@@ -104,7 +104,7 @@ Plans:
 **Wave 3** *(blocked on Wave 2 completion)*
 
 - [x] 02-04-PLAN.md — Harden deploy.yml's soft-skip into a hard fail, add the commit-stamp and live-verification steps (GATE-02), and land a real, verified deploy of testpilots
-- [ ] 02-05-PLAN.md — Prove the infrastructure plan job on a real same-repo PR, and run the phase-closing no-secrets-committed sweep
+- [x] 02-05-PLAN.md — Prove the infrastructure plan job on a real same-repo PR, and run the phase-closing no-secrets-committed sweep
 
 ### Phase 3: Real Documentation Content
 
@@ -194,7 +194,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure Role Ownership | 4/4 | Complete    | 2026-08-26 |
-| 2. First Real Publication | 4/5 | In Progress|  |
+| 2. First Real Publication | 5/5 | In Progress|  |
 | 3. Real Documentation Content | 0/TBD | Not started | - |
 | 4. Evidence-Bearing Compatibility Register | 0/TBD | Not started | - |
 | 5. Production Launch | 0/TBD | Not started | - |
