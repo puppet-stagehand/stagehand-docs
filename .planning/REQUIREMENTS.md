@@ -258,7 +258,7 @@ constraint in PROJECT.md and a success criterion of every phase, not a requireme
       *Source: `docs/operations/release.md` release evidence; failure behavior and recovery
       constraint; verified 2026-08-26 — `deploy.yml` soft-gates every AWS step and reports success when skipped*
 
-- [ ] **GATE-03**: A test fails when a route present in the built output is missing from the
+- [x] **GATE-03**: A test fails when a route present in the built output is missing from the
       invalidation list in `scripts/deploy-site.sh`.
       *Source: cache-control policy; route/cache coupling recorded in the codebase map*
 
@@ -406,7 +406,7 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | CONT-05 | Phase 3 | Pending |
 | CONT-06 | Phase 3 | Pending |
 | CONT-07 | Phase 3 | Pending |
-| GATE-03 | Phase 3 | Pending |
+| GATE-03 | Phase 3 | Complete |
 | COMP-01 | Phase 4 | Pending |
 | COMP-02 | Phase 4 | Pending |
 | COMP-03 | Phase 4 | Pending |
