@@ -172,3 +172,11 @@ None — no external service configuration required. Nothing was applied to AWS;
 ---
 *Phase: 01-infrastructure-role-ownership*
 *Completed: 2026-08-26*
+
+## Self-Check: PASSED
+
+All created files verified present on disk (`infra/bootstrap/locals.tf`,
+`infra/bootstrap/iam-github-actions.tf`,
+`infra/bootstrap/tests/iam-github-actions.tftest.hcl`, this SUMMARY). All
+three commit hashes (`7f614cf`, `c44e486`, `3344507`) verified present in
+`git log`.
