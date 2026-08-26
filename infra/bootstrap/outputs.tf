@@ -12,3 +12,8 @@ output "infrastructure_plan_role_arns" {
   description = "Plan role ARNs keyed by Stagehand environment; paste into the matching -plan GitHub Environment."
   value       = { for environment, role in aws_iam_role.infrastructure_plan : environment => role.arn }
 }
+
+output "infrastructure_apply_role_arns" {
+  description = "Apply role ARNs keyed by Stagehand environment; paste into the matching apply GitHub Environment."
+  value       = { for environment, role in aws_iam_role.infrastructure_apply : environment => role.arn }
+}
