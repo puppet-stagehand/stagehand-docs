@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { loadCompatibility } from '../../src/lib/data/compatibility';
 import { GET as getCompatibility } from '../../src/pages/data/compatibility.json';
 import { GET as getTiers } from '../../src/pages/data/tiers.json';
 
@@ -70,8 +71,10 @@ describe('GET /data/tiers.json', () => {
 });
 
 describe('GET /data/compatibility.json', () => {
-  it('returns an honest empty production registry in the deterministic download contract', async () => {
-    // Catches invented compatibility claims, build timestamps, wrong MIME type, or unstable bytes.
+  it('returns the real compatibility registry in the deterministic download contract', async () => {
+    // Catches a wrapper response, a build timestamp, or a mismatch between the JSON endpoint and
+    // loadCompatibility()'s own output — not just the register being empty.
+    const expectedRecords = loadCompatibility();
     const response = getCompatibility();
     const text = await response.text();
 
@@ -79,7 +82,7 @@ describe('GET /data/compatibility.json', () => {
     expect(response.headers.get('content-type')).toBe('application/json; charset=utf-8');
     expect(text.endsWith('\n')).toBe(true);
     expect(text).toBe(
-      `${JSON.stringify({ schema_version: 1, generated_at: null, records: [] }, null, 2)}\n`,
+      `${JSON.stringify({ schema_version: 1, generated_at: null, records: expectedRecords }, null, 2)}\n`,
     );
   });
 });
