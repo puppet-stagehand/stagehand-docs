@@ -263,7 +263,7 @@
 }
 
 .compat-status--unsupported {
-  color: #ff8b8b;
+  color: var(--stagehand-danger);
 }
 
 .compat-cards {

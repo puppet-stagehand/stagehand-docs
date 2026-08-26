@@ -4,6 +4,7 @@ $stagehand-cyan: #20d7e7;
 $stagehand-purple: #6f3cc3;
 $stagehand-off-white: #f4f7f9;
 $stagehand-warning: #ffbd4a;
+$stagehand-danger: #ff8b8b;
 
 $primary: $stagehand-cyan;
 $secondary: $stagehand-purple;
@@ -50,6 +51,7 @@ $grid-gutter-width: 2rem;
   --stagehand-purple: #{$stagehand-purple};
   --stagehand-off-white: #{$stagehand-off-white};
   --stagehand-warning: #{$stagehand-warning};
+  --stagehand-danger: #{$stagehand-danger};
   --stagehand-line: #{rgba($stagehand-off-white, 0.14)};
   --stagehand-line-strong: #{rgba($stagehand-off-white, 0.26)};
   --stagehand-muted: #{rgba($stagehand-off-white, 0.68)};
