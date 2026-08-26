@@ -6,34 +6,50 @@ const expectedTiers = [
   {
     id: 'openvox',
     name: 'OpenVox',
-    audience: 'Community users',
+    audience: 'OpenVox operators running the community-governed, open-source continuation of Puppet',
     entitlement: 'community',
-    summary: 'Community-oriented deployments using OpenVox.',
-    features: ['Community deployment guidance'],
+    summary:
+      'OpenVox is the community-governed, open-source continuation of Puppet — the free path for operators managing their own environment without a commercial support contract.',
+    features: [
+      'Environment visibility and Bolt-native execution guidance for OpenVox deployments, the same as every other tier',
+      'Support routed through the public Stagehand Docs issue tracker for documentation and reproducible defects',
+    ],
   },
   {
     id: 'puppet-core',
     name: 'Puppet Core',
-    audience: 'Puppet Core users',
+    audience: "Puppet Core customers running Puppet's foundational commercial-adjacent product",
     entitlement: 'commercial',
-    summary: 'Commercial Puppet Core deployments.',
-    features: ['Core deployment guidance'],
+    summary:
+      "Puppet Core is Puppet's foundational commercial-adjacent product — core Puppet without Puppet Enterprise's console, role-based access control, and orchestration reporting layer.",
+    features: [
+      'Environment visibility and Bolt-native execution guidance for Puppet Core deployments, the same as every other tier',
+      'Support routed through your own commercial support channel, per your Puppet agreement',
+    ],
   },
   {
     id: 'puppet-enterprise',
     name: 'Puppet Enterprise',
-    audience: 'Puppet Enterprise users',
+    audience: "Puppet Enterprise customers running Puppet's commercial platform",
     entitlement: 'commercial',
-    summary: 'Puppet Enterprise deployments.',
-    features: ['Enterprise deployment guidance'],
+    summary:
+      "Puppet Enterprise is Puppet's commercial platform — core Puppet plus a console, role-based access control, and orchestration reporting.",
+    features: [
+      'Environment visibility and Bolt-native execution guidance for Puppet Enterprise deployments, the same as every other tier',
+      'Support routed through your own commercial support channel, per your Puppet agreement',
+    ],
   },
   {
     id: 'pe-advanced',
     name: 'Puppet Enterprise Advanced',
-    audience: 'Advanced Puppet Enterprise users',
+    audience: "PE Advanced customers on Puppet Enterprise's higher package tier",
     entitlement: 'advanced',
-    summary: 'Advanced Puppet Enterprise deployments.',
-    features: ['Advanced deployment guidance'],
+    summary:
+      'PE Advanced is the higher Puppet Enterprise package tier, built on the same Puppet Enterprise platform.',
+    features: [
+      'Environment visibility and Bolt-native execution guidance for PE Advanced deployments, the same as every other tier',
+      'Support routed through your own commercial support channel, per your Puppet agreement',
+    ],
   },
 ];
 
