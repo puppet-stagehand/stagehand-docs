@@ -6,17 +6,17 @@ const capabilities = [
   {
     title: 'Environment visibility',
     description:
-      'Bring the shape and state of Puppet environments into one legible operational view.',
+      'See the state of your Puppet and OpenVox environments from one place, instead of piecing it together from separate SSH sessions and scattered reports.',
   },
   {
     title: 'Bolt-native execution',
     description:
-      'Frame repeatable work around the Bolt tools and execution patterns operators already know.',
+      "Work runs through Puppet Bolt's own task and plan execution model over SSH — the same execution path documented in the getting started and security guides, not a second, unnamed automation surface.",
   },
   {
     title: 'Explicit support boundaries',
     description:
-      'Read product tiers, platform compatibility, and limitations as maintained customer-facing records.',
+      "Know exactly what your tier includes, and what's still primary-evidence-verified in the compatibility register, before you rely on it.",
   },
 ] as const;
 ---
@@ -37,6 +37,7 @@ const capabilities = [
         </p>
         <div class="control-hero__actions">
           <a class="btn btn-primary" href="/docs/getting-started/">Get started</a>
+          <a class="btn btn-outline-light" href="/tiers/">View tiers</a>
           <a class="btn btn-outline-light" href="/compatibility/">Check compatibility</a>
         </div>
       </div>
