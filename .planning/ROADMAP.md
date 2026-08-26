@@ -89,12 +89,12 @@ Plans:
   4. Opening a same-repository pull request that touches `infra/**` produces a real, value-free OpenTofu plan summary for review through a plan Environment, behind the job-level same-repository guard.
   5. The repository still contains no AWS account identifier, credential, state file, saved plan, `terraform.tfvars`, or `backend.hcl` value, and the bootstrap state sits in its approved custody location with one named owner.
 
-**Plans**: 5 plans
+**Plans**: 1/5 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Tracer: authenticate a non-root identity, create the Route 53 hosted zone, and apply bootstrap for real, capturing every output the rest of the phase depends on
+- [x] 02-01-PLAN.md — Tracer: authenticate a non-root identity, create the Route 53 hosted zone, and apply bootstrap for real, capturing every output the rest of the phase depends on
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -194,7 +194,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Infrastructure Role Ownership | 4/4 | Complete    | 2026-08-26 |
-| 2. First Real Publication | 0/5 | Not started | - |
+| 2. First Real Publication | 1/5 | In Progress|  |
 | 3. Real Documentation Content | 0/TBD | Not started | - |
 | 4. Evidence-Bearing Compatibility Register | 0/TBD | Not started | - |
 | 5. Production Launch | 0/TBD | Not started | - |
