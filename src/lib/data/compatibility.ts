@@ -31,7 +31,9 @@ const schemaPath = sourceDataPath(
   'src/data/schema/compatibility.schema.json',
 );
 
-const identityOf = (record: CompatibilityRecord) =>
+export const identityOf = (
+  record: Pick<CompatibilityRecord, 'platform' | 'puppet_versions' | 'tier' | 'provider' | 'transport'>,
+) =>
   [record.platform, record.puppet_versions, record.tier, record.provider, record.transport].join(
     '|',
   );

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "records": [
+    { "id": "scale-01" },
+    { "id": "scale-02" },
+    { "id": "scale-03" },
+    { "id": "scale-04" },
+    { "id": "scale-05" },
+    { "id": "scale-06" },
+    { "id": "scale-07" },
+    { "id": "scale-08" },
+    { "id": "scale-09" },
+    { "id": "scale-10" },
+    { "id": "scale-11" },
+    { "id": "scale-12" },
+    { "id": "scale-13" },
+    { "id": "scale-14" },
+    { "id": "scale-15" },
+    { "id": "scale-16" },
+    { "id": "scale-17" },
+    { "id": "scale-18" },
+    { "id": "scale-19" },
+    { "id": "scale-20" },
+    { "id": "scale-21" },
+    { "id": "scale-22" },
+    { "id": "scale-23" },
+    { "id": "scale-24" }
+  ]
+}
