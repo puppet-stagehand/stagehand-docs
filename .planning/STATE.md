@@ -4,16 +4,16 @@ milestone: v0.2.3
 current_phase: 05
 current_phase_name: Production Launch
 status: executing
-stopped_at: Completed 05-05-PLAN.md
-last_updated: "2026-08-27T16:54:49.038Z"
+stopped_at: Completed 05-06-PLAN.md
+last_updated: "2026-08-27T17:29:55.665Z"
 last_activity: 2026-08-26
 last_activity_desc: Phase 05 execution started
-state_head: fceba54439f632ae9f2048c5be6d3df97a023d37
+state_head: cf8bfafb7526ea09119a924d6edb47e7d8df4a4d
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 30
-  completed_plans: 25
+  completed_plans: 26
 ---
 
 # Project State
@@ -29,7 +29,7 @@ published unless a maintainer reviewed primary evidence for it and dated that re
 ## Current Position
 
 Phase: 05 (Production Launch) — EXECUTING
-Plan: 7 of 11
+Plan: 8 of 11
 Status: Ready to execute
 Last activity: 2026-08-26 — Phase 05 execution started
 
@@ -68,6 +68,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05 P09 | ~10min | 3 tasks | 2 files |
 | Phase 05 P03 | 8min | 2 tasks | 1 files |
 | Phase 05 P05 | 45min | 3 tasks | 3 files |
+| Phase 05 P06 | 12min | 3 tasks | 0 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,8 @@ Three locked ADRs constrain all phases and are not re-openable:
 - [Phase 05]: [Phase 05] 05-09: gh api PUT private-vulnerability-reporting worked on first try (no UI fallback needed); real security@puppetstagehand.com mailbox test passed (Matthew Stone, Gmail msg 1a043a633065adae), closing LAUN-04 and unblocking 05-08's DNS cutover precondition.
 - [Phase 05]: [Phase 05]: 05-03: Verified beta's CloudFront default domain serves testpilots's exact promoted SHA (18967ca1f806cca030173f7d0f7f16d61940b20c) via check-live-deployment.ts, then recorded the first real Promotions row in RELEASE-EVIDENCE.md linking Deploy site run 33079159653.
 - [Phase 05]: [Phase 05]: 05-05: stable environment applied for real (two-SAN ACM cert, CloudFront w/ apex-redirect enabled, S3, IAM, Route53) after an unplanned CAA-authorization blocker; www.puppetstagehand.com's CAA record is now Amazon-only (non-Amazon CAs removed, intentional given imminent 05-08 cutover) — custom hostnames and apex redirect explicitly NOT yet publicly reachable pending 05-08's registrar NS flip
+- [Phase 05]: [Phase 05]: 05-06: stable's GitHub Environment now carries beta's exact SHA (18967ca1...) via a concluded Deploy site run (33097584579); manual UI approval by the maintainer resolved the self-review block on first try, matching 05-02's beta precedent exactly.
+- [Phase 05]: [Phase 05]: 05-06: discovered gh run/deployments API head_sha/.sha reports the ref tip at workflow_dispatch trigger time, NOT the git_sha input actually deployed — read the live site's deployed-commit.txt or the run's own step logs instead, reusable for 05-08/05-10/05-11.
 
 ### Pending Todos
 
@@ -135,6 +138,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-27T16:54:48.616Z
-Stopped at: Completed 05-05-PLAN.md
+Last session: 2026-08-27T17:29:55.211Z
+Stopped at: Completed 05-06-PLAN.md
 Resume file: None

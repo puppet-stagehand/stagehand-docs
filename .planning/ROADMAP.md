@@ -212,7 +212,7 @@ Plans:
   4. A maintainer can roll stable back to a known-good SHA through the protected dispatch path and see the previous pages restored, without editing a single S3 object by hand.
   5. A non-maintainer can file a private security advisory and reach a monitored address whose delivery has been tested and the test recorded.
 
-**Plans**: 6/11 plans executed
+**Plans**: 7/11 plans executed
 
 Plans:
 **Wave 1**
@@ -235,7 +235,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4 completion)*
 
-- [ ] 05-06-PLAN.md — Wire stable's deploy variables and dispatch beta's SHA
+- [x] 05-06-PLAN.md — Wire stable's deploy variables and dispatch beta's SHA
 
 **Wave 6** *(blocked on Wave 5 completion)*
 
@@ -264,7 +264,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. First Real Publication | 5/5 | Complete    | 2026-08-26 |
 | 3. Real Documentation Content | 4/4 | Complete    | 2026-08-26 |
 | 4. Evidence-Bearing Compatibility Register | 6/6 | In Progress|  |
-| 5. Production Launch | 6/11 | In Progress|  |
+| 5. Production Launch | 7/11 | In Progress|  |
 
 ## Coverage
 
