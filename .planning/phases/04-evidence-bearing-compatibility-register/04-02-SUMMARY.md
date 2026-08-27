@@ -157,3 +157,17 @@ None - no external service configuration required.
 ---
 *Phase: 04-evidence-bearing-compatibility-register*
 *Completed: 2026-08-27*
+
+## Self-Check: PASSED
+
+- FOUND: scripts/check-e2e-build-isolation.ts
+- FOUND: src/lib/data/compatibility.ts
+- FOUND: tests/unit/e2e-build-isolation.test.ts
+- FOUND: tests/fixtures/build-output/scale/data/compatibility.json
+- FOUND: tests/fixtures/build-output/production-leaked/data/compatibility.json
+- FOUND: commit 7878be5 (test: RED)
+- FOUND: commit 30b41a0 (feat: GREEN)
+- FOUND: commit 9c820a4 (docs: deferred-items)
+- `npx vitest run tests/unit/e2e-build-isolation.test.ts` — 2 passed
+- `npx tsc --noEmit` — zero errors
+- `git diff` against `src/data/schema/compatibility.schema.json` — no output (byte-identical, unchanged)
