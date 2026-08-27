@@ -196,7 +196,7 @@ assume emptiness.
       unaltered and un-cherry-picked.
       *Source: `docs/operations/release.md` release invariant; deployment promotion flow constraint*
 
-- [ ] **LAUN-02**: The `stable` environment is applied as a deliberate DNS cutover;
+- [x] **LAUN-02**: The `stable` environment is applied as a deliberate DNS cutover;
       `www.puppetstagehand.com` serves the site and `puppetstagehand.com` redirects to it without
       changing the path or the query string.
       *Source: OpenTofu environment enum and host mapping; `docs/operations/release.md`*
@@ -415,7 +415,7 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | DRIFT-04 | Phase 4 | Complete |
 | GATE-04 | Phase 4 | Complete |
 | LAUN-01 | Phase 5 | Complete |
-| LAUN-02 | Phase 5 | Pending |
+| LAUN-02 | Phase 5 | Complete |
 | LAUN-03 | Phase 5 | Complete |
 | LAUN-04 | Phase 5 | Complete |
 | LAUN-05 | Phase 5 | Pending |
