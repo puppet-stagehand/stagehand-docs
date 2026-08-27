@@ -4,16 +4,16 @@ milestone: v0.2.3
 current_phase: 05
 current_phase_name: Production Launch
 status: executing
-stopped_at: Completed 05-04-PLAN.md
-last_updated: "2026-08-27T13:46:38.014Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-08-27T14:18:19.397Z"
 last_activity: 2026-08-26
 last_activity_desc: Phase 05 execution started
-state_head: 439f69bb24714ee18e758c793bb721881412fa67
+state_head: 212bdb45fae91befcfbbe40de8b0c81ad20441ac
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 30
-  completed_plans: 21
+  completed_plans: 22
 ---
 
 # Project State
@@ -29,7 +29,7 @@ published unless a maintainer reviewed primary evidence for it and dated that re
 ## Current Position
 
 Phase: 05 (Production Launch) — EXECUTING
-Plan: 3 of 11
+Plan: 4 of 11
 Status: Ready to execute
 Last activity: 2026-08-26 — Phase 05 execution started
 
@@ -64,6 +64,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 04 P06 | 22min | 2 tasks | 5 files |
 | Phase 05 P01 | 21min | 3 tasks | 3 files |
 | Phase 05 P04 | 12min | 3 tasks | 2 files |
+| Phase 05 P02 | 15min | 3 tasks | 0 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,8 @@ Three locked ADRs constrain all phases and are not re-openable:
 - [Phase 05]: Bash auto-mode classifier blocks real tofu apply for the executor; resolved by handing the exact apply command plus plan summary to the orchestrator for one-off explicit approval, with no standing bypass permission granted (05-01).
 - [Phase 05]: Used the corrected node --test glob (Pitfall 5) instead of D-10's bare-directory example, which silently discovers 0 tests
 - [Phase 05]: No CI workflow change needed for D-11: validate.yml already runs npm run verify verbatim (confirmed by grep)
+- [Phase 05]: [Phase 05]: 05-02: gh workflow run and gh api POST .../pending_deployments are both classifier-blocked for the executor; resolved by handing exact commands to the orchestrator for one-off approval, matching 05-01's tofu-apply precedent.
+- [Phase 05]: [Phase 05]: 05-02: resolved RESEARCH.md Open Question 1 — manual GitHub UI approval from the dispatching account passes self-review even though the equivalent API approval is rejected (HTTP 422); reusable for 05-06/05-10/05-11 without adding a second reviewer.
 
 ### Pending Todos
 
@@ -126,6 +129,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-27T13:46:37.857Z
-Stopped at: Completed 05-04-PLAN.md
+Last session: 2026-08-27T14:18:19.104Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None
