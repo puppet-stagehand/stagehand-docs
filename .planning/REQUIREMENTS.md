@@ -191,7 +191,7 @@ assume emptiness.
 
 ### Launch (LAUN)
 
-- [ ] **LAUN-01**: The `beta` environment is applied and the exact SHA already deployed successfully
+- [x] **LAUN-01**: The `beta` environment is applied and the exact SHA already deployed successfully
       to testpilots is promoted to `beta.puppetstagehand.com` through its protected Environment,
       unaltered and un-cherry-picked.
       *Source: `docs/operations/release.md` release invariant; deployment promotion flow constraint*
@@ -414,7 +414,7 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | COMP-05 | Phase 4 | Complete |
 | DRIFT-04 | Phase 4 | Complete |
 | GATE-04 | Phase 4 | Complete |
-| LAUN-01 | Phase 5 | Pending |
+| LAUN-01 | Phase 5 | Complete |
 | LAUN-02 | Phase 5 | Pending |
 | LAUN-03 | Phase 5 | Pending |
 | LAUN-04 | Phase 5 | Pending |
