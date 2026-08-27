@@ -1,4 +1,6 @@
 .worktrees/
+.gsd/
+graphify-out/
 node_modules/
 dist/
 .e2e-dist/

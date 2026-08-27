@@ -32,7 +32,10 @@ const schemaPath = sourceDataPath(
 );
 
 export const identityOf = (
-  record: Pick<CompatibilityRecord, 'platform' | 'puppet_versions' | 'tier' | 'provider' | 'transport'>,
+  record: Pick<
+    CompatibilityRecord,
+    'platform' | 'puppet_versions' | 'tier' | 'provider' | 'transport'
+  >,
 ) =>
   [record.platform, record.puppet_versions, record.tier, record.provider, record.transport].join(
     '|',
@@ -65,9 +68,7 @@ export const loadCompatibility = (
   const useScaleFixtures =
     process.env.STAGEHAND_SCALE_FIXTURES === '1' && options.path === undefined;
   const useE2eFixtures =
-    !useScaleFixtures &&
-    process.env.STAGEHAND_E2E_FIXTURES === '1' &&
-    options.path === undefined;
+    !useScaleFixtures && process.env.STAGEHAND_E2E_FIXTURES === '1' && options.path === undefined;
   const source =
     options.path ?? (useScaleFixtures ? scaleDataPath : useE2eFixtures ? e2eDataPath : dataPath);
   const document = loadYaml<CompatibilityDocument>(
@@ -79,7 +80,8 @@ export const loadCompatibility = (
   const recordIds = new Set<string>();
   const identities = new Set<string>();
   const currentDay = utcToday(
-    options.today ?? (useScaleFixtures ? scaleValidationDate : useE2eFixtures ? e2eValidationDate : new Date()),
+    options.today ??
+      (useScaleFixtures ? scaleValidationDate : useE2eFixtures ? e2eValidationDate : new Date()),
   );
 
   for (const record of document.records) {

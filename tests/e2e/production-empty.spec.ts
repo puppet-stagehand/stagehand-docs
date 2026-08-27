@@ -12,9 +12,7 @@ test("reflects the real production register's empty-or-populated state", async (
       page.getByRole('heading', { level: 2, name: 'Verification queue is empty' }),
     ).toBeVisible();
     await expect(
-      page.getByText(
-        'No compatibility claims have completed Stagehand release verification yet.',
-      ),
+      page.getByText('No compatibility claims have completed Stagehand release verification yet.'),
     ).toBeVisible();
     await expect(page.getByRole('link', { name: 'contact support' })).toHaveAttribute(
       'href',

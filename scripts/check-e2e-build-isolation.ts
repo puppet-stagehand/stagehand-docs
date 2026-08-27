@@ -19,7 +19,11 @@ interface CompatibilityOutput {
 }
 
 const asLeakCheckRecord = (value: unknown, source: string): LeakCheckRecord => {
-  if (typeof value !== 'object' || value === null || typeof (value as { id?: unknown }).id !== 'string') {
+  if (
+    typeof value !== 'object' ||
+    value === null ||
+    typeof (value as { id?: unknown }).id !== 'string'
+  ) {
     throw new Error(`Invalid compatibility record in ${source}`);
   }
   const record = value as Record<string, unknown>;
