@@ -30,7 +30,7 @@ that the separately built files are byte-identical.
 For each environment, open the home, tiers, compatibility, documentation, and support routes;
 confirm the two JSON data endpoints return the reviewed build; and check that a nonexistent route
 uses the branded 404 response. For stable, also confirm the apex host redirects to
-`www.puppetstagehand.com` without changing the path or query. Treat these checks as release
+`www.puppet-stagehand.com` without changing the path or query. Treat these checks as release
 evidence and record them with the deployment.
 
 The workflow rejects a short SHA, a SHA not reachable from `origin/main`, and a manual dispatch

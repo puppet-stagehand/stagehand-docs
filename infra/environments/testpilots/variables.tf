@@ -4,12 +4,15 @@ variable "aws_region" {
   default     = "us-east-2"
 }
 
-# Must be the same Route 53 hosted zone 02-01 (phase 02-first-real-publication,
-# plan 01) created for puppetstagehand.com (Z00971888M7QXUPNS7H8) — this
+# Was originally the Route 53 hosted zone 02-01 (phase 02-first-real-publication,
+# plan 01) created for puppetstagehand.com (Z00971888M7QXUPNS7H8). Mid-phase-05,
+# the domain changed to puppet-stagehand.com (Cloudflare's registrar tier does
+# not support custom nameservers), registered directly through Route 53
+# Registrar with its own hosted zone (Z038247013307I1BORY2O) — this
 # environment root never creates or owns the zone itself, only records within
 # it (see infra/bootstrap/main.tf for the zone resource).
 variable "hosted_zone_id" {
-  description = "Route 53 hosted zone ID for puppetstagehand.com."
+  description = "Route 53 hosted zone ID for puppet-stagehand.com."
   type        = string
 }
 

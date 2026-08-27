@@ -5,7 +5,7 @@ variable "aws_region" {
 }
 
 variable "hosted_zone_id" {
-  description = "Route 53 hosted zone ID for puppetstagehand.com."
+  description = "Route 53 hosted zone ID for puppet-stagehand.com."
   type        = string
 }
 

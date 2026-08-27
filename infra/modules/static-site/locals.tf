@@ -9,7 +9,7 @@ locals {
   enable_apex_redirect = (
     var.enable_redirect_function &&
     var.environment == "stable" &&
-    contains(local.aliases, "puppetstagehand.com") &&
-    contains(local.aliases, "www.puppetstagehand.com")
+    contains(local.aliases, "puppet-stagehand.com") &&
+    contains(local.aliases, "www.puppet-stagehand.com")
   )
 }

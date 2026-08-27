@@ -93,7 +93,7 @@ describe('built external-link policy', () => {
 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('Broken canonical first-party built links');
-    expect(result.stderr).toContain('https://www.puppetstagehand.com/missing/');
+    expect(result.stderr).toContain('https://www.puppet-stagehand.com/missing/');
     expect(result.stdout).not.toContain('→ crawling');
   });
 

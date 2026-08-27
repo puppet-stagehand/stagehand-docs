@@ -31,8 +31,8 @@ mock_provider "aws" {
 
 variables {
   environment              = "beta"
-  domain_name              = "beta.puppetstagehand.com"
-  alternate_domain_names   = ["docs-beta.puppetstagehand.com"]
+  domain_name              = "beta.puppet-stagehand.com"
+  alternate_domain_names   = ["docs-beta.puppet-stagehand.com"]
   hosted_zone_id           = "Z0123456789ABC"
   github_oidc_provider_arn = "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
   enable_redirect_function = true
@@ -194,8 +194,8 @@ run "enables_apex_redirect_only_for_the_stable_apex_configuration" {
 
   variables {
     environment            = "stable"
-    domain_name            = "www.puppetstagehand.com"
-    alternate_domain_names = ["puppetstagehand.com"]
+    domain_name            = "www.puppet-stagehand.com"
+    alternate_domain_names = ["puppet-stagehand.com"]
   }
 
   assert {
@@ -214,8 +214,8 @@ run "allows_the_redirect_function_to_be_disabled" {
 
   variables {
     environment              = "stable"
-    domain_name              = "www.puppetstagehand.com"
-    alternate_domain_names   = ["puppetstagehand.com"]
+    domain_name              = "www.puppet-stagehand.com"
+    alternate_domain_names   = ["puppet-stagehand.com"]
     enable_redirect_function = false
   }
 

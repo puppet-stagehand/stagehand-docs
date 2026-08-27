@@ -9,7 +9,7 @@ const allowedNonClaimLinks = new Set([
   'https://github.com/puppet-stagehand/stagehand-docs/issues/new',
   'https://github.com/puppet-stagehand/stagehand-docs/security/advisories/new',
 ]);
-const canonicalBase = new URL('https://www.puppetstagehand.com/');
+const canonicalBase = new URL('https://www.puppet-stagehand.com/');
 const nonNetworkSchemes = new Set(['data:', 'mailto:', 'tel:']);
 
 const htmlFiles = async (directory: string): Promise<string[]> => {

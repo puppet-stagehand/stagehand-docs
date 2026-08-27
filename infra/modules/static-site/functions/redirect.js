@@ -32,8 +32,8 @@ function handler(event) {
   var query = encodeQueryString(request.querystring);
   var apexRedirectEnabled = __ENABLE_APEX_REDIRECT__;
 
-  if (apexRedirectEnabled && request.headers.host.value.toLowerCase() === 'puppetstagehand.com') {
-    return redirect('https://www.puppetstagehand.com' + uri + query);
+  if (apexRedirectEnabled && request.headers.host.value.toLowerCase() === 'puppet-stagehand.com') {
+    return redirect('https://www.puppet-stagehand.com' + uri + query);
   }
 
   var finalSegment = uri.substring(uri.lastIndexOf('/') + 1);

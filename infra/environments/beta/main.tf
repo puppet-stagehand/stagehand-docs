@@ -43,7 +43,7 @@ module "site" {
   }
 
   environment              = "beta"
-  domain_name              = "beta.puppetstagehand.com"
+  domain_name              = "beta.puppet-stagehand.com"
   alternate_domain_names   = []
   hosted_zone_id           = var.hosted_zone_id
   github_oidc_provider_arn = var.github_oidc_provider_arn

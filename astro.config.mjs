@@ -8,7 +8,7 @@ export default defineConfig({
       : process.env.STAGEHAND_E2E_FIXTURES === '1'
         ? './.e2e-dist'
         : './dist',
-  site: 'https://www.puppetstagehand.com/',
+  site: 'https://www.puppet-stagehand.com/',
   trailingSlash: 'always',
   build: { assets: 'assets', format: 'directory' },
   markdown: {

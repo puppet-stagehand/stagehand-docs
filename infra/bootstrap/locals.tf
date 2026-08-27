@@ -17,13 +17,13 @@ locals {
   # Route 53 conditions consume it from the same source.
   site = {
     testpilots = {
-      domain_names = ["testpilots.puppetstagehand.com"]
+      domain_names = ["testpilots.puppet-stagehand.com"]
     }
     beta = {
-      domain_names = ["beta.puppetstagehand.com"]
+      domain_names = ["beta.puppet-stagehand.com"]
     }
     stable = {
-      domain_names = ["www.puppetstagehand.com", "puppetstagehand.com"]
+      domain_names = ["www.puppet-stagehand.com", "puppet-stagehand.com"]
     }
   }
 }

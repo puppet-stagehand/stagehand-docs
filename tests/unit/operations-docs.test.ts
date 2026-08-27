@@ -207,10 +207,10 @@ describe('operations documentation contract', () => {
     const security = read('SECURITY.md');
     const environments = read('docs/operations/github-environments.md');
     expect(environments).toContain('Enable private vulnerability reporting');
-    expect(security).toContain('security@puppetstagehand.com');
+    expect(security).toContain('security@puppet-stagehand.com');
     expect(security).toMatch(/fallback only/u);
     expect(environments).toMatch(
-      /security@puppetstagehand\.com[\s\S]*provision[\s\S]*monitor[\s\S]*test delivery[\s\S]*before publication/iu,
+      /security@puppet-stagehand\.com[\s\S]*provision[\s\S]*monitor[\s\S]*test delivery[\s\S]*before publication/iu,
     );
     expect(security).not.toMatch(/(?:is|currently) monitored/iu);
     expect(security).toContain('Do not open a public issue');

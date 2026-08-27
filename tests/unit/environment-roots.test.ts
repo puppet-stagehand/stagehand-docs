@@ -5,9 +5,9 @@ import { resolve } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 const environments = {
-  testpilots: 'testpilots.puppetstagehand.com',
-  beta: 'beta.puppetstagehand.com',
-  stable: 'www.puppetstagehand.com',
+  testpilots: 'testpilots.puppet-stagehand.com',
+  beta: 'beta.puppet-stagehand.com',
+  stable: 'www.puppet-stagehand.com',
 } as const;
 
 const readRoot = (environment: keyof typeof environments) =>
@@ -76,7 +76,7 @@ describe('OpenTofu environment roots', () => {
   it('enables the apex alias only in stable while retaining clean-path redirects everywhere', () => {
     const stable = readRoot('stable');
 
-    expect(stable).toMatch(/alternate_domain_names\s+=\s+\["puppetstagehand\.com"\]/u);
+    expect(stable).toMatch(/alternate_domain_names\s+=\s+\["puppet-stagehand\.com"\]/u);
 
     for (const environment of Object.keys(environments) as (keyof typeof environments)[]) {
       const root = readRoot(environment);
@@ -84,7 +84,7 @@ describe('OpenTofu environment roots', () => {
 
       if (environment !== 'stable') {
         expect(root).toMatch(/alternate_domain_names\s+=\s+\[\]/u);
-        expect(root).not.toContain('"puppetstagehand.com"');
+        expect(root).not.toContain('"puppet-stagehand.com"');
       }
     }
   });

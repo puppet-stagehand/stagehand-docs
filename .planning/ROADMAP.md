@@ -17,7 +17,7 @@ review — means ACM validation, DNS delegation, OAC bucket policy, and the redi
 exercised before anything customer-facing depends on them. Phases 3 and 4 then pour in real
 substance: documentation an operator can actually follow, and compatibility records that survived
 primary-evidence review. Phase 5 promotes that verified commit through beta to
-`www.puppetstagehand.com` and proves a rollback works.
+`www.puppet-stagehand.com` and proves a rollback works.
 
 Two verified facts shape the sequence. Publishing the first real compatibility record currently
 **breaks the build** — four gates hard-assert an empty production register — so Phase 4 must rework
@@ -43,7 +43,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: First Real Publication** - Bootstrap and testpilots applied for real; the deploy pipeline stops silently skipping (completed 2026-08-26)
 - [x] **Phase 3: Real Documentation Content** - An operator can learn the product, pick a tier, and run it without leaving the site (completed 2026-08-26)
 - [x] **Phase 4: Evidence-Bearing Compatibility Register** - The register carries checkable claims, and the gates stop assuming it is empty (completed 2026-08-26)
-- [ ] **Phase 5: Production Launch** - www.puppetstagehand.com serves customers, with apex redirect and a proven rollback
+- [ ] **Phase 5: Production Launch** - www.puppet-stagehand.com serves customers, with apex redirect and a proven rollback
 
 ## Phase Details
 
@@ -201,13 +201,13 @@ Plans:
 
 ### Phase 5: Production Launch
 
-**Goal**: Customers read the site at `www.puppetstagehand.com`, and a maintainer can take a bad release back.
+**Goal**: Customers read the site at `www.puppet-stagehand.com`, and a maintainer can take a bad release back.
 **Depends on**: Phase 4
 **Requirements**: LAUN-01, LAUN-02, LAUN-03, LAUN-04, LAUN-05, GATE-05
 **Success Criteria** (what must be TRUE):
 
-  1. A customer can load `https://www.puppetstagehand.com/` and read the tiers, the compatibility register, and the documentation.
-  2. `https://puppetstagehand.com/` and any path beneath it redirect to the `www` host with the path and query string intact — and a test enforces that automatically, instead of a human checking it once per release.
+  1. A customer can load `https://www.puppet-stagehand.com/` and read the tiers, the compatibility register, and the documentation.
+  2. `https://puppet-stagehand.com/` and any path beneath it redirect to the `www` host with the path and query string intact — and a test enforces that automatically, instead of a human checking it once per release.
   3. The commit verified in testpilots is the commit serving beta, and the commit verified in beta is the commit serving stable, with recorded release evidence at each step and no commit altered between environments.
   4. A maintainer can roll stable back to a known-good SHA through the protected dispatch path and see the previous pages restored, without editing a single S3 object by hand.
   5. A non-maintainer can file a private security advisory and reach a monitored address whose delivery has been tested and the test recorded.

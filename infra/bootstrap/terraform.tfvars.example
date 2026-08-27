@@ -7,6 +7,6 @@ state_bucket_names = {
   stable     = "puppet-stagehand-stable-tofu-state"
 }
 
-# Route 53 hosted zone that owns puppetstagehand.com. Replace with the real
+# Route 53 hosted zone that owns puppet-stagehand.com. Replace with the real
 # zone ID before applying.
 hosted_zone_id = "Z0123456789ABCDEFGHIJ"

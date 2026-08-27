@@ -70,7 +70,7 @@ Define only these variables in each matching plan Environment:
 | `AWS_REGION`                       | Regional AWS resources and the S3 state backend; currently `us-east-2` unless deliberately changed |
 | `AWS_INFRASTRUCTURE_PLAN_ROLE_ARN` | Read, refresh, state-lock, and describe-only role for pull-request plans                           |
 | `OIDC_PROVIDER_ARN`                | Shared `github_oidc_provider_arn` bootstrap output                                                 |
-| `HOSTED_ZONE_ID`                   | Route 53 hosted zone containing `puppetstagehand.com`                                              |
+| `HOSTED_ZONE_ID`                   | Route 53 hosted zone containing `puppet-stagehand.com`                                             |
 | `TOFU_STATE_BUCKET`                | Matching `state_bucket_names` bootstrap output                                                     |
 
 Define only these variables in each matching deployment/apply Environment:
@@ -81,7 +81,7 @@ Define only these variables in each matching deployment/apply Environment:
 | `AWS_DEPLOY_ROLE_ARN`               | Content upload and CloudFront invalidation role created by that environment's site stack                                                                                                                                                                                                                                                                          |
 | `AWS_INFRASTRUCTURE_APPLY_ROLE_ARN` | Protected role allowed to create, update, and delete that environment's infrastructure                                                                                                                                                                                                                                                                            |
 | `OIDC_PROVIDER_ARN`                 | Shared `github_oidc_provider_arn` bootstrap output                                                                                                                                                                                                                                                                                                                |
-| `HOSTED_ZONE_ID`                    | Route 53 hosted zone containing `puppetstagehand.com`                                                                                                                                                                                                                                                                                                             |
+| `HOSTED_ZONE_ID`                    | Route 53 hosted zone containing `puppet-stagehand.com`                                                                                                                                                                                                                                                                                                            |
 | `TOFU_STATE_BUCKET`                 | Matching `state_bucket_names` bootstrap output                                                                                                                                                                                                                                                                                                                    |
 | `CONTENT_BUCKET`                    | `content_bucket_name` output from the environment site stack                                                                                                                                                                                                                                                                                                      |
 | `CLOUDFRONT_DISTRIBUTION_ID`        | `distribution_id` output from the environment site stack                                                                                                                                                                                                                                                                                                          |
@@ -149,7 +149,7 @@ GitHub.
 Enable private vulnerability reporting before publishing the repository. Open
 **Settings → Security → Code security** and enable private
 vulnerability reporting. Confirm that a non-maintainer can see **Security → Advisories → Report a
-vulnerability**. For `security@puppetstagehand.com`, the repository administrators must provision
+vulnerability**. For `security@puppet-stagehand.com`, the repository administrators must provision
 the address, monitor it, and test delivery before publication. Record the successful test and
 retest it after mail-provider or repository-ownership changes. Keep this fallback in
 [SECURITY.md](../../SECURITY.md) current, and never redirect reporters to a public issue or

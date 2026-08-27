@@ -16,7 +16,7 @@ procedures in [release.md](release.md); no concurrent-write guarantee is claimed
 Recorded per [release.md](release.md)'s promotion procedure: for each environment, confirm home,
 tiers, compatibility, docs, and support routes render the reviewed build; confirm both JSON data
 endpoints (`tiers.json`, `compat.json`) reflect it; confirm a nonexistent route uses the branded
-404; and, for `stable` only, confirm the apex host redirects to `www.puppetstagehand.com` without
+404; and, for `stable` only, confirm the apex host redirects to `www.puppet-stagehand.com` without
 altering path or query.
 
 | Date (UTC) | Environment | SHA | Home | Tiers | Compat | Docs | Support | tiers.json | compat.json | 404 | Apex redirect (stable only) | Notes |
@@ -36,7 +36,7 @@ prior pages were actually restored.
 ## Security advisory delivery test
 
 Recorded per [github-environments.md](github-environments.md)'s "Enable private security reports"
-procedure: a real test message sent to the `security@puppetstagehand.com` fallback mailbox and
+procedure: a real test message sent to the `security@puppet-stagehand.com` fallback mailbox and
 confirmation of its receipt, before the production host serves customers (LAUN-04).
 
 | Date (UTC) | Channel | Test performed | Result | Recorded by |

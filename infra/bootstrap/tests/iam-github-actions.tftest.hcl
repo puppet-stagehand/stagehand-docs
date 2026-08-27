@@ -356,7 +356,7 @@ run "scopes_each_apply_role_to_its_own_environment_resources" {
     condition = (
       length(setintersection(
         toset(local.apply_record_names.stable),
-        toset(["www.puppetstagehand.com", "puppetstagehand.com"])
+        toset(["www.puppet-stagehand.com", "puppet-stagehand.com"])
       )) == 2 &&
       length(local.apply_record_names.stable) >= length(local.apply_record_names.beta)
     )

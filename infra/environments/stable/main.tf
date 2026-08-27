@@ -43,8 +43,8 @@ module "site" {
   }
 
   environment              = "stable"
-  domain_name              = "www.puppetstagehand.com"
-  alternate_domain_names   = ["puppetstagehand.com"]
+  domain_name              = "www.puppet-stagehand.com"
+  alternate_domain_names   = ["puppet-stagehand.com"]
   hosted_zone_id           = var.hosted_zone_id
   github_oidc_provider_arn = var.github_oidc_provider_arn
   enable_redirect_function = true

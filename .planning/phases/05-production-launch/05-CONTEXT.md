@@ -183,5 +183,49 @@ None — discussion stayed within phase scope.
 
 ---
 
+<addendum>
+## Addendum: domain changed mid-phase (2026-08-27)
+
+**Status:** D-01 through D-03 above are superseded for the domain *name* only. The underlying
+pattern they establish — do not touch live NS delegation carelessly, verify before claiming
+anything is live, gate the irreversible step behind explicit human action — still applies and
+still governs how any future DNS-affecting change in this phase must be handled. The original text
+above is left intact as the historical record of what was decided on 2026-08-26 and why; it is not
+rewritten.
+
+**What changed:** Mid-execution of this phase (during 05-08-PLAN.md), the maintainer discovered
+that `puppetstagehand.com`'s registrar (Cloudflare) does not support custom nameservers on its
+current tier, so the registrar-NS-flip plan D-01/D-02/D-03 assumed is not executable as written.
+Rather than change registrars or upgrade the Cloudflare tier, the maintainer registered a new
+domain, `puppet-stagehand.com` (note the hyphen), directly through Route 53 Registrar.
+
+**Why this resolves the blast-radius concern D-01 raised, without an NS flip:**
+- `puppet-stagehand.com` is a brand-new registration, not a redelegation of an existing live
+  domain — there is no unrelated currently-serving site (like the Cloudflare-routed
+  `puppetlabs-seteam.github.io` D-01 described) at risk of being taken down.
+- Because the domain was registered directly through Route 53 Registrar, its hosted zone
+  (`Z038247013307I1BORY2O`) and nameservers (`ns-267.awsdns-33.com`,
+  `ns-1808.awsdns-34.co.uk`, `ns-641.awsdns-16.net`, `ns-1453.awsdns-53.org`) are already
+  correctly delegated and authoritative at the registry — confirmed via `dig +trace NS
+  puppet-stagehand.com`. There is no separate, deliberate, human-driven registrar cutover left to
+  perform for this domain; the D-01/D-02/D-03 checkpoint they describe has no remaining action to
+  gate.
+- The **old** domain's hosted zone (`Z00971888M7QXUPNS7H8`, `puppetstagehand.com`) is left
+  untouched by this change. Its DNS records are not directly edited; Terraform re-apply retires
+  the old domain-specific resources automatically once the domain variables the environment roots
+  and bootstrap `site` map reference are updated to `puppet-stagehand.com` (done in this
+  addendum's accompanying commit) and the infrastructure workflow is re-applied.
+
+**What is NOT yet resolved by this addendum:** this addendum only documents the domain-name
+change and the accompanying repository-wide rename (Terraform variables, docs, tests). It performs
+no `terraform`/`tofu` apply, no AWS mutation, and no DNS cutover. Plan 05-08 (HALTED, see
+`05-08-SUMMARY.md` and `.planning/STATE.md`) still needs re-scoping against `puppet-stagehand.com`
+before LAUN-02 can close — the actual `stable` environment apply against the new domain, its
+release-evidence entry, and the apex-redirect verification remain outstanding work for a
+follow-up plan.
+
+</addendum>
+
 *Phase: 05-production-launch*
 *Context gathered: 2026-08-26*
+*Addendum: 2026-08-27 (domain change, see above)*

@@ -8,7 +8,7 @@ reproduction steps, impact, and a safe way to contact you. Do not open a public 
 unpatched vulnerability.
 
 If **Report a vulnerability** is unavailable, do not publish the details. Use
-`security@puppetstagehand.com` as a fallback only. Delivery to this address was verified with a
+`security@puppet-stagehand.com` as a fallback only. Delivery to this address was verified with a
 real send-and-receive test on 2026-08-27 (see the Security advisory delivery test log in
 [docs/operations/RELEASE-EVIDENCE.md](docs/operations/RELEASE-EVIDENCE.md)). Do not open a public
 issue or discussion as a fallback.

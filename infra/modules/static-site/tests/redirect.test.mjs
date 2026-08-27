@@ -26,7 +26,7 @@ function request(uri, host, querystring = {}) {
 
 test('stable apex redirect preserves the URI and query string', () => {
   const result = context.handler(
-    request('/guides/install/', 'puppetstagehand.com', {
+    request('/guides/install/', 'puppet-stagehand.com', {
       ref: { value: 'docs' },
       topic: { value: 'clean paths' },
     }),
@@ -35,20 +35,20 @@ test('stable apex redirect preserves the URI and query string', () => {
   assert.equal(result.statusCode, 301);
   assert.equal(
     result.headers.location.value,
-    'https://www.puppetstagehand.com/guides/install/?ref=docs&topic=clean%20paths',
+    'https://www.puppet-stagehand.com/guides/install/?ref=docs&topic=clean%20paths',
   );
 });
 
 test('stable apex redirect compares the host case-insensitively', () => {
-  const result = context.handler(request('/tiers/', 'PuppetStagehand.COM'));
+  const result = context.handler(request('/tiers/', 'Puppet-Stagehand.COM'));
 
   assert.equal(result.statusCode, 301);
-  assert.equal(result.headers.location.value, 'https://www.puppetstagehand.com/tiers/');
+  assert.equal(result.headers.location.value, 'https://www.puppet-stagehand.com/tiers/');
 });
 
 test('extensionless paths redirect to a trailing slash and preserve query', () => {
   const result = context.handler(
-    request('/guides/install', 'beta.puppetstagehand.com', {
+    request('/guides/install', 'beta.puppet-stagehand.com', {
       source: { value: 'nav' },
     }),
   );
@@ -58,14 +58,14 @@ test('extensionless paths redirect to a trailing slash and preserve query', () =
 });
 
 test('trailing-slash paths are rewritten to index.html for the origin', () => {
-  const event = request('/guides/install/', 'beta.puppetstagehand.com');
+  const event = request('/guides/install/', 'beta.puppet-stagehand.com');
   const result = context.handler(event);
 
   assert.equal(result.uri, '/guides/install/index.html');
 });
 
 test('requests with file extensions pass through unchanged', () => {
-  const event = request('/assets/app.css', 'beta.puppetstagehand.com');
+  const event = request('/assets/app.css', 'beta.puppet-stagehand.com');
   const result = context.handler(event);
 
   assert.equal(result.uri, '/assets/app.css');
@@ -73,7 +73,7 @@ test('requests with file extensions pass through unchanged', () => {
 
 test('disabled apex behavior does not redirect the apex host to www', () => {
   const disabledContext = loadFunction(false);
-  const result = disabledContext.handler(request('/', 'puppetstagehand.com'));
+  const result = disabledContext.handler(request('/', 'puppet-stagehand.com'));
 
   assert.equal(result.uri, '/index.html');
 });

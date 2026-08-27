@@ -24,16 +24,16 @@ putting an AWS account number or credential in Git.
 
 ## 1. Create the shared bootstrap resources
 
-The Route 53 public hosted zone for `puppetstagehand.com` does not exist by default; this
+The Route 53 public hosted zone for `puppet-stagehand.com` does not exist by default; this
 repository's OpenTofu never creates it, so create it first:
 
 ```sh
-aws route53 create-hosted-zone --name puppetstagehand.com --caller-reference "<unique-value>"
+aws route53 create-hosted-zone --name puppet-stagehand.com --caller-reference "<unique-value>"
 ```
 
 The returned `HostedZone.Id` (with its `/hostedzone/` prefix stripped) is the value
 `hosted_zone_id` expects below. Creating this zone does not delegate the live domain to it —
-`puppetstagehand.com`'s registrar/NS records keep pointing wherever they already do until a
+`puppet-stagehand.com`'s registrar/NS records keep pointing wherever they already do until a
 separate, deliberate, human-driven cutover happens later. The zone exists inert until then; see
 phase 2's `02-CONTEXT.md` decisions D-01 through D-03 for the full reasoning.
 
@@ -45,7 +45,7 @@ product sharing the account. If the account genuinely has none yet, create it on
 before the first bootstrap apply.
 
 Copy the ignored values file, edit all three bucket names and the `hosted_zone_id` entry — the
-public hosted zone for `puppetstagehand.com` — in the same pass. `hosted_zone_id` is a required
+public hosted zone for `puppet-stagehand.com` — in the same pass. `hosted_zone_id` is a required
 variable with no default; supply it either by filling in that `terraform.tfvars` entry or by
 exporting `TF_VAR_hosted_zone_id` in the shell that runs the plan — either path is sufficient, but
 the `plan` command below aborts without one. Then initialize and review a saved plan:
@@ -135,7 +135,7 @@ files are temporary review output and must also be deleted after review rather t
 Before applying, inspect every create, update, replacement, deletion, Route 53 record, and tag.
 Stop if a taggable environment resource lacks either required tag. Repeat with the `beta` root,
 then the `stable` root. Applying `stable` creates the public records for
-`www.puppetstagehand.com` and the apex redirect, so treat that apply as a deliberate DNS cutover.
+`www.puppet-stagehand.com` and the apex redirect, so treat that apply as a deliberate DNS cutover.
 
 After each apply, capture the values needed by its GitHub Environment:
 

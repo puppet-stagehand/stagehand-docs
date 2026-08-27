@@ -2,7 +2,7 @@
 
 ## What This Is
 
-The customer-facing website for Puppet Stagehand at `www.puppetstagehand.com` — product
+The customer-facing website for Puppet Stagehand at `www.puppet-stagehand.com` — product
 positioning, tier entitlements, an evidence-backed platform compatibility register, and
 version-controlled operator documentation. It is a fully static Astro site published to AWS S3
 behind CloudFront, with its infrastructure, promotion pipeline, and claim-review process kept in the
@@ -62,7 +62,7 @@ This milestone: take the scaffold to a launched documentation site.
 - [ ] Real documentation and marketing content replaces the thin scaffold copy
 - [ ] The compatibility register carries claims that survived primary-evidence review, and the
       quality gates that assume an empty register are reworked to keep ADR-0001's guarantee
-- [ ] `beta` and `stable` are applied, and `www.puppetstagehand.com` serves customers with a proven
+- [ ] `beta` and `stable` are applied, and `www.puppet-stagehand.com` serves customers with a proven
       rollback path
 
 ### Out of Scope
