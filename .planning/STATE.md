@@ -4,11 +4,11 @@ milestone: v0.2.3
 current_phase: 05
 current_phase_name: Production Launch
 status: executing
-stopped_at: Completed 05-07-PLAN.md
-last_updated: "2026-08-27T17:41:28.226Z"
-last_activity: 2026-08-26
-last_activity_desc: Phase 05 execution started
-state_head: 731c798f35ab7e45d7ff5a878026b846e9ca20ab
+stopped_at: HALTED 05-08-PLAN.md — production domain changed mid-plan (puppetstagehand.com -> puppet-stagehand.com); needs re-scoping, not resumption
+last_updated: "2026-08-27T20:06:45.674Z"
+last_activity: 2026-08-27
+last_activity_desc: Phase 05 Plan 08 halted mid-execution — domain change invalidated the plan's scope
+state_head: 8acc33113bc346b526cbac5fb9cfc170cb0aa9a6
 progress:
   total_phases: 7
   completed_phases: 4
@@ -29,9 +29,11 @@ published unless a maintainer reviewed primary evidence for it and dated that re
 ## Current Position
 
 Phase: 05 (Production Launch) — EXECUTING
-Plan: 9 of 11
-Status: Ready to execute
-Last activity: 2026-08-26 — Phase 05 execution started
+Plan: 08 — HALTED (not complete; needs re-scoping against puppet-stagehand.com, not resumption)
+Status: Blocked — awaiting orchestrator/maintainer decision on re-scoping the domain migration
+Last activity: 2026-08-27 — Plan 05-08 halted mid-execution (production domain changed from
+puppetstagehand.com to puppet-stagehand.com; see 05-08-SUMMARY.md and Blockers/Concerns below).
+Plans 05-01 through 05-07 and 05-09 remain complete and unaffected.
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -128,6 +130,8 @@ None yet.
   `standard`, sequential phase IDs, no `project_code`. Run `/gsd-config` if different settings are
   wanted before planning begins.
 
+- Plan 05-08 HALTED (not complete): puppetstagehand.com's registrar (Cloudflare) does not support custom nameservers, so the maintainer switched the production domain to puppet-stagehand.com (already registered and configured in Route 53) mid-plan, before the registrar NS flip checkpoint was resolved. Task 1's Route 53 NS values for puppetstagehand.com are real but moot. No cutover, apex-redirect check, or RELEASE-EVIDENCE.md/aws-bootstrap.md/Terraform change occurred. 05-08 needs re-scoping against puppet-stagehand.com before LAUN-02 can close. See 05-08-SUMMARY.md.
+
 ### Roadmap Evolution
 
 - Phase 04.1 inserted after Phase 4: Gated Tester Access — shared-password edge gate over testing guides and installer
@@ -141,6 +145,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-27T17:41:27.312Z
-Stopped at: Completed 05-07-PLAN.md
-Resume file: None
+Last session: 2026-08-27T20:06:45.674Z
+Stopped at: HALTED 05-08-PLAN.md — production domain changed mid-plan (puppetstagehand.com ->
+puppet-stagehand.com); see .planning/phases/05-production-launch/05-08-SUMMARY.md
+Resume file: None — 05-08 needs to be re-scoped/re-planned against puppet-stagehand.com, not resumed
+as-is.
