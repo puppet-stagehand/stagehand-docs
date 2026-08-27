@@ -147,7 +147,7 @@ Plans:
   4. `/data/compatibility.json` returns exactly the records the rendered page shows, with `generated_at` still `null`.
   5. When no claim qualifies, `/compatibility/` still renders the honest empty state, no fixture record has been promoted to fill it, and every sentence in the design specification about "representative content" agrees with that boundary.
 
-**Plans**: 3/6 plans executed
+**Plans**: 6/6 plans executed
 **UI hint**: yes
 
 Plans:
@@ -159,12 +159,12 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02-PLAN.md — TDD: rework the build-isolation checker from "production is empty" to "production has no fixture-derived record", with a real negative-path leak-rejection test
-- [ ] 04-03-PLAN.md — Complete GATE-04's realistic-volume proof: filter correctness, 44px touch targets, keyboard tab order, long-text wrap backstops, and no-JS parity at 27 records
+- [x] 04-02-PLAN.md — TDD: rework the build-isolation checker from "production is empty" to "production has no fixture-derived record", with a real negative-path leak-rejection test
+- [x] 04-03-PLAN.md — Complete GATE-04's realistic-volume proof: filter correctness, 44px touch targets, keyboard tab order, long-text wrap backstops, and no-JS parity at 27 records
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 04-06-PLAN.md — Phase-closing full `npm run verify` pass and confirmation that the published register stayed honestly empty
+- [x] 04-06-PLAN.md — Phase-closing full `npm run verify` pass and confirmation that the published register stayed honestly empty
 
 ### Phase 04.1: Gated Tester Access (INSERTED)
 
@@ -224,7 +224,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Infrastructure Role Ownership | 4/4 | Complete    | 2026-08-26 |
 | 2. First Real Publication | 5/5 | Complete    | 2026-08-26 |
 | 3. Real Documentation Content | 4/4 | Complete    | 2026-08-26 |
-| 4. Evidence-Bearing Compatibility Register | 3/6 | In Progress|  |
+| 4. Evidence-Bearing Compatibility Register | 6/6 | In Progress|  |
 | 5. Production Launch | 0/TBD | Not started | - |
 
 ## Coverage

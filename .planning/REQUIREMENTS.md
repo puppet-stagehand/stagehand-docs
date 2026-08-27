@@ -157,7 +157,7 @@ The register is the site's primary value proposition and currently holds zero re
 governs what may be published; this milestone earns the first entries and unblocks the gates that
 assume emptiness.
 
-- [ ] **COMP-01**: Each published record has completed the review in
+- [x] **COMP-01**: Each published record has completed the review in
       `docs/operations/compatibility-claims.md` — a primary-source HTTPS `evidence_url` (vendor
       documentation covering the claimed versions and behaviour, reproducible test evidence, or a
       Stagehand release artifact), `last_verified` set to the day the evidence was actually reviewed,
@@ -165,13 +165,13 @@ assume emptiness.
       `limitations`, and CODEOWNER approval.
       *Source: `docs/operations/compatibility-claims.md`; ADR-0001 rule 3 (LOCKED)*
 
-- [ ] **COMP-02**: `src/data/compatibility.yaml` publishes only records that pass that review. When
+- [x] **COMP-02**: `src/data/compatibility.yaml` publishes only records that pass that review. When
       no claim qualifies, the register stays empty and `/compatibility/` renders the empty state
       rather than a placeholder record. Fixture records from
       `tests/fixtures/data/compatibility-e2e.yaml` are never promoted into it.
       *Source: ADR-0001 rules 1, 2, 4 (LOCKED) — not re-openable*
 
-- [ ] **COMP-03**: The build-isolation guarantee is reworked from "the production register is empty"
+- [x] **COMP-03**: The build-isolation guarantee is reworked from "the production register is empty"
       to "the production register contains no fixture-derived record", so a reviewed claim can ship
       without weakening evidence validation. Covers `scripts/check-e2e-build-isolation.ts`,
       `tests/e2e/production-empty.spec.ts`, `tests/unit/e2e-build-isolation.test.ts`, and
@@ -179,13 +179,13 @@ assume emptiness.
       *Source: ADR-0001 rules 2–3 (LOCKED); verified 2026-08-26 — the isolation script throws unless
       `dist/data/compatibility.json` has exactly zero records, so the first real claim breaks `npm run verify`*
 
-- [ ] **COMP-04**: `/compatibility/` renders a populated matrix that stays filterable through
+- [x] **COMP-04**: `/compatibility/` renders a populated matrix that stays filterable through
       semantic `<select>` elements with a visible result count, identifies every support status by
       text and icon rather than colour alone, and becomes stacked comparison cards on narrow screens
       instead of a horizontally unusable table.
       *Source: JSON data endpoints; visual design; accessibility target constraints*
 
-- [ ] **COMP-05**: `/data/compatibility.json` serves exactly the published records the rendered page
+- [x] **COMP-05**: `/data/compatibility.json` serves exactly the published records the rendered page
       shows, with `generated_at` still `null` so builds stay reproducible.
       *Source: JSON data endpoints constraint*
 
@@ -262,7 +262,7 @@ constraint in PROJECT.md and a success criterion of every phase, not a requireme
       invalidation list in `scripts/deploy-site.sh`.
       *Source: cache-control policy; route/cache coupling recorded in the codebase map*
 
-- [ ] **GATE-04**: A realistic-volume compatibility fixture exercises the matrix's layout,
+- [x] **GATE-04**: A realistic-volume compatibility fixture exercises the matrix's layout,
       responsiveness, and accessibility in the `fixture-matrix` Playwright project, so behaviour at
       scale is proven rather than assumed from five records.
       *Source: testing strategy constraint; ADR-0001 rule 2 (LOCKED)*
@@ -407,13 +407,13 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | CONT-06 | Phase 3 | Complete |
 | CONT-07 | Phase 3 | Complete |
 | GATE-03 | Phase 3 | Complete |
-| COMP-01 | Phase 4 | Pending |
-| COMP-02 | Phase 4 | Pending |
-| COMP-03 | Phase 4 | Pending |
-| COMP-04 | Phase 4 | Pending |
-| COMP-05 | Phase 4 | Pending |
+| COMP-01 | Phase 4 | Complete |
+| COMP-02 | Phase 4 | Complete |
+| COMP-03 | Phase 4 | Complete |
+| COMP-04 | Phase 4 | Complete |
+| COMP-05 | Phase 4 | Complete |
 | DRIFT-04 | Phase 4 | Pending |
-| GATE-04 | Phase 4 | Pending |
+| GATE-04 | Phase 4 | Complete |
 | LAUN-01 | Phase 5 | Pending |
 | LAUN-02 | Phase 5 | Pending |
 | LAUN-03 | Phase 5 | Pending |
