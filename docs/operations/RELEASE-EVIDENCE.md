@@ -39,4 +39,4 @@ confirmation of its receipt, before the production host serves customers (LAUN-0
 
 | Date (UTC) | Channel | Test performed | Result | Recorded by |
 | ---------- | ------- | --------------- | ------ | ----------- |
-|            | security@puppetstagehand.com | | | |
+| 2026-08-27 | security@puppetstagehand.com | Real test email (subject "Test: security mailbox delivery check (Phase 05, LAUN-04)", Gmail message id 1a043a633065adae) sent to the fallback mailbox; receipt confirmed by the mailbox owner | pass | Matthew Stone (matt@souldo.net) |
