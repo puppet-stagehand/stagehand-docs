@@ -21,6 +21,7 @@ altering path or query.
 
 | Date (UTC) | Environment | SHA | Home | Tiers | Compat | Docs | Support | tiers.json | compat.json | 404 | Apex redirect (stable only) | Notes |
 | ---------- | ----------- | --- | ---- | ----- | ------ | ---- | ------- | ---------- | ------------ | --- | ---------------------------- | ----- |
+| 2026-08-27 | beta | 18967ca1f806cca030173f7d0f7f16d61940b20c | pass | pass | pass | pass | pass | pass | pass | pass | n/a | `Deploy site` run [33079159653](https://github.com/puppet-stagehand/stagehand-docs/actions/runs/33079159653); live-verified via `SITE_URL=https://dbcms782zp162.cloudfront.net EXPECTED_SHA=18967ca1f806cca030173f7d0f7f16d61940b20c npx tsx scripts/check-live-deployment.ts` (05-03 Task 1) |
 
 ## Rollbacks
 
