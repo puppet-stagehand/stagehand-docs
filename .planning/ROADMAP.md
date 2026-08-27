@@ -212,7 +212,46 @@ Plans:
   4. A maintainer can roll stable back to a known-good SHA through the protected dispatch path and see the previous pages restored, without editing a single S3 object by hand.
   5. A non-maintainer can file a private security advisory and reach a monitored address whose delivery has been tested and the test recorded.
 
-**Plans**: TBD
+**Plans**: 11/11 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 05-01-PLAN.md — Tracer: apply `beta` for real — ACM validation without NS cutover, capture outputs
+- [ ] 05-04-PLAN.md — GATE-05 wiring (redirect test into verify/CI) + RELEASE-EVIDENCE.md scaffold
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 05-02-PLAN.md — Wire beta's deploy variables, dispatch testpilots's SHA, resolve the self-review approval question
+- [ ] 05-09-PLAN.md — Enable private vulnerability reporting; get the security@ mailbox delivery test done (LAUN-04)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 05-03-PLAN.md — Verify beta's live deployment and record the first real RELEASE-EVIDENCE.md promotion
+
+**Wave 4** *(blocked on Wave 3 completion)*
+
+- [ ] 05-05-PLAN.md — Apply `stable` for real — two-SAN ACM validation, apex-redirect function enabled
+
+**Wave 5** *(blocked on Wave 4 completion)*
+
+- [ ] 05-06-PLAN.md — Wire stable's deploy variables and dispatch beta's SHA
+
+**Wave 6** *(blocked on Wave 5 completion)*
+
+- [ ] 05-07-PLAN.md — Verify stable's live deployment (pre-cutover) and record the honest, apex-redirect-pending promotion
+
+**Wave 7** *(blocked on Wave 6 and Wave 2's security plan completion)*
+
+- [ ] 05-08-PLAN.md — The DNS cutover: gather NS values, the one-way registrar-flip checkpoint, verify and record the real cutover
+
+**Wave 8** *(blocked on Wave 7 completion)*
+
+- [ ] 05-10-PLAN.md — Promote a newer SHA to beta, setting up a genuine rollback scenario
+
+**Wave 9** *(blocked on Wave 8 completion)*
+
+- [ ] 05-11-PLAN.md — Prove the rollback end to end and record it (LAUN-05)
 
 ## Progress
 
@@ -225,7 +264,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. First Real Publication | 5/5 | Complete    | 2026-08-26 |
 | 3. Real Documentation Content | 4/4 | Complete    | 2026-08-26 |
 | 4. Evidence-Bearing Compatibility Register | 6/6 | In Progress|  |
-| 5. Production Launch | 0/TBD | Not started | - |
+| 5. Production Launch | 0/11 | Not started | - |
 
 ## Coverage
 
