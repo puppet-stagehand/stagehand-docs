@@ -22,6 +22,7 @@ altering path or query.
 | Date (UTC) | Environment | SHA | Home | Tiers | Compat | Docs | Support | tiers.json | compat.json | 404 | Apex redirect (stable only) | Notes |
 | ---------- | ----------- | --- | ---- | ----- | ------ | ---- | ------- | ---------- | ------------ | --- | ---------------------------- | ----- |
 | 2026-08-27 | beta | 18967ca1f806cca030173f7d0f7f16d61940b20c | pass | pass | pass | pass | pass | pass | pass | pass | n/a | `Deploy site` run [33079159653](https://github.com/puppet-stagehand/stagehand-docs/actions/runs/33079159653); live-verified via `SITE_URL=https://dbcms782zp162.cloudfront.net EXPECTED_SHA=18967ca1f806cca030173f7d0f7f16d61940b20c npx tsx scripts/check-live-deployment.ts` (05-03 Task 1) |
+| 2026-08-27 | stable | 18967ca1f806cca030173f7d0f7f16d61940b20c | pass | pass | pass | pass | pass | pass | pass | pass | pending — awaiting DNS cutover (see Plan 05-08) | `Deploy site` run [33097584579](https://github.com/puppet-stagehand/stagehand-docs/actions/runs/33097584579); live-verified via `SITE_URL=https://d1g7y94y3acn2m.cloudfront.net EXPECTED_SHA=18967ca1f806cca030173f7d0f7f16d61940b20c npx tsx scripts/check-live-deployment.ts` (05-07 Task 1); apex/`www.puppetstagehand.com` still resolve to the unrelated Cloudflare-routed GitHub Pages site (`puppetlabs-seteam.github.io`, confirmed via `dig`), not to stable, so the apex redirect cannot be tested until 05-08's registrar cutover |
 
 ## Rollbacks
 
