@@ -8,14 +8,10 @@ const checker = fileURLToPath(
 const e2e = fileURLToPath(new URL('../fixtures/build-output/e2e/', import.meta.url));
 const scale = fileURLToPath(new URL('../fixtures/build-output/scale/', import.meta.url));
 
-const runChecker = (
-  productionDir: string,
-  e2eDir: string,
-  scaleDir: string,
-): ReturnType<typeof spawnSync> =>
+const runChecker = (productionDir: string, e2eDir: string, scaleDir: string) =>
   spawnSync(process.execPath, ['--import', 'tsx', checker, productionDir, e2eDir, scaleDir], {
     cwd: process.cwd(),
-    encoding: 'utf8',
+    encoding: 'utf8' as const,
   });
 
 it('accepts an empty production build with a five-record E2E build and a 24-record scale build', () => {
