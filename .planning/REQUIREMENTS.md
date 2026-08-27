@@ -237,7 +237,7 @@ its own.
       `6.0.3`.)
       *Source: pinned toolchain constraint; verified against `package.json` 2026-08-26*
 
-- [ ] **DRIFT-04**: The design specification's success criterion "compatibility claims are
+- [x] **DRIFT-04**: The design specification's success criterion "compatibility claims are
       customer-facing and generated from schema-validated structured data" and its "the initial
       scaffold includes representative content for every route" sentence are amended to match
       ADR-0001's delivery boundary, so all three affected sentences agree.
@@ -412,7 +412,7 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | COMP-03 | Phase 4 | Complete |
 | COMP-04 | Phase 4 | Complete |
 | COMP-05 | Phase 4 | Complete |
-| DRIFT-04 | Phase 4 | Pending |
+| DRIFT-04 | Phase 4 | Complete |
 | GATE-04 | Phase 4 | Complete |
 | LAUN-01 | Phase 5 | Pending |
 | LAUN-02 | Phase 5 | Pending |
