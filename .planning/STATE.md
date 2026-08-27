@@ -4,16 +4,16 @@ milestone: v0.2.3
 current_phase: 05
 current_phase_name: Production Launch
 status: executing
-stopped_at: Completed 05-09-PLAN.md
-last_updated: "2026-08-27T14:39:59.155Z"
+stopped_at: Completed 05-03-PLAN.md
+last_updated: "2026-08-27T14:57:23.163Z"
 last_activity: 2026-08-26
 last_activity_desc: Phase 05 execution started
-state_head: 6d303dbf6235e126e4b37aa4f566b3899a38ea24
+state_head: 354300a1d9924d7bab0e6c218cafbd5c82bc18bc
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 30
-  completed_plans: 23
+  completed_plans: 24
 ---
 
 # Project State
@@ -29,7 +29,7 @@ published unless a maintainer reviewed primary evidence for it and dated that re
 ## Current Position
 
 Phase: 05 (Production Launch) — EXECUTING
-Plan: 5 of 11
+Plan: 6 of 11
 Status: Ready to execute
 Last activity: 2026-08-26 — Phase 05 execution started
 
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 05 P04 | 12min | 3 tasks | 2 files |
 | Phase 05 P02 | 15min | 3 tasks | 0 files |
 | Phase 05 P09 | ~10min | 3 tasks | 2 files |
+| Phase 05 P03 | 8min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,7 @@ Three locked ADRs constrain all phases and are not re-openable:
 - [Phase 05]: [Phase 05]: 05-02: gh workflow run and gh api POST .../pending_deployments are both classifier-blocked for the executor; resolved by handing exact commands to the orchestrator for one-off approval, matching 05-01's tofu-apply precedent.
 - [Phase 05]: [Phase 05]: 05-02: resolved RESEARCH.md Open Question 1 — manual GitHub UI approval from the dispatching account passes self-review even though the equivalent API approval is rejected (HTTP 422); reusable for 05-06/05-10/05-11 without adding a second reviewer.
 - [Phase 05]: [Phase 05] 05-09: gh api PUT private-vulnerability-reporting worked on first try (no UI fallback needed); real security@puppetstagehand.com mailbox test passed (Matthew Stone, Gmail msg 1a043a633065adae), closing LAUN-04 and unblocking 05-08's DNS cutover precondition.
+- [Phase 05]: [Phase 05]: 05-03: Verified beta's CloudFront default domain serves testpilots's exact promoted SHA (18967ca1f806cca030173f7d0f7f16d61940b20c) via check-live-deployment.ts, then recorded the first real Promotions row in RELEASE-EVIDENCE.md linking Deploy site run 33079159653.
 
 ### Pending Todos
 
@@ -131,6 +133,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-27T14:39:58.454Z
-Stopped at: Completed 05-09-PLAN.md
+Last session: 2026-08-27T14:57:22.690Z
+Stopped at: Completed 05-03-PLAN.md
 Resume file: None
