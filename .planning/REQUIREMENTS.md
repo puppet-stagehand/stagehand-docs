@@ -206,7 +206,7 @@ assume emptiness.
       deployment alongside the full SHA.
       *Source: `docs/operations/release.md`*
 
-- [ ] **LAUN-04**: Private vulnerability reporting is enabled, a non-maintainer can reach
+- [x] **LAUN-04**: Private vulnerability reporting is enabled, a non-maintainer can reach
       Security → Advisories → Report a vulnerability, and `security@puppetstagehand.com` delivery is
       tested and the successful test recorded, before the production host serves customers.
       *Source: `docs/operations/github-environments.md` pre-publication requirements*
@@ -417,7 +417,7 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | LAUN-01 | Phase 5 | Complete |
 | LAUN-02 | Phase 5 | Pending |
 | LAUN-03 | Phase 5 | Complete |
-| LAUN-04 | Phase 5 | Pending |
+| LAUN-04 | Phase 5 | Complete |
 | LAUN-05 | Phase 5 | Pending |
 | GATE-05 | Phase 5 | Complete |
 | AUTH-01 | Phase 04.1 | Pending |
