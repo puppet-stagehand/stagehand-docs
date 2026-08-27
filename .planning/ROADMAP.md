@@ -212,13 +212,13 @@ Plans:
   4. A maintainer can roll stable back to a known-good SHA through the protected dispatch path and see the previous pages restored, without editing a single S3 object by hand.
   5. A non-maintainer can file a private security advisory and reach a monitored address whose delivery has been tested and the test recorded.
 
-**Plans**: 1/11 plans executed
+**Plans**: 2/11 plans executed
 
 Plans:
 **Wave 1**
 
 - [x] 05-01-PLAN.md — Tracer: apply `beta` for real — ACM validation without NS cutover, capture outputs
-- [ ] 05-04-PLAN.md — GATE-05 wiring (redirect test into verify/CI) + RELEASE-EVIDENCE.md scaffold
+- [x] 05-04-PLAN.md — GATE-05 wiring (redirect test into verify/CI) + RELEASE-EVIDENCE.md scaffold
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -264,7 +264,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. First Real Publication | 5/5 | Complete    | 2026-08-26 |
 | 3. Real Documentation Content | 4/4 | Complete    | 2026-08-26 |
 | 4. Evidence-Bearing Compatibility Register | 6/6 | In Progress|  |
-| 5. Production Launch | 1/11 | In Progress|  |
+| 5. Production Launch | 2/11 | In Progress|  |
 
 ## Coverage
 

@@ -201,7 +201,7 @@ assume emptiness.
       changing the path or the query string.
       *Source: OpenTofu environment enum and host mapping; `docs/operations/release.md`*
 
-- [ ] **LAUN-03**: Release evidence — home, tiers, compatibility, docs, support, both JSON
+- [x] **LAUN-03**: Release evidence — home, tiers, compatibility, docs, support, both JSON
       endpoints, the branded 404, and for stable the apex redirect — is recorded with each
       deployment alongside the full SHA.
       *Source: `docs/operations/release.md`*
@@ -267,7 +267,7 @@ constraint in PROJECT.md and a success criterion of every phase, not a requireme
       scale is proven rather than assumed from five records.
       *Source: testing strategy constraint; ADR-0001 rule 2 (LOCKED)*
 
-- [ ] **GATE-05**: `infra/modules/static-site/tests/redirect.test.mjs` is wired into `npm run verify`
+- [x] **GATE-05**: `infra/modules/static-site/tests/redirect.test.mjs` is wired into `npm run verify`
       and CI so the apex→`www` path-and-query guarantee that `release.md` makes operators check by
       hand is actually enforced automatically.
       *Source: `docs/operations/release.md` stable check; verified 2026-08-26 — the test file exists
@@ -416,10 +416,10 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | GATE-04 | Phase 4 | Complete |
 | LAUN-01 | Phase 5 | Complete |
 | LAUN-02 | Phase 5 | Pending |
-| LAUN-03 | Phase 5 | Pending |
+| LAUN-03 | Phase 5 | Complete |
 | LAUN-04 | Phase 5 | Pending |
 | LAUN-05 | Phase 5 | Pending |
-| GATE-05 | Phase 5 | Pending |
+| GATE-05 | Phase 5 | Complete |
 | AUTH-01 | Phase 04.1 | Pending |
 | AUTH-02 | Phase 04.1 | Pending |
 | AUTH-03 | Phase 04.1 | Pending |
