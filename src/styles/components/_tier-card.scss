@@ -3,13 +3,31 @@
   overflow: hidden;
   border-bottom: 1px solid var(--stagehand-line-strong);
   background:
-    linear-gradient(90deg, transparent 0 74%, rgba(32, 215, 231, 0.045) 74%),
+    linear-gradient(90deg, transparent 0 74%, rgba(0, 207, 255, 0.045) 74%),
     repeating-linear-gradient(
       0deg,
       transparent 0,
       transparent calc(4rem - 1px),
-      rgba(244, 247, 249, 0.04) 4rem
+      rgba(246, 249, 253, 0.04) 4rem
     );
+}
+
+.register-hero__triangles {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  z-index: 0;
+  width: min(24rem, 30vw);
+  max-width: 100%;
+  height: auto;
+  opacity: 0.28;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.register-hero__grid {
+  position: relative;
+  z-index: 1;
 }
 
 .register-hero::after {

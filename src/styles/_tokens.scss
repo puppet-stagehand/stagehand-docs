@@ -1,13 +1,20 @@
-$stagehand-navy: #071521;
-$stagehand-raised-navy: #0d2233;
-$stagehand-cyan: #20d7e7;
-$stagehand-purple: #6f3cc3;
-$stagehand-off-white: #f4f7f9;
+// Perforce brand palette (Brand Guidelines v1.01), applied Puppet-lead /
+// Perforce-secondary per the "Corporate Lead vs. Brand Lead" Option 3.
+$stagehand-navy: #00003a; // Perforce "Navy"
+$stagehand-raised-navy: #0c0c52;
+$stagehand-indigo: #4c00ff; // Perforce "Indigo" (primary)
+$stagehand-cyan: #00cfff; // Perforce "Cyan" (secondary)
+$stagehand-mint: #00fccc; // Perforce "Mint" (secondary)
+$stagehand-off-white: #f6f9fd; // Perforce "Light Grey"
 $stagehand-warning: #ffbd4a;
 $stagehand-danger: #ff8b8b;
 
-$primary: $stagehand-cyan;
-$secondary: $stagehand-purple;
+// Never typeset Indigo on Cyan or Indigo on Navy (brand guidelines, Color
+// Accessibility). Indigo is reserved for filled surfaces (White on Indigo)
+// and for text on Light Grey/White; body links on the navy background use
+// Cyan, an approved combination (Cyan Blue on Navy).
+$primary: $stagehand-indigo;
+$secondary: $stagehand-mint;
 $warning: $stagehand-warning;
 $light: $stagehand-off-white;
 $dark: $stagehand-raised-navy;
@@ -21,7 +28,11 @@ $body-emphasis-color: #ffffff;
 $border-color: rgba($stagehand-off-white, 0.16);
 $link-color: $stagehand-cyan;
 $link-hover-color: #8cebf3;
-$font-family-sans-serif: 'IBM Plex Sans', sans-serif;
+// Gibson is Perforce's licensed primary typeface; Inter is used here as an
+// open-source substitute with a similar geometric-humanist character (the
+// brand guidelines explicitly discourage the Aptos fallback outside Office
+// documents).
+$font-family-sans-serif: 'Inter', sans-serif;
 $font-family-monospace: 'IBM Plex Mono', monospace;
 $font-family-base: $font-family-sans-serif;
 $font-size-base: 1rem;
@@ -47,8 +58,9 @@ $grid-gutter-width: 2rem;
 :root {
   --stagehand-navy: #{$stagehand-navy};
   --stagehand-raised-navy: #{$stagehand-raised-navy};
+  --stagehand-indigo: #{$stagehand-indigo};
   --stagehand-cyan: #{$stagehand-cyan};
-  --stagehand-purple: #{$stagehand-purple};
+  --stagehand-mint: #{$stagehand-mint};
   --stagehand-off-white: #{$stagehand-off-white};
   --stagehand-warning: #{$stagehand-warning};
   --stagehand-danger: #{$stagehand-danger};

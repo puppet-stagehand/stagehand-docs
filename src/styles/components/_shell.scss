@@ -28,7 +28,7 @@
   position: relative;
   z-index: 10;
   border-bottom: 1px solid var(--stagehand-line-strong);
-  background: rgba(7, 21, 33, 0.96);
+  background: rgba(0, 0, 58, 0.96);
 }
 
 .site-header::after {
@@ -51,8 +51,8 @@
 
 .site-wordmark {
   display: inline-flex;
-  align-items: baseline;
-  gap: 0.55rem;
+  align-items: center;
+  gap: 0.65rem;
   color: var(--stagehand-off-white);
   font-size: 1.0625rem;
   font-weight: 600;
@@ -64,8 +64,13 @@
   color: #ffffff;
 }
 
-.site-wordmark__puppet {
-  color: #b996f2;
+// Exclusion-zone spirit of the brand guidelines (half the logo's height as
+// clear space): the gap above plus this fixed height keeps the mark from
+// crowding the nav or the "Stagehand" wordmark beside it.
+.site-wordmark__logo {
+  display: block;
+  height: 1.75rem;
+  width: auto;
 }
 
 .site-wordmark__product {
@@ -89,7 +94,7 @@
   position: relative;
   display: block;
   padding: 0.5rem 0;
-  color: rgba(244, 247, 249, 0.78);
+  color: rgba(246, 249, 253, 0.78);
   font-family: var(--stagehand-mono);
   font-size: 0.75rem;
   letter-spacing: 0.06em;
@@ -185,8 +190,16 @@
   padding-bottom: 2.5rem;
 }
 
+.site-footer__logo {
+  display: block;
+  height: 1.5rem;
+  width: auto;
+  margin-bottom: 0.75rem;
+}
+
 .site-footer__wordmark,
-.site-footer__note {
+.site-footer__note,
+.site-footer__brand-credit {
   margin: 0;
 }
 
@@ -201,6 +214,15 @@
   font-size: 0.875rem;
 }
 
+.site-footer__brand-credit {
+  margin-top: 0.75rem;
+  color: rgba(246, 249, 253, 0.52);
+  font-family: var(--stagehand-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .site-footer__status {
   display: grid;
   gap: 0.7rem;
@@ -208,7 +230,7 @@
 }
 
 .site-footer__label {
-  color: rgba(244, 247, 249, 0.68);
+  color: rgba(246, 249, 253, 0.68);
   font-family: var(--stagehand-mono);
   font-size: 0.625rem;
   letter-spacing: 0.12em;
@@ -224,10 +246,30 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, transparent 49.85%, rgba(32, 215, 231, 0.1) 50%, transparent 50.15%),
-    linear-gradient(rgba(244, 247, 249, 0.045) 1px, transparent 1px) 0 0 / 100% 5rem;
+    linear-gradient(90deg, transparent 49.85%, rgba(0, 207, 255, 0.1) 50%, transparent 50.15%),
+    linear-gradient(rgba(246, 249, 253, 0.045) 1px, transparent 1px) 0 0 / 100% 5rem;
   content: '';
   pointer-events: none;
+}
+
+.control-hero__triangles {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  z-index: 0;
+  width: min(46rem, 55vw);
+  max-width: 100%;
+  height: auto;
+  opacity: 0.5;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.control-hero__grid,
+.control-hero__intro,
+.control-hero__rail {
+  position: relative;
+  z-index: 1;
 }
 
 .control-hero__grid {
@@ -272,7 +314,7 @@
 .control-hero__lede {
   max-width: 41rem;
   margin: 2rem 0 0;
-  color: rgba(244, 247, 249, 0.72);
+  color: rgba(246, 249, 253, 0.72);
   font-size: clamp(1.05rem, 2vw, 1.3rem);
   line-height: 1.65;
 }
@@ -302,7 +344,7 @@
 }
 
 .control-hero__actions .btn-primary {
-  color: var(--stagehand-navy);
+  color: #ffffff;
 }
 
 .control-hero__actions .btn-outline-light:hover {
@@ -323,7 +365,7 @@
 }
 
 .control-hero__datum-label {
-  color: rgba(244, 247, 249, 0.68);
+  color: rgba(246, 249, 253, 0.68);
   font-family: var(--stagehand-mono);
   font-size: 0.625rem;
   letter-spacing: 0.12em;
@@ -380,8 +422,8 @@
   bottom: 0;
   width: 2.5rem;
   height: 2.5rem;
-  border-top: 1px solid rgba(32, 215, 231, 0.3);
-  border-left: 1px solid rgba(32, 215, 231, 0.3);
+  border-top: 1px solid rgba(0, 207, 255, 0.3);
+  border-left: 1px solid rgba(0, 207, 255, 0.3);
   content: '';
 }
 

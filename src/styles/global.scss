@@ -28,6 +28,7 @@
 @import 'components/docs';
 
 html {
+  overflow-x: hidden;
   color-scheme: dark;
   scroll-behavior: smooth;
 }
@@ -35,8 +36,9 @@ html {
 body {
   min-width: 20rem;
   min-height: 100vh;
+  overflow-x: hidden;
   background:
-    linear-gradient(to right, transparent calc(100% - 1px), rgba(244, 247, 249, 0.035) 1px) 0 0 /
+    linear-gradient(to right, transparent calc(100% - 1px), rgba(246, 249, 253, 0.035) 1px) 0 0 /
       min(8vw, 7.5rem) 100%,
     var(--stagehand-navy);
 }

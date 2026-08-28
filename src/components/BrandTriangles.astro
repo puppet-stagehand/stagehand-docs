@@ -1,0 +1,38 @@
+---
+// Decorative hero visual built from the Perforce brand guidelines' "Brand
+// Elements" system (p.28): the triangle from the interior of the logo icon,
+// filled with the approved gradient combinations, layered for depth. No
+// licensed photography is used here — Perforce's approved stock imagery
+// lives behind a Brandfolder login this project doesn't have access to.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={['brand-triangles', className]}
+  viewBox="0 0 640 640"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <linearGradient id="brand-gradient-indigo-cyan" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4c00ff" />
+      <stop offset="1" stop-color="#00cfff" />
+    </linearGradient>
+    <linearGradient id="brand-gradient-navy-indigo" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#00003a" />
+      <stop offset="1" stop-color="#4c00ff" />
+    </linearGradient>
+    <linearGradient id="brand-gradient-indigo-mint" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4c00ff" />
+      <stop offset="1" stop-color="#00fccc" />
+    </linearGradient>
+  </defs>
+  <polygon points="120,540 420,80 560,540" fill="url(#brand-gradient-navy-indigo)" opacity="0.9" />
+  <polygon points="260,560 520,180 620,560" fill="url(#brand-gradient-indigo-cyan)" opacity="0.75" />
+  <polygon points="60,560 260,220 380,560" fill="url(#brand-gradient-indigo-mint)" opacity="0.55" />
+</svg>

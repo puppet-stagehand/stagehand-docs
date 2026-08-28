@@ -15,10 +15,10 @@
   height: 0.5rem;
   border: 1px solid currentColor;
   background: var(--stagehand-cyan);
-  box-shadow: 0 0 0 0.2rem rgba(32, 215, 231, 0.11);
+  box-shadow: 0 0 0 0.2rem rgba(0, 207, 255, 0.11);
 }
 
-.status-mark--purple .status-mark__indicator {
-  background: var(--stagehand-purple);
-  box-shadow: 0 0 0 0.2rem rgba(111, 60, 195, 0.18);
+.status-mark--indigo .status-mark__indicator {
+  background: var(--stagehand-indigo);
+  box-shadow: 0 0 0 0.2rem rgba(76, 0, 255, 0.18);
 }
