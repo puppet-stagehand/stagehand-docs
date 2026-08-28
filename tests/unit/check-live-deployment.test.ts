@@ -32,7 +32,10 @@ const passingResponses = (): Record<string, StubResponse> => {
 const buildFetchStub = (overrides: Record<string, StubResponse | StubResponse[]>) => {
   const responses = { ...passingResponses(), ...overrides };
   const callCounts = new Map<string, number>();
-  return vi.fn(async (input: string | URL) => {
+  // Unused param kept so the mock's call-arity matches FetchLike's (url, init) signature,
+  // and assertions on call[1] type-check.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return vi.fn(async (input: string | URL, _init?: RequestInit) => {
     const path = new URL(String(input)).pathname;
     const attempt = callCounts.get(path) ?? 0;
     callCounts.set(path, attempt + 1);
@@ -51,7 +54,7 @@ describe('verifyLiveDeployment', () => {
     await expect(
       verifyLiveDeployment({ siteUrl, expectedSha, fetchImpl, maxAttempts: 1 }),
     ).resolves.toBeUndefined();
-    expect(fetchImpl).toHaveBeenCalledWith(`${siteUrl}${nonexistentPath}`);
+    expect(fetchImpl).toHaveBeenCalledWith(`${siteUrl}${nonexistentPath}`, undefined);
   });
 
   it('throws an aggregated error listing every persistently failing check by path, not just the first', async () => {
@@ -93,6 +96,32 @@ describe('verifyLiveDeployment', () => {
     await expect(
       verifyLiveDeployment({ siteUrl, expectedSha, fetchImpl, maxAttempts: 2, retryDelayMs: 0 }),
     ).resolves.toBeUndefined();
-    expect(fetchImpl).toHaveBeenCalledWith(`${siteUrl}/support/`);
+    expect(fetchImpl).toHaveBeenCalledWith(`${siteUrl}/support/`, undefined);
+  });
+
+  it('sends no Authorization header when basic-auth credentials are not configured', async () => {
+    const fetchImpl = buildFetchStub({});
+
+    await verifyLiveDeployment({ siteUrl, expectedSha, fetchImpl, maxAttempts: 1 });
+
+    expect(fetchImpl).toHaveBeenCalledWith(`${siteUrl}/`, undefined);
+  });
+
+  it('sends a Basic Authorization header on every request when credentials are configured', async () => {
+    const fetchImpl = buildFetchStub({});
+
+    await verifyLiveDeployment({
+      siteUrl,
+      expectedSha,
+      fetchImpl,
+      maxAttempts: 1,
+      basicAuthUsername: 'tester',
+      basicAuthPassword: 'sw0rdfish',
+    });
+
+    const expectedHeader = `Basic ${Buffer.from('tester:sw0rdfish').toString('base64')}`;
+    for (const call of fetchImpl.mock.calls) {
+      expect(call[1]).toEqual({ headers: { Authorization: expectedHeader } });
+    }
   });
 });

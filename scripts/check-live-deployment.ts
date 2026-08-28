@@ -14,7 +14,7 @@ const nonexistentRoutePath = '/this-route-does-not-exist/';
 const brandedNotFoundMarker = 'Page Not Found';
 const commitStampPath = '/deployed-commit.txt';
 
-export type FetchLike = (url: string) => Promise<Response>;
+export type FetchLike = (url: string, init?: RequestInit) => Promise<Response>;
 
 export interface VerifyLiveDeploymentOptions {
   siteUrl: string;
@@ -22,6 +22,10 @@ export interface VerifyLiveDeploymentOptions {
   fetchImpl?: FetchLike;
   maxAttempts?: number;
   retryDelayMs?: number;
+  /** HTTP Basic Auth username, when the target environment's whole-site lockdown (enable_basic_auth) is on. */
+  basicAuthUsername?: string;
+  /** HTTP Basic Auth password, when the target environment's whole-site lockdown (enable_basic_auth) is on. */
+  basicAuthPassword?: string;
 }
 
 const wait = (ms: number): Promise<void> =>
@@ -46,22 +50,34 @@ const withRetry = async (
 export const verifyLiveDeployment = async ({
   siteUrl,
   expectedSha,
-  fetchImpl = (url) => fetch(url),
+  fetchImpl = (url, init) => fetch(url, init),
   maxAttempts = 3,
   retryDelayMs = 3_000,
+  basicAuthUsername,
+  basicAuthPassword,
 }: VerifyLiveDeploymentOptions): Promise<void> => {
   const baseUrl = siteUrl.replace(/\/+$/, '');
+
+  // Whole-site HTTP Basic Auth lockdown (enable_basic_auth, distinct from the
+  // path-scoped tester gate) applies to every route this script checks, so every
+  // request must carry it when configured. Omitted entirely when unset — a site
+  // with the lockdown off must not send a bogus/empty Authorization header.
+  const requestInit: RequestInit | undefined =
+    basicAuthUsername !== undefined && basicAuthPassword !== undefined
+      ? { headers: { Authorization: `Basic ${btoa(`${basicAuthUsername}:${basicAuthPassword}`)}` } }
+      : undefined;
+  const authedFetch = (url: string) => fetchImpl(url, requestInit);
 
   const checkRoute =
     (path: string): Check =>
     async () => {
-      const response = await fetchImpl(`${baseUrl}${path}`);
+      const response = await authedFetch(`${baseUrl}${path}`);
       if (response.status !== 200) return `${path}: expected 200, got ${response.status}`;
       return undefined;
     };
 
   const checkBranded404: Check = async () => {
-    const response = await fetchImpl(`${baseUrl}${nonexistentRoutePath}`);
+    const response = await authedFetch(`${baseUrl}${nonexistentRoutePath}`);
     if (response.status !== 404) {
       return `${nonexistentRoutePath}: expected 404, got ${response.status}`;
     }
@@ -73,7 +89,7 @@ export const verifyLiveDeployment = async ({
   };
 
   const checkCommitStamp: Check = async () => {
-    const response = await fetchImpl(`${baseUrl}${commitStampPath}`);
+    const response = await authedFetch(`${baseUrl}${commitStampPath}`);
     if (response.status !== 200) {
       return `${commitStampPath}: expected 200, got ${response.status}`;
     }
@@ -114,5 +130,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.error('SITE_URL and EXPECTED_SHA environment variables are required.');
     process.exit(1);
   }
-  await verifyLiveDeployment({ siteUrl, expectedSha });
+  await verifyLiveDeployment({
+    siteUrl,
+    expectedSha,
+    basicAuthUsername: process.env.BASIC_AUTH_USERNAME,
+    basicAuthPassword: process.env.BASIC_AUTH_PASSWORD,
+  });
 }

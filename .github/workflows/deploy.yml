@@ -142,4 +142,6 @@ jobs:
         env:
           SITE_URL: https://${{ vars.SITE_CHECK_URL }}
           EXPECTED_SHA: ${{ inputs.git_sha || github.sha }}
+          BASIC_AUTH_USERNAME: ${{ secrets.BASIC_AUTH_USERNAME }}
+          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
         run: npx tsx scripts/check-live-deployment.ts
