@@ -19,7 +19,7 @@ const result = await check({
   recurse: true,
   linksToSkip: [
     ...validatedExternalLinks.map(exactPattern),
-    '^https?://www\\.puppetstagehand\\.com(?:$|[/?#])',
+    '^https?://www\\.puppet-stagehand\\.com(?:$|[/?#])',
   ],
 });
 const broken = result.links.filter(({ state }) => state === LinkState.BROKEN);

@@ -72,6 +72,11 @@ async function handler(event) {
     var expectedGateHeader;
     try {
       expectedGateHeader = await cf.kvs().get('gate_expected_header');
+      // CloudFront Functions runtime compatibility keeps the catch binding explicit
+      // rather than relying on optional catch binding (ES2019+); the error itself is
+      // intentionally unused since the fail-closed behavior below is the same for
+      // every failure mode.
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars -- see comment above
     } catch (error) {
       // Fail closed on any KVS outage, missing key, or unexpected runtime error —
       // never fall through to serving gated content (STRIDE T-04.1-02).

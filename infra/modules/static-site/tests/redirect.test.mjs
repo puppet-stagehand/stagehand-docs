@@ -18,7 +18,12 @@ const gatedPaths = JSON.parse(
 // a strict string comparison against whatever value the mocked KVS lookup returns.
 const gateExpectedHeader = 'Basic Z2F0ZTp0ZXN0ZXItc2VjcmV0';
 
-function loadFunction(apexRedirectEnabled, basicAuthEnabled = false, gatedPathPrefixes = [], kvsValues = {}) {
+function loadFunction(
+  apexRedirectEnabled,
+  basicAuthEnabled = false,
+  gatedPathPrefixes = [],
+  kvsValues = {},
+) {
   const context = vm.createContext({
     // Mocks the CloudFront Functions `cloudfront` KVS module. `import cf from
     // 'cloudfront'` cannot be evaluated by `vm.runInContext` (see below), so the
@@ -132,7 +137,12 @@ test('basic auth enabled rejects a request with no authorization header', async 
 test('basic auth enabled rejects a request with the wrong credential', async () => {
   const authContext = loadFunction(false, true);
   const result = await authContext.handler(
-    request('/tiers/', 'beta.puppet-stagehand.com', {}, { authorization: { value: 'Basic wrong' } }),
+    request(
+      '/tiers/',
+      'beta.puppet-stagehand.com',
+      {},
+      { authorization: { value: 'Basic wrong' } },
+    ),
   );
 
   assert.equal(result.statusCode, 401);
