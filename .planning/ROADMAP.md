@@ -216,8 +216,21 @@ Plans:
 
 **Canonical refs**: `puppet-console` repo at `/Users/matthew/Code/puppet-console/docs/USER-GUIDE.md`; `puppet-installer` repo docs at `/Users/matthew/Code/puppet-installer/docs/{registry-distribution-guide,support-guide}.md`; `puppet-installer/.github/workflows/release.yml` (channel-detection and mirror-step logic); PROJECT.md's immutable-promotion constraint.
 
-**Plans**: TBD
+**Plans**: 3 plans
 **UI hint**: yes
+
+Plans:
+**Wave 1**
+
+- [ ] 04.2-01-PLAN.md — Tracer/TDD: the build-time GitHub Releases loader, honest-unavailable-by-default downloads page, client-side channel reveal, and DOWN-03's negative gate (DOWN-01–04, GATE-07)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04.2-02-PLAN.md — Curated User Guide and reader-facing installer docs, live on all three environments (DOC-02, DOC-03)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04.2-03-PLAN.md — Phase-closing full `npm run verify` pass, live proof of criteria 3/6, and the WINDOWS.md deferral for criteria 1/2/4/5 pending the cross-repo prerequisite
 
 ### Phase 5: Production Launch
 
