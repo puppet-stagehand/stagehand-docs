@@ -24,6 +24,14 @@ const sendFile = async (response: ServerResponse, path: string, status: number) 
   response.end(body);
 };
 
+// AUTH-04: this server has no gate-simulation logic on purpose. It serves the
+// local dist/ build directly, with no CloudFront in front of it — so
+// redirect.js's tester-access gate (the KVS-backed check on
+// /docs/testers-guide*) never runs here, and every path (gated or not) is
+// served unconditionally. That is deliberate, not an oversight: this server
+// never traverses CloudFront, so simulating the gate here would only test
+// made-up local logic, not the real edge function. See
+// docs/operations/tester-access.md's "AUTH-04" section for the full record.
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? '/', 'http://127.0.0.1');
