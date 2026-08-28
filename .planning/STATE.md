@@ -4,11 +4,11 @@ milestone: v0.2.3
 current_phase: 05
 current_phase_name: Production Launch
 status: executing
-stopped_at: HALTED 05-08-PLAN.md — production domain changed mid-plan (puppetstagehand.com -> puppet-stagehand.com); needs re-scoping, not resumption
-last_updated: "2026-08-27T20:06:45.674Z"
+stopped_at: 05-08's goal (LAUN-02 DNS cutover + real apex-redirect verification) achieved via direct orchestrator action against puppet-stagehand.com; see 05-08-RESOLUTION.md. Wave 8 (05-10-PLAN.md) unblocked.
+last_updated: "2026-08-27T22:00:00.000Z"
 last_activity: 2026-08-27
-last_activity_desc: Phase 05 Plan 08 halted mid-execution — domain change invalidated the plan's scope
-state_head: 8acc33113bc346b526cbac5fb9cfc170cb0aa9a6
+last_activity_desc: Domain migration to puppet-stagehand.com completed and verified against the real public internet (dig/curl); 05-08 resolved via direct orchestrator action, not its own Task 2/3; 05-10/05-11 unblocked
+state_head: a2de94867ff1ddbbe0e5aad0166ae441deac1e7d
 progress:
   total_phases: 7
   completed_phases: 4
@@ -29,13 +29,20 @@ published unless a maintainer reviewed primary evidence for it and dated that re
 ## Current Position
 
 Phase: 05 (Production Launch) — EXECUTING
-Plan: 08 — HALTED (not complete; needs re-scoping against puppet-stagehand.com, not resumption)
-Status: Blocked — awaiting orchestrator/maintainer decision on re-scoping the domain migration
-Last activity: 2026-08-27 — Plan 05-08 halted mid-execution (production domain changed from
-puppetstagehand.com to puppet-stagehand.com; see 05-08-SUMMARY.md and Blockers/Concerns below).
+Plan: 08 — HALTED as a plan (Task 2/3 never resumed), but its underlying goal (LAUN-02) is now
+genuinely achieved — see 05-08-RESOLUTION.md. Not marked "complete" in the normal per-plan sense
+because the goal was reached via direct orchestrator action against a re-scoped domain
+(puppet-stagehand.com), not via this plan's own tasks executing to completion.
+Status: Unblocked — domain migration verified against the real public internet on 2026-08-27;
+Wave 8 (05-10-PLAN.md) can now proceed.
+Last activity: 2026-08-27 — Domain migration to puppet-stagehand.com applied and verified for
+real (bootstrap 0/6/0, testpilots 5/2/5, beta 5/2/5, stable 8/2/8 resource changes; NS delegation
+and apex-redirect confirmed via dig/curl). See 05-08-RESOLUTION.md and
+docs/operations/RELEASE-EVIDENCE.md's new promotion row.
 Plans 05-01 through 05-07 and 05-09 remain complete and unaffected.
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█████████░] 90% (27/30 plans complete per frontmatter; 05-08 not counted as a normal
+plan completion — see note above — 05-10/05-11 remain to close LAUN-05/rollback)
 
 ## Performance Metrics
 
@@ -103,6 +110,7 @@ Three locked ADRs constrain all phases and are not re-openable:
 - [Phase 05]: [Phase 05]: 05-06: discovered gh run/deployments API head_sha/.sha reports the ref tip at workflow_dispatch trigger time, NOT the git_sha input actually deployed — read the live site's deployed-commit.txt or the run's own step logs instead, reusable for 05-08/05-10/05-11.
 - [Phase 05]: [Phase 05]: 05-07: Verified stable's CloudFront default domain serves beta's exact promoted SHA (18967ca1f806cca030173f7d0f7f16d61940b20c) via check-live-deployment.ts, then recorded the second real Promotions row in RELEASE-EVIDENCE.md linking Deploy site run 33097584579, with apex-redirect honestly marked pending.
 - [Phase 05]: [Phase 05]: 05-07: dig +short www.puppetstagehand.com/puppetstagehand.com confirmed both still resolve to the unrelated Cloudflare-routed GitHub Pages site (puppetlabs-seteam.github.io), confirming pre-cutover DNS state ahead of 05-08.
+- [Phase 05]: [Phase 05]: 05-08 halted, then resolved outside its own tasks — puppetstagehand.com's registrar (Cloudflare) doesn't support custom nameservers, so the maintainer registered puppet-stagehand.com directly through Route 53 Registrar; the orchestrator renamed the domain repo-wide (a2de948), applied bootstrap+all three environments against it (0/6/0, 5/2/5, 5/2/5, 8/2/8), verified NS delegation and the apex redirect against the real public internet, and retired the old domain's empty hosted zone. LAUN-02 closed for real; see 05-08-RESOLUTION.md.
 
 ### Pending Todos
 
@@ -130,7 +138,7 @@ None yet.
   `standard`, sequential phase IDs, no `project_code`. Run `/gsd-config` if different settings are
   wanted before planning begins.
 
-- Plan 05-08 HALTED (not complete): puppetstagehand.com's registrar (Cloudflare) does not support custom nameservers, so the maintainer switched the production domain to puppet-stagehand.com (already registered and configured in Route 53) mid-plan, before the registrar NS flip checkpoint was resolved. Task 1's Route 53 NS values for puppetstagehand.com are real but moot. No cutover, apex-redirect check, or RELEASE-EVIDENCE.md/aws-bootstrap.md/Terraform change occurred. 05-08 needs re-scoping against puppet-stagehand.com before LAUN-02 can close. See 05-08-SUMMARY.md.
+- ~~Plan 05-08 HALTED (not complete)~~ **RESOLVED 2026-08-27** (not by 05-08's own tasks): puppetstagehand.com's registrar (Cloudflare) does not support custom nameservers, so the maintainer switched the production domain to puppet-stagehand.com (registered directly through Route 53 Registrar, zone Z038247013307I1BORY2O) before the registrar NS flip checkpoint was resolved. The 05-08-SUMMARY.md halt record stands unedited. Separately, the orchestrator — with the maintainer's explicit sign-off at each step — dispatched an agent to rename the domain across the repo (commit a2de948), applied bootstrap (0 added/6 changed/0 destroyed) and all three environment roots (testpilots 5/2/5, beta 5/2/5, stable 8/2/8) against the new domain, verified NS delegation and the apex redirect against the real public internet (dig/curl), and deleted the old domain's now-empty hosted zone (Z00971888M7QXUPNS7H8). LAUN-02 is now genuinely satisfied. Full record: 05-08-RESOLUTION.md. 05-10/05-11 (Wave 8/9) are unblocked.
 
 ### Roadmap Evolution
 
@@ -145,8 +153,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-27T20:06:45.674Z
-Stopped at: HALTED 05-08-PLAN.md — production domain changed mid-plan (puppetstagehand.com ->
-puppet-stagehand.com); see .planning/phases/05-production-launch/05-08-SUMMARY.md
-Resume file: None — 05-08 needs to be re-scoped/re-planned against puppet-stagehand.com, not resumed
-as-is.
+Last session: 2026-08-27T22:00:00.000Z
+Stopped at: Domain migration to puppet-stagehand.com verified complete against the real public
+internet; see .planning/phases/05-production-launch/05-08-RESOLUTION.md (05-08-SUMMARY.md's halt
+record is unchanged and remains accurate for what 05-08's own tasks did).
+Resume file: .planning/phases/05-production-launch/05-10-PLAN.md — Wave 8 is now unblocked.

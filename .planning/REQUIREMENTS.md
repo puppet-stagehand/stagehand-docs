@@ -197,9 +197,19 @@ assume emptiness.
       *Source: `docs/operations/release.md` release invariant; deployment promotion flow constraint*
 
 - [x] **LAUN-02**: The `stable` environment is applied as a deliberate DNS cutover;
-      `www.puppetstagehand.com` serves the site and `puppetstagehand.com` redirects to it without
+      `www.puppet-stagehand.com` serves the site and `puppet-stagehand.com` redirects to it without
       changing the path or the query string.
       *Source: OpenTofu environment enum and host mapping; `docs/operations/release.md`*
+      *Domain changed mid-phase from `puppetstagehand.com` to `puppet-stagehand.com` — Cloudflare's
+      registrar tier didn't support the custom nameservers Plan 05-08 was built around, so the
+      maintainer registered the new domain directly through Route 53 Registrar instead (see
+      `.planning/phases/05-production-launch/05-CONTEXT.md`'s addendum and
+      `05-08-RESOLUTION.md`). **Reconciliation note (2026-08-27):** this checkbox was previously
+      marked complete before any cutover had actually occurred — a documentation-tracking gap, not
+      a claim 05-08 itself made (05-08 halted honestly, see `05-08-SUMMARY.md`). It is genuinely
+      satisfied now: 2026-08-27 real public-internet verification (`dig +trace` NS delegation,
+      `curl` against `www.puppet-stagehand.com` and `puppet-stagehand.com`) confirms the apex
+      redirects to `www` with path/query intact, recorded in `docs/operations/RELEASE-EVIDENCE.md`.*
 
 - [x] **LAUN-03**: Release evidence — home, tiers, compatibility, docs, support, both JSON
       endpoints, the branded 404, and for stable the apex redirect — is recorded with each

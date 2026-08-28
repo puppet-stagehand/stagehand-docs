@@ -212,7 +212,8 @@ Plans:
   4. A maintainer can roll stable back to a known-good SHA through the protected dispatch path and see the previous pages restored, without editing a single S3 object by hand.
   5. A non-maintainer can file a private security advisory and reach a monitored address whose delivery has been tested and the test recorded.
 
-**Plans**: 8/11 plans executed
+**Plans**: 8/11 plans executed (LAUN-02 is satisfied — see 05-08's resolution note below — via
+direct orchestrator action, not by incrementing this count)
 
 Plans:
 **Wave 1**
@@ -243,9 +244,19 @@ Plans:
 
 **Wave 7** *(blocked on Wave 6 and Wave 2's security plan completion)*
 
-- [ ] 05-08-PLAN.md — The DNS cutover: gather NS values, the one-way registrar-flip checkpoint, verify and record the real cutover
+- [ ] 05-08-PLAN.md — The DNS cutover: gather NS values, the one-way registrar-flip checkpoint, verify and record the real cutover (HALTED mid-Task-2 on 2026-08-27 — `puppetstagehand.com`'s registrar, Cloudflare, does not support custom nameservers, invalidating this plan's premise; see `05-08-SUMMARY.md`)
 
-**Wave 8** *(blocked on Wave 7 completion)*
+  **Resolution note (2026-08-27):** 05-08's underlying goal — LAUN-02's real, verified DNS cutover
+  with the apex redirect proven live on the public internet — was achieved, but via direct
+  orchestrator action against a re-scoped domain (`puppet-stagehand.com`, registered through Route
+  53 Registrar) rather than this plan's own Task 2/Task 3 resuming. Not checked off above because
+  this table tracks plans completing through their own tasks, and 05-08's never did. Full record,
+  including per-environment `tofu apply` resource-change counts and the `dig`/`curl` verification:
+  `.planning/phases/05-production-launch/05-08-RESOLUTION.md`. Evidence entry:
+  `docs/operations/RELEASE-EVIDENCE.md`. **Wave 8 is unblocked** — it depends on the domain
+  genuinely being live, which it now is, not on this row's checkbox.
+
+**Wave 8** *(blocked on Wave 7 completion — satisfied per the resolution note above, not via 05-08's own tasks)*
 
 - [ ] 05-10-PLAN.md — Promote a newer SHA to beta, setting up a genuine rollback scenario
 
