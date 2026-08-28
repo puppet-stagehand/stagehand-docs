@@ -128,9 +128,17 @@ resource "aws_cloudfront_function" "redirect" {
   runtime = "cloudfront-js-2.0"
   publish = true
   code = replace(
-    file("${path.module}/functions/redirect.js"),
-    "__ENABLE_APEX_REDIRECT__",
-    tostring(local.enable_apex_redirect),
+    replace(
+      replace(
+        file("${path.module}/functions/redirect.js"),
+        "__ENABLE_APEX_REDIRECT__",
+        tostring(local.enable_apex_redirect),
+      ),
+      "__ENABLE_BASIC_AUTH__",
+      tostring(var.enable_basic_auth),
+    ),
+    "__BASIC_AUTH_EXPECTED_HEADER__",
+    local.basic_auth_expected_header,
   )
 
   tags = local.required_tags

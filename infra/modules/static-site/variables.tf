@@ -100,3 +100,28 @@ variable "enable_redirect_function" {
   type        = bool
   default     = true
 }
+
+variable "enable_basic_auth" {
+  description = "Temporary lockdown: require HTTP Basic Auth for every request via the same CloudFront Function used for redirects/clean paths. Off by default; each environment opts in explicitly while it's not ready for public traffic."
+  type        = bool
+  default     = false
+}
+
+variable "basic_auth_username" {
+  description = "HTTP Basic Auth username, required when enable_basic_auth is true. Never committed to a tracked file; pass via TF_VAR_basic_auth_username."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "basic_auth_password" {
+  description = "HTTP Basic Auth password, required when enable_basic_auth is true. Never committed to a tracked file; pass via TF_VAR_basic_auth_password."
+  type        = string
+  default     = ""
+  sensitive   = true
+
+  validation {
+    condition     = !var.enable_basic_auth || length(var.basic_auth_password) >= 12
+    error_message = "basic_auth_password must be at least 12 characters when enable_basic_auth is true."
+  }
+}

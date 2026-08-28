@@ -49,6 +49,9 @@ module "site" {
   github_oidc_provider_arn       = var.github_oidc_provider_arn
   github_repository_oidc_subject = var.github_repository_oidc_subject
   enable_redirect_function       = true
+  enable_basic_auth              = true
+  basic_auth_username            = var.basic_auth_username
+  basic_auth_password            = var.basic_auth_password
 }
 
 output "content_bucket_name" {

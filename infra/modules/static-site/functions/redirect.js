@@ -25,12 +25,31 @@ function redirect(location) {
   };
 }
 
+function unauthorized() {
+  return {
+    statusCode: 401,
+    statusDescription: 'Unauthorized',
+    headers: {
+      'www-authenticate': { value: 'Basic realm="Restricted", charset="UTF-8"' },
+      'cache-control': { value: 'no-store' },
+    },
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- CloudFront invokes this global entry point.
 function handler(event) {
   var request = event.request;
   var uri = request.uri;
   var query = encodeQueryString(request.querystring);
   var apexRedirectEnabled = __ENABLE_APEX_REDIRECT__;
+  var basicAuthEnabled = __ENABLE_BASIC_AUTH__;
+
+  if (basicAuthEnabled) {
+    var authHeader = request.headers.authorization;
+    if (!authHeader || authHeader.value !== '__BASIC_AUTH_EXPECTED_HEADER__') {
+      return unauthorized();
+    }
+  }
 
   if (apexRedirectEnabled && request.headers.host.value.toLowerCase() === 'puppet-stagehand.com') {
     return redirect('https://www.puppet-stagehand.com' + uri + query);

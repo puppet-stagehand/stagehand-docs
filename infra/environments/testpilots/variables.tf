@@ -34,3 +34,17 @@ variable "github_repository_oidc_subject" {
     error_message = "github_repository_oidc_subject must be puppet-stagehand@319121253/stagehand-docs@1342992313 (GitHub's immutable-ID OIDC subject prefix for this repo)."
   }
 }
+
+variable "basic_auth_username" {
+  description = "Temporary-lockdown HTTP Basic Auth username. Never committed to a tracked file; pass via TF_VAR_basic_auth_username."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "basic_auth_password" {
+  description = "Temporary-lockdown HTTP Basic Auth password. Never committed to a tracked file; pass via TF_VAR_basic_auth_password."
+  type        = string
+  sensitive   = true
+  default     = ""
+}

@@ -48,6 +48,9 @@ module "site" {
   hosted_zone_id           = var.hosted_zone_id
   github_oidc_provider_arn = var.github_oidc_provider_arn
   enable_redirect_function = true
+  enable_basic_auth        = true
+  basic_auth_username      = var.basic_auth_username
+  basic_auth_password      = var.basic_auth_password
 }
 
 output "content_bucket_name" {

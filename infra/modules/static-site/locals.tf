@@ -12,4 +12,9 @@ locals {
     contains(local.aliases, "puppet-stagehand.com") &&
     contains(local.aliases, "www.puppet-stagehand.com")
   )
+
+  # "Basic <base64(user:pass)>" — the exact value browsers send in the
+  # Authorization header, precomputed so redirect.js only does a string
+  # comparison rather than reimplementing base64 in CloudFront JS.
+  basic_auth_expected_header = "Basic ${base64encode("${var.basic_auth_username}:${var.basic_auth_password}")}"
 }
