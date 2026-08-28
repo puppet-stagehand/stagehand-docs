@@ -214,6 +214,6 @@ describe('operations documentation contract', () => {
     );
     expect(security).not.toMatch(/(?:is|currently) monitored/iu);
     expect(security).toContain('Do not open a public issue');
-    expect(security).toContain('Do not open a public issue or discussion');
+    expect(security).toMatch(/Do not open a public\s+issue or discussion/u);
   });
 });
