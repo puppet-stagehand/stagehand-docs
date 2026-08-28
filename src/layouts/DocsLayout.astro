@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import DocsNavigation from '../components/DocsNavigation.astro';
+import TesterGuideVisibility from '../components/TesterGuideVisibility.astro';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -55,9 +56,17 @@ const updatedLabel = updatedDate?.toLocaleDateString('en-US', {
             }
           </header>
 
-          <div class="docs-content">
+          <div class="docs-content" data-tester-guide={entry.data.visibleOn ? true : undefined}>
             <slot />
           </div>
+          {
+            entry.data.visibleOn && (
+              <p data-tester-guide-unavailable hidden>
+                This guide isn't shown on this site. It's only available on the testpilots and beta
+                sites.
+              </p>
+            )
+          }
 
           <nav class="docs-pagination" aria-label="Adjacent documentation">
             <div>
@@ -82,6 +91,7 @@ const updatedLabel = updatedDate?.toLocaleDateString('en-US', {
             </div>
           </nav>
         </article>
+        {entry.data.visibleOn && <TesterGuideVisibility />}
       </div>
     </div>
   </div>

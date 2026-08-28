@@ -30,5 +30,17 @@ export default defineConfig({
         },
       },
     },
+    build: {
+      // This site's CSP is `script-src 'self'` with no `'unsafe-inline'`/nonce/hash
+      // (infra/modules/static-site/cloudfront.tf). Vite's default asset-inlining
+      // threshold (4096 bytes) applies to small built <script> chunks referenced from
+      // page HTML, not just images/fonts — below that size it inlines the compiled JS
+      // directly into the page as literal <script> content, which a strict CSP without
+      // 'unsafe-inline' silently blocks at runtime with no build error (same failure
+      // mode as `is:inline`, just triggered by chunk size instead of an explicit
+      // directive). Disabling inlining entirely keeps every processed script an
+      // external, same-origin `/assets/*.js` file, matching what this CSP requires.
+      assetsInlineLimit: 0,
+    },
   },
 });

@@ -1,0 +1,27 @@
+---
+// Rendered only by DocsLayout.astro when entry.data.visibleOn is set, so this
+// component's script is only ever emitted on that one gated docs page — not
+// on every /docs/[slug]/ route. Split into its own component (rather than an
+// inline <script> nested inside a conditional expression in DocsLayout.astro)
+// because prettier's Astro parser cannot format a <script> tag nested inside
+// a `{cond && (<script>...)}` expression; a plain <script> at a component's
+// top level formats fine, and Astro still only bundles/emits it on pages that
+// render this component.
+---
+
+<script>
+  import { resolveSiteChannel } from '../lib/site-channel';
+
+  const guide = document.querySelector<HTMLElement>('[data-tester-guide]');
+  const fallback = document.querySelector<HTMLElement>('[data-tester-guide-unavailable]');
+  const channel = resolveSiteChannel(window.location.hostname);
+  const allowed = channel === 'testpilots' || channel === 'beta';
+
+  // Default rendered state is "guide visible, fallback hidden" — matches what a
+  // testpilots/beta visitor should see, and what every visitor sees if this script
+  // never runs at all (JS disabled). Only flip state for a disallowed channel.
+  if (!allowed) {
+    guide?.setAttribute('hidden', '');
+    fallback?.removeAttribute('hidden');
+  }
+</script>
