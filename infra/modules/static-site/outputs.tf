@@ -22,3 +22,8 @@ output "certificate_arn" {
   description = "ARN of the validated us-east-1 ACM certificate."
   value       = aws_acm_certificate_validation.site.certificate_arn
 }
+
+output "tester_gate_kvs_arn" {
+  description = "ARN of the CloudFront KeyValueStore backing the tester-access gate."
+  value       = aws_cloudfront_key_value_store.tester_gate.arn
+}

@@ -130,16 +130,22 @@ resource "aws_cloudfront_function" "redirect" {
   code = replace(
     replace(
       replace(
-        file("${path.module}/functions/redirect.js"),
-        "__ENABLE_APEX_REDIRECT__",
-        tostring(local.enable_apex_redirect),
+        replace(
+          file("${path.module}/functions/redirect.js"),
+          "__ENABLE_APEX_REDIRECT__",
+          tostring(local.enable_apex_redirect),
+        ),
+        "__ENABLE_BASIC_AUTH__",
+        tostring(var.enable_basic_auth),
       ),
-      "__ENABLE_BASIC_AUTH__",
-      tostring(var.enable_basic_auth),
+      "__BASIC_AUTH_EXPECTED_HEADER__",
+      local.basic_auth_expected_header,
     ),
-    "__BASIC_AUTH_EXPECTED_HEADER__",
-    local.basic_auth_expected_header,
+    "__GATED_PATH_PREFIXES__",
+    trimspace(file("${path.module}/gated-paths.json")),
   )
+
+  key_value_store_associations = [aws_cloudfront_key_value_store.tester_gate.arn]
 
   tags = local.required_tags
 }
