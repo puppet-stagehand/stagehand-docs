@@ -68,3 +68,7 @@ output "deployment_role_arn" {
 output "distribution_domain_name" {
   value = module.site.distribution_domain_name
 }
+
+output "tester_gate_kvs_arn" {
+  value = module.site.tester_gate_kvs_arn
+}
