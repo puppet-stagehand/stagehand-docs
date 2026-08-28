@@ -182,7 +182,21 @@ Plans:
 
 **Canonical refs**: `puppet-console` repo at `/Users/matthew/Code/puppet-console/docs/TESTER-GUIDE.md`; PROJECT.md's immutable-promotion constraint.
 
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 04.1-01-PLAN.md — Tracer/TDD: the path-scoped KVS-backed gate as a guard clause in redirect.js, proven RED→GREEN against a real node:test suite before any AWS resource is touched
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04.1-02-PLAN.md — Apply the gate for real across testpilots/beta/stable, confirm the CloudFront Functions KVS API against a live unpublished function version, seed the shared credential, and write the rotation runbook
+- [ ] 04.1-03-PLAN.md — Port and curate the Tester's Guide, and wire the testpilots/beta-only client-side visibility toggle
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 04.1-04-PLAN.md — Phase-closing full `npm run verify` pass and live cross-environment proof of all six success criteria plus the credential-leak sweep
 
 ### Phase 04.2: Tester Downloads (INSERTED)
 
