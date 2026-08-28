@@ -37,6 +37,7 @@ describe('docs collection source', () => {
       'first-run',
       'getting-started',
       'security',
+      'testers-guide',
     ]);
     expect(entries.every(({ data }) => typeof data.description === 'string')).toBe(true);
     expect(entries.every(({ data }) => String(data.description).trim().length > 0)).toBe(true);

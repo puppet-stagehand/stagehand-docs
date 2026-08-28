@@ -9,6 +9,7 @@ const docs = defineCollection({
     description: z.string().min(1),
     order: z.number().int().positive(),
     updated: z.coerce.date().optional(),
+    visibleOn: z.array(z.enum(['testpilots', 'beta', 'stable'])).optional(),
   }),
 });
 
