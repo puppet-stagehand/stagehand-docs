@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 0
+open_count: 1
 waived_count: 0
 fixed_count: 1
-total_count: 1
-last_updated: 2026-08-26T16:16:38.639Z
+total_count: 2
+last_updated: 2026-08-28T13:25:23.074Z
 ---
 
 # Broken Windows Ledger
@@ -16,6 +16,7 @@ last_updated: 2026-08-26T16:16:38.639Z
 | id | phase | kind | file | line | description | status | reason | recorded_at | resolved_at |
 |----|-------|------|------|------|-------------|--------|--------|-------------|-------------|
 | 1 | 01 | unrun-verify | docs/operations/aws-bootstrap.md |  | Task 1 human-check (one procedure not two, three custody controls, narrowed-not-abandoned scoping claim, hosted_zone_id placement) carried to end-of-phase UAT harvest per human_verify_mode default; not independently verified by executor | fixed |  | 2026-08-26T16:07:24.837Z | 2026-08-26T16:16:38.639Z |
+| 2 | 04.1 | deviation | src/content/docs/testers-guide.md |  | AUTH-06 live cross-environment proof deferred: check 6 (beta shows guide, stable shows fallback for a tester holding only the tester-gate credential) is blocked pre-launch by the separate, temporary whole-site enable_basic_auth lockdown (commit 44b56c9) sharing the same WWW-Authenticate realm as the tester gate, so the gated page's own static assets 401 for tester-credential-only sessions. Re-verify check 6 once Phase 05 removes the whole-site lockdown at public launch. | open |  | 2026-08-28T13:25:23.074Z |  |
 
 ````json
 [
@@ -30,6 +31,18 @@ last_updated: 2026-08-26T16:16:38.639Z
     "reason": "",
     "recorded_at": "2026-08-26T16:07:24.837Z",
     "resolved_at": "2026-08-26T16:16:38.639Z"
+  },
+  {
+    "id": 2,
+    "kind": "deviation",
+    "phase": "04.1",
+    "file": "src/content/docs/testers-guide.md",
+    "line": null,
+    "description": "AUTH-06 live cross-environment proof deferred: check 6 (beta shows guide, stable shows fallback for a tester holding only the tester-gate credential) is blocked pre-launch by the separate, temporary whole-site enable_basic_auth lockdown (commit 44b56c9) sharing the same WWW-Authenticate realm as the tester gate, so the gated page's own static assets 401 for tester-credential-only sessions. Re-verify check 6 once Phase 05 removes the whole-site lockdown at public launch.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-28T13:25:23.074Z",
+    "resolved_at": null
   }
 ]
 ````
