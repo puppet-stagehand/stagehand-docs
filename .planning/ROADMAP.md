@@ -168,9 +168,9 @@ Plans:
 
 ### Phase 04.1: Gated Tester Access (INSERTED)
 
-**Goal**: A tester with the shared password reaches the testing guides and the installer; anyone without it is refused at the edge, and the password is nowhere in the public repository.
+**Goal**: A tester with the shared password reaches the testing guides — including a ported Tester's Guide, visible only on testpilots/beta — and anyone without the password is refused at the edge; the password is nowhere in the public repository.
 **Depends on**: Phase 4
-**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, GATE-06
+**Requirements**: AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, DOC-01, GATE-06
 **Success Criteria** (what must be TRUE):
 
   1. A request to a gated path without credentials is refused by the CloudFront viewer-request function with `401` and a `WWW-Authenticate` challenge, before any S3 origin is reached; a request carrying the shared password is served normally.
@@ -178,23 +178,29 @@ Plans:
   3. Rotating the credential is a KeyValueStore write documented in a runbook, and does not require republishing the CloudFront function or redeploying the site.
   4. `npm run verify` is green with the gate live: `check:links` and the Playwright e2e suite either carry the credential or exclude the gated paths by an explicit, recorded rule — neither silently reports success because it stopped crawling, and neither is weakened for unrelated paths.
   5. Which paths are gated is declared in exactly one place that both the function and the verification tooling read, so an ungated testing guide is a build-visible error rather than a discovery in production.
+  6. The Tester's Guide, ported from `puppet-console`'s `docs/TESTER-GUIDE.md`, sits behind the gate and renders on `testpilots`/`beta`; the identical, immutably-promoted build served on `stable` shows an honest "not available here" state instead, decided by client-side hostname detection — not a separate build.
+
+**Canonical refs**: `puppet-console` repo at `/Users/matthew/Code/puppet-console/docs/TESTER-GUIDE.md`; PROJECT.md's immutable-promotion constraint.
 
 **Plans**: TBD
 
 ### Phase 04.2: Tester Downloads (INSERTED)
 
-**Goal**: A tester behind the gate can obtain Stagehand two ways — pull the container or download the installer — and each route names the exact version it will give them.
+**Goal**: A reader on any of the three sites can download the puppet-installer binary for the channel that site represents, sourced from a public GitHub Releases mirror, and reach ported user/installer documentation alongside it — all without needing the tester password.
 **Depends on**: Phase 04.1
-**Requirements**: DOWN-01, DOWN-02, DOWN-03, DOWN-04, GATE-07
+**Requirements**: DOWN-01, DOWN-02, DOWN-03, DOWN-04, DOC-02, DOC-03, GATE-07
 **Success Criteria** (what must be TRUE):
 
-  1. `/downloads/` presents both channels side by side — a copyable `docker pull` command for the ghcr image, and a download link for the installer binary — with the version each resolves to stated on the page, not implied.
-  2. The installer is served from a private S3 origin through the existing CloudFront distribution using the origin-access-control pattern already in `infra/modules/static-site`; the bucket denies public access, and a direct S3 URL fails while the CloudFront path succeeds.
-  3. The installer path sits behind the Phase 04.1 gate — an unauthenticated request for it is refused with the same `401` as a gated guide, proving one gate covers both surfaces rather than two mechanisms drifting apart.
+  1. `/downloads/` presents a download link for the puppet-installer binary, resolving to the release channel matching whichever site serves the page (`test-pilots` on testpilots, `beta` on beta, `stable` on stable), determined by client-side hostname detection against the one immutably-promoted build; the version it resolves to is stated on the page, not implied.
+  2. Release data and binaries come from the public `puppet-stagehand/stagehand-release` repository's GitHub Releases API — no credential for the private `puppetlabs-seteam/puppet-installer` repo is shipped to the browser or committed to this repository.
+  3. The downloads page itself is reachable without the shared password; only the Tester's Guide (Phase 04.1) stays behind that gate.
   4. The page states the artifact's checksum and publication date, and a reader can verify the downloaded file against the stated checksum.
-  5. When no artifact has been published for a channel, that channel renders an honest unavailable state naming what is missing — the page never presents a dead link or a version it cannot substantiate.
+  5. When no release has been published for a channel, that channel renders an honest unavailable state naming what is missing — the page never presents a dead link or a version it cannot substantiate.
+  6. The general User Guide (ported from `puppet-console`'s `docs/USER-GUIDE.md`) and reader-facing puppet-installer documentation (`registry-distribution-guide.md`, `support-guide.md`) are live in `src/content/docs/` on all three environments; maintainer-facing installer docs (`releasing.md`, `secrets.md`, `production-readiness.md`) are excluded.
 
-**Cross-repo prerequisite**: The artifacts are produced by `puppet-stagehand/stagehand` (latest release `v0.2.3`, 2026-08-21), which today has **zero release assets**, and no ghcr container has been confirmed. Producing and publishing both artifacts is outside this repository. This phase cannot reach criteria 1 and 4 until that upstream work exists; criteria 2, 3 and 5 are reachable without it.
+**Cross-repo prerequisite**: `puppetlabs-seteam/puppet-installer` is a private/internal repo with **zero releases published anywhere**; its release workflow's public-mirror step targets a placeholder repo/secret (`souldonetworks/stagehand-release` / `STAGEHAND_RELEASE_TOKEN`) that don't exist. Before this phase can reach criteria 1, 2, 4, and 5, `puppet-stagehand/stagehand-release` must be created as a public repo, the release workflow retargeted to it (`souldonetworks` → `puppet-stagehand`), the token wired, and at least one real release cut per channel. That work is outside this repository (it touches `puppet-installer`'s workflow and GitHub org settings) and is tracked as a prerequisite, not a task of this phase. `puppet-stagehand/stagehand-release` also becomes the place testers/customers file issues about the installer or console; `stagehand-docs` keeps its own issues for docs-site problems. Criteria 3 and 6 are reachable without it.
+
+**Canonical refs**: `puppet-console` repo at `/Users/matthew/Code/puppet-console/docs/USER-GUIDE.md`; `puppet-installer` repo docs at `/Users/matthew/Code/puppet-installer/docs/{registry-distribution-guide,support-guide}.md`; `puppet-installer/.github/workflows/release.yml` (channel-detection and mirror-step logic); PROJECT.md's immutable-promotion constraint.
 
 **Plans**: TBD
 **UI hint**: yes

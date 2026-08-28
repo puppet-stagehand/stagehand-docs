@@ -288,21 +288,24 @@ constraint in PROJECT.md and a success criterion of every phase, not a requireme
       assumed from configuration.
       *Source: testing strategy; AUTH-01*
 
-- [ ] **GATE-07**: A test asserts that the installer object is unreachable by direct S3 URL and
-      reachable through the CloudFront path, so the private-origin guarantee is enforced rather than
-      documented.
-      *Source: testing strategy; DOWN-02*
+- [ ] **GATE-07**: A test asserts that the downloads page resolves each site's channel correctly
+      against fixture release data (test-pilots on testpilots, beta on beta, stable on stable) and
+      that no channel silently falls back to another channel's binary or a stale cached one.
+      *Source: testing strategy; amended 2026-08-27 for DOWN-01/DOWN-02 (channel-matched GitHub Releases pull replaces the private-S3-origin design)*
 
 ### Tester access gate (AUTH)
 
 Added 2026-08-26 after roadmap evolution. Gating testing guides and the installer behind one shared
 password, on a site that is static and a repository that is public.
 
-- [ ] **AUTH-01**: A single shared password (no username) gates the testing guides and the installer
-      download path, enforced by the existing `aws_cloudfront_function` on `viewer-request` so an
-      unauthenticated request is refused with `401` and a `WWW-Authenticate` challenge before any S3
-      origin is reached.
-      *Source: tester-enablement scope decision 2026-08-26; verified: `infra/modules/static-site/cloudfront.tf:123` already declares a viewer-request function on all three cache behaviours*
+- [ ] **AUTH-01**: A single shared password (no username) gates the testing guides — including the
+      ported Tester's Guide (DOC-01) — enforced by the existing `aws_cloudfront_function` on
+      `viewer-request` so an unauthenticated request is refused with `401` and a `WWW-Authenticate`
+      challenge before any S3 origin is reached. The installer download path (DOWN-01) is
+      deliberately NOT gated — it only ever links to public release artifacts.
+      *Source: tester-enablement scope decision 2026-08-26; amended 2026-08-27 (downloads ungated,
+      see DOWN section); verified: `infra/modules/static-site/cloudfront.tf:123` already declares a
+      viewer-request function on all three cache behaviours*
 
 - [ ] **AUTH-02**: The credential is held in a CloudFront KeyValueStore and never enters the
       repository — not as plaintext, not as a hash, and not as a placeholder that is actually live.
@@ -325,30 +328,70 @@ password, on a site that is static and a repository that is public.
       than surfacing in production.
       *Source: single-source-of-truth constraint; prose-vs-reality drift prevention*
 
+- [ ] **AUTH-06**: A "Tester's Guide" area (DOC-01) is added to the set of gated paths declared by
+      AUTH-05, and is rendered only on the `testpilots` and `beta` sites — the `stable` site serves
+      the same immutably-promoted build but renders an honest "not available here" state for that
+      area, resolved by client-side hostname detection (no per-environment build; see PROJECT.md's
+      immutable promotion constraint).
+      *Source: doc-porting scope decision 2026-08-27; PROJECT.md "Promotion is ordered and immutable"*
+
 ### Tester downloads (DOWN)
 
-Added 2026-08-26 after roadmap evolution. Two install channels for testers, behind the AUTH gate.
+Added 2026-08-26 after roadmap evolution. Amended 2026-08-27: replaces the original ghcr-container +
+private-S3-installer design with a GitHub Releases pull from a public mirror repo, ungated.
 
-- [ ] **DOWN-01**: `/downloads/` presents both install channels — a copyable `docker pull` command
-      for the ghcr container and a download link for the installer binary — and states the version
-      each resolves to rather than implying it.
-      *Source: tester-enablement scope decision 2026-08-26 (both channels, not one)*
+- [ ] **DOWN-01**: `/downloads/` presents a download link for the puppet-installer binary, resolving
+      to the release channel matching whichever site is serving the page — `test-pilots` on
+      `testpilots.puppetstagehand.com`, `beta` on `beta.puppetstagehand.com`, `stable` on
+      `www.puppetstagehand.com` — determined by client-side hostname detection against the same
+      immutably-promoted build, and states the version it resolves to rather than implying it.
+      *Source: tester-enablement scope decision 2026-08-26; amended 2026-08-27 (channel-matched GitHub Releases pull replaces the dual ghcr/S3 design)*
 
-- [ ] **DOWN-02**: The installer binary is served from a private S3 origin through the existing
-      CloudFront distribution using the origin-access-control pattern already in
-      `infra/modules/static-site`; the bucket denies public access, so a direct S3 URL fails while
-      the CloudFront path succeeds.
-      *Source: tester-enablement scope decision 2026-08-26; verified: `cloudfront.tf:1` and `s3.tf:34,60` already implement OAC over a private content bucket*
+- [ ] **DOWN-02**: Release data and binaries are sourced from the public
+      `puppet-stagehand/stagehand-release` repository's GitHub Releases via its public API — no
+      credential for the private `puppetlabs-seteam/puppet-installer` repo is ever shipped to the
+      browser or checked into this repository.
+      *Source: 2026-08-27 finding — `puppetlabs-seteam/puppet-installer` is a private/internal repo;
+      its release workflow's public-mirror step targets a placeholder repo/secret that doesn't exist
+      yet. Cross-repo prerequisite: `puppet-stagehand/stagehand-release` must exist and receive real
+      releases before this requirement is reachable — see ROADMAP.md's cross-repo prerequisite note.*
 
-- [ ] **DOWN-03**: The installer path is gated by the same AUTH-01 mechanism as the testing guides —
-      one gate covering both surfaces, not two mechanisms free to drift apart.
-      *Source: AUTH-01; single-mechanism constraint*
+- [ ] **DOWN-03**: The downloads page is reachable without the shared password — only the Tester's
+      Guide (DOC-01, AUTH-06) stays behind the AUTH-01 gate; one page linking to public release
+      artifacts does not need the same protection as reader-facing testing instructions.
+      *Source: tester-enablement scope decision 2026-08-27 (supersedes the original single-mechanism
+      DOWN-03, since the installer is no longer gated)*
 
 - [ ] **DOWN-04**: The page states each artifact's checksum and publication date, and a reader can
       verify a downloaded file against the stated checksum. Where a channel has no published
-      artifact, it renders an honest unavailable state naming what is missing rather than a dead
-      link or an unsubstantiated version.
-      *Source: evidence-bearing claims constraint (same standard as the compatibility register); verified 2026-08-26 — `puppet-stagehand/stagehand` release `v0.2.3` has zero release assets*
+      release, it renders an honest unavailable state naming what is missing rather than a dead link
+      or an unsubstantiated version.
+      *Source: evidence-bearing claims constraint (same standard as the compatibility register);
+      verified 2026-08-27 — `puppetlabs-seteam/puppet-installer` has zero releases published anywhere*
+
+### Documentation porting (DOC)
+
+Added 2026-08-27. Ports reader-facing guides from `puppet-console` (and any reader-facing
+`puppet-installer` docs) into this site, alongside the AUTH/DOWN work above.
+
+- [ ] **DOC-01**: The Tester's Guide is ported from `puppet-console`'s `docs/TESTER-GUIDE.md` into a
+      dedicated area of this site, gated by AUTH-01/AUTH-06 and rendered only on `testpilots` and
+      `beta` (see AUTH-06 for the runtime mechanism).
+      *Source: doc-porting scope decision 2026-08-27*
+
+- [ ] **DOC-02**: The general User Guide is ported from `puppet-console`'s `docs/USER-GUIDE.md` into
+      this site's general documentation area (`src/content/docs/`), visible on all three
+      environments.
+      *Source: doc-porting scope decision 2026-08-27*
+
+- [ ] **DOC-03**: Reader-facing `puppet-installer` documentation is incorporated into the site's
+      documentation area alongside DOC-02; maintainer-facing installer docs (release engineering,
+      secrets handling, production-readiness checklists) are excluded as out of scope for a customer-
+      facing site.
+      *Source: doc-porting scope decision 2026-08-27; candidates identified 2026-08-27:
+      `puppet-installer/docs/registry-distribution-guide.md` and `docs/support-guide.md` (reader-
+      facing); `docs/releasing.md`, `docs/secrets.md`, `docs/production-readiness.md` excluded
+      (maintainer-facing)*
 
 ## v2 Requirements
 
@@ -435,11 +478,15 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | AUTH-03 | Phase 04.1 | Pending |
 | AUTH-04 | Phase 04.1 | Pending |
 | AUTH-05 | Phase 04.1 | Pending |
+| AUTH-06 | Phase 04.1 | Pending |
+| DOC-01 | Phase 04.1 | Pending |
 | GATE-06 | Phase 04.1 | Pending |
 | DOWN-01 | Phase 04.2 | Pending |
 | DOWN-02 | Phase 04.2 | Pending |
 | DOWN-03 | Phase 04.2 | Pending |
 | DOWN-04 | Phase 04.2 | Pending |
+| DOC-02 | Phase 04.2 | Pending |
+| DOC-03 | Phase 04.2 | Pending |
 | GATE-07 | Phase 04.2 | Pending |
 
 **Coverage:**
