@@ -1,4 +1,5 @@
 ---
+import BrandTriangles from '../../components/BrandTriangles.astro';
 import CompatibilityEmptyState from '../../components/CompatibilityEmptyState.astro';
 import CompatibilityMatrix from '../../components/CompatibilityMatrix.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -8,17 +9,18 @@ const records = loadCompatibility();
 ---
 
 <BaseLayout
-  title="Compatibility register"
+  title="Compatibility Register"
   description="Verified Puppet Stagehand compatibility claims, version boundaries, evidence, and limitations."
   canonicalPath="/compatibility/"
 >
   <header class="register-hero register-hero--compatibility">
+    <BrandTriangles class="register-hero__triangles" />
     <div class="container register-hero__grid">
       <div>
         <p class="register-hero__eyebrow">
           RELEASE VERIFICATION / {records.length.toString().padStart(2, '0')}
         </p>
-        <h1>Compatibility register</h1>
+        <h1>Compatibility Register</h1>
       </div>
       <div class="register-hero__lede">
         <p>

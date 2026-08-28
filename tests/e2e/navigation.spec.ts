@@ -1,13 +1,13 @@
 import { expect, test } from '@playwright/test';
 
 const routes = [
-  ['/', 'Operate Puppet with less ceremony.'],
-  ['/tiers/', 'Stagehand tiers'],
-  ['/compatibility/', 'Compatibility register'],
+  ['/', 'Operate Puppet with Less Ceremony.'],
+  ['/tiers/', 'Stagehand Tiers'],
+  ['/compatibility/', 'Compatibility Register'],
   ['/docs/', 'Documentation'],
-  ['/docs/getting-started/', 'Getting started'],
-  ['/docs/security/', 'Security and trust boundaries'],
-  ['/support/', 'Stagehand support'],
+  ['/docs/getting-started/', 'Getting Started'],
+  ['/docs/security/', 'Security and Trust Boundaries'],
+  ['/support/', 'Stagehand Support'],
 ] as const;
 
 test('every published HTML route has its unique page heading and document title', async ({

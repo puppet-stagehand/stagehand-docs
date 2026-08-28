@@ -42,21 +42,17 @@
 }
 
 .site-header__inner {
-  display: flex;
+  display: grid;
   min-height: 5rem;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem 1.5rem;
 }
 
 .site-wordmark {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
   color: var(--stagehand-off-white);
-  font-size: 1.0625rem;
-  font-weight: 600;
-  letter-spacing: -0.015em;
   text-decoration: none;
 }
 
@@ -66,15 +62,35 @@
 
 // Exclusion-zone spirit of the brand guidelines (half the logo's height as
 // clear space): the gap above plus this fixed height keeps the mark from
-// crowding the nav or the "Stagehand" wordmark beside it.
+// crowding the nav or the "Stagehand" wordmark on the opposite side.
 .site-wordmark__logo {
   display: block;
   height: 1.75rem;
   width: auto;
 }
 
-.site-wordmark__product {
-  position: relative;
+// Bookends the header opposite the logo. Kept as its own link (rather than
+// living inside .site-wordmark) so the centered nav area can sit between
+// the two without either one anchoring the grid's flexible middle column.
+.site-header__product-mark {
+  justify-self: end;
+  color: var(--stagehand-off-white);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-header__product-mark:hover {
+  color: #ffffff;
+}
+
+.site-header__nav-area {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
 }
 
 .site-header__desktop {
@@ -86,7 +102,9 @@
   margin: 0;
   padding: 0;
   align-items: center;
-  gap: clamp(1.5rem, 3vw, 3rem);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem clamp(1.25rem, 2.5vw, 3rem);
   list-style: none;
 }
 

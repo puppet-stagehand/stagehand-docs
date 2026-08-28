@@ -7,28 +7,18 @@ const currentPath = Astro.url.pathname;
 <header class="site-header">
   <div class="container site-header__inner">
     <a class="site-wordmark" href="/" aria-label="Puppet Stagehand home">
-      <img class="site-wordmark__logo" src="/brand/puppet-logo-white.svg" alt="" width="105" height="32" />
-      <span class="site-wordmark__product">Stagehand</span>
+      <img
+        class="site-wordmark__logo"
+        src="/brand/puppet-logo-white.svg"
+        alt=""
+        width="105"
+        height="32"
+      />
     </a>
 
-    <nav class="site-header__desktop" aria-label="Primary navigation">
-      <ul class="site-nav">
-        {
-          primaryNavigation.map(({ href, label }) => (
-            <li>
-              <a href={href} aria-current={currentPath === href ? 'page' : undefined}>
-                {label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-
-    <details class="site-header__mobile">
-      <summary>Menu</summary>
-      <nav aria-label="Primary mobile navigation">
-        <ul class="site-nav site-nav--mobile">
+    <div class="site-header__nav-area">
+      <nav class="site-header__desktop" aria-label="Primary navigation">
+        <ul class="site-nav">
           {
             primaryNavigation.map(({ href, label }) => (
               <li>
@@ -40,6 +30,25 @@ const currentPath = Astro.url.pathname;
           }
         </ul>
       </nav>
-    </details>
+
+      <details class="site-header__mobile">
+        <summary>Menu</summary>
+        <nav aria-label="Primary mobile navigation">
+          <ul class="site-nav site-nav--mobile">
+            {
+              primaryNavigation.map(({ href, label }) => (
+                <li>
+                  <a href={href} aria-current={currentPath === href ? 'page' : undefined}>
+                    {label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </details>
+    </div>
+
+    <a class="site-header__product-mark" href="/" aria-label="Puppet Stagehand home">Stagehand</a>
   </div>
 </header>

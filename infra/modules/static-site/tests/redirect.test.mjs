@@ -5,20 +5,23 @@ import vm from 'node:vm';
 
 const template = readFileSync(new URL('../functions/redirect.js', import.meta.url), 'utf8');
 
-function loadFunction(apexRedirectEnabled) {
+function loadFunction(apexRedirectEnabled, basicAuthEnabled = false) {
   const context = vm.createContext({});
-  const source = template.replace('__ENABLE_APEX_REDIRECT__', String(apexRedirectEnabled));
+  const source = template
+    .replace('__ENABLE_APEX_REDIRECT__', String(apexRedirectEnabled))
+    .replace('__ENABLE_BASIC_AUTH__', String(basicAuthEnabled))
+    .replace('__BASIC_AUTH_EXPECTED_HEADER__', 'Basic dGVzdDp0ZXN0');
   vm.runInContext(source, context);
   return context;
 }
 
 const context = loadFunction(true);
 
-function request(uri, host, querystring = {}) {
+function request(uri, host, querystring = {}, headers = {}) {
   return {
     request: {
       uri,
-      headers: { host: { value: host } },
+      headers: { host: { value: host }, ...headers },
       querystring,
     },
   };
@@ -76,4 +79,41 @@ test('disabled apex behavior does not redirect the apex host to www', () => {
   const result = disabledContext.handler(request('/', 'puppet-stagehand.com'));
 
   assert.equal(result.uri, '/index.html');
+});
+
+test('basic auth disabled by default allows requests through with no authorization header', () => {
+  const result = context.handler(request('/tiers/', 'beta.puppet-stagehand.com'));
+
+  assert.equal(result.uri, '/tiers/index.html');
+});
+
+test('basic auth enabled rejects a request with no authorization header', () => {
+  const authContext = loadFunction(false, true);
+  const result = authContext.handler(request('/tiers/', 'beta.puppet-stagehand.com'));
+
+  assert.equal(result.statusCode, 401);
+  assert.match(result.headers['www-authenticate'].value, /^Basic realm=/);
+});
+
+test('basic auth enabled rejects a request with the wrong credential', () => {
+  const authContext = loadFunction(false, true);
+  const result = authContext.handler(
+    request('/tiers/', 'beta.puppet-stagehand.com', {}, { authorization: { value: 'Basic wrong' } }),
+  );
+
+  assert.equal(result.statusCode, 401);
+});
+
+test('basic auth enabled passes through a request with the correct credential', () => {
+  const authContext = loadFunction(false, true);
+  const result = authContext.handler(
+    request(
+      '/tiers/',
+      'beta.puppet-stagehand.com',
+      {},
+      { authorization: { value: 'Basic dGVzdDp0ZXN0' } },
+    ),
+  );
+
+  assert.equal(result.uri, '/tiers/index.html');
 });

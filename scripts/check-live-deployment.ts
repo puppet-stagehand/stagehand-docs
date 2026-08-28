@@ -11,7 +11,7 @@ const requiredRoutes = [
 ] as const;
 
 const nonexistentRoutePath = '/this-route-does-not-exist/';
-const brandedNotFoundMarker = 'Page not found';
+const brandedNotFoundMarker = 'Page Not Found';
 const commitStampPath = '/deployed-commit.txt';
 
 export type FetchLike = (url: string) => Promise<Response>;

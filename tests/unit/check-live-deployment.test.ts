@@ -22,7 +22,7 @@ type StubResponse = { status: number; body?: string };
 
 const passingResponses = (): Record<string, StubResponse> => {
   const responses: Record<string, StubResponse> = {
-    [nonexistentPath]: { status: 404, body: '<h1>Page not found</h1>' },
+    [nonexistentPath]: { status: 404, body: '<h1>Page Not Found</h1>' },
     [commitStampPath]: { status: 200, body: `${expectedSha}\n` },
   };
   for (const route of requiredRoutes) responses[route] = { status: 200, body: 'ok' };
