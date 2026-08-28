@@ -283,7 +283,7 @@ constraint in PROJECT.md and a success criterion of every phase, not a requireme
       *Source: `docs/operations/release.md` stable check; verified 2026-08-26 — the test file exists
       and asserts the guarantee, but no `package.json` script or workflow runs it*
 
-- [ ] **GATE-06**: A test asserts that an unauthenticated request to a gated path is refused with
+- [x] **GATE-06**: A test asserts that an unauthenticated request to a gated path is refused with
       `401`, and that an authenticated one succeeds — so the gate's presence is proven rather than
       assumed from configuration.
       *Source: testing strategy; AUTH-01*
@@ -298,7 +298,7 @@ constraint in PROJECT.md and a success criterion of every phase, not a requireme
 Added 2026-08-26 after roadmap evolution. Gating testing guides and the installer behind one shared
 password, on a site that is static and a repository that is public.
 
-- [ ] **AUTH-01**: A single shared password (no username) gates the testing guides — including the
+- [x] **AUTH-01**: A single shared password (no username) gates the testing guides — including the
       ported Tester's Guide (DOC-01) — enforced by the existing `aws_cloudfront_function` on
       `viewer-request` so an unauthenticated request is refused with `401` and a `WWW-Authenticate`
       challenge before any S3 origin is reached. The installer download path (DOWN-01) is
@@ -307,28 +307,28 @@ password, on a site that is static and a repository that is public.
       see DOWN section); verified: `infra/modules/static-site/cloudfront.tf:123` already declares a
       viewer-request function on all three cache behaviours*
 
-- [ ] **AUTH-02**: The credential is held in a CloudFront KeyValueStore and never enters the
+- [x] **AUTH-02**: The credential is held in a CloudFront KeyValueStore and never enters the
       repository — not as plaintext, not as a hash, and not as a placeholder that is actually live.
       `puppet-stagehand/stagehand-docs` is a public repository, so a committed shared secret is
       published, and a published hash of a single shared password is brute-forceable offline.
       *Source: tester-enablement scope decision 2026-08-26; verified: repository visibility is PUBLIC*
 
-- [ ] **AUTH-03**: Rotating the credential is a KeyValueStore write documented in an operator
+- [x] **AUTH-03**: Rotating the credential is a KeyValueStore write documented in an operator
       runbook, and requires neither republishing the CloudFront function nor redeploying the site.
       *Source: operations documentation contract; shared-credential lifecycle*
 
-- [ ] **AUTH-04**: `npm run check:links` and the Playwright e2e suite either carry the credential or
+- [x] **AUTH-04**: `npm run check:links` and the Playwright e2e suite either carry the credential or
       exclude the gated paths by an explicit recorded rule, so `npm run verify` stays green without
       either tool silently reporting success because it stopped crawling, and without weakening
       coverage of ungated paths.
       *Source: standing verification gate; verified: `verify` runs both `check:links` and `test:e2e`*
 
-- [ ] **AUTH-05**: The set of gated paths is declared in exactly one place that both the edge
+- [x] **AUTH-05**: The set of gated paths is declared in exactly one place that both the edge
       function and the verification tooling read, so an ungated testing guide fails the build rather
       than surfacing in production.
       *Source: single-source-of-truth constraint; prose-vs-reality drift prevention*
 
-- [ ] **AUTH-06**: A "Tester's Guide" area (DOC-01) is added to the set of gated paths declared by
+- [x] **AUTH-06**: A "Tester's Guide" area (DOC-01) is added to the set of gated paths declared by
       AUTH-05, and is rendered only on the `testpilots` and `beta` sites — the `stable` site serves
       the same immutably-promoted build but renders an honest "not available here" state for that
       area, resolved by client-side hostname detection (no per-environment build; see PROJECT.md's
@@ -374,7 +374,7 @@ private-S3-installer design with a GitHub Releases pull from a public mirror rep
 Added 2026-08-27. Ports reader-facing guides from `puppet-console` (and any reader-facing
 `puppet-installer` docs) into this site, alongside the AUTH/DOWN work above.
 
-- [ ] **DOC-01**: The Tester's Guide is ported from `puppet-console`'s `docs/TESTER-GUIDE.md` into a
+- [x] **DOC-01**: The Tester's Guide is ported from `puppet-console`'s `docs/TESTER-GUIDE.md` into a
       dedicated area of this site, gated by AUTH-01/AUTH-06 and rendered only on `testpilots` and
       `beta` (see AUTH-06 for the runtime mechanism).
       *Source: doc-porting scope decision 2026-08-27*
@@ -473,14 +473,14 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | LAUN-04 | Phase 5 | Complete |
 | LAUN-05 | Phase 5 | Pending |
 | GATE-05 | Phase 5 | Complete |
-| AUTH-01 | Phase 04.1 | Pending |
-| AUTH-02 | Phase 04.1 | Pending |
-| AUTH-03 | Phase 04.1 | Pending |
-| AUTH-04 | Phase 04.1 | Pending |
-| AUTH-05 | Phase 04.1 | Pending |
-| AUTH-06 | Phase 04.1 | Pending |
-| DOC-01 | Phase 04.1 | Pending |
-| GATE-06 | Phase 04.1 | Pending |
+| AUTH-01 | Phase 04.1 | Complete |
+| AUTH-02 | Phase 04.1 | Complete |
+| AUTH-03 | Phase 04.1 | Complete |
+| AUTH-04 | Phase 04.1 | Complete |
+| AUTH-05 | Phase 04.1 | Complete |
+| AUTH-06 | Phase 04.1 | Complete |
+| DOC-01 | Phase 04.1 | Complete |
+| GATE-06 | Phase 04.1 | Complete |
 | DOWN-01 | Phase 04.2 | Pending |
 | DOWN-02 | Phase 04.2 | Pending |
 | DOWN-03 | Phase 04.2 | Pending |
