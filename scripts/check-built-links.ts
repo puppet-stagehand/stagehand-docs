@@ -9,6 +9,7 @@ const allowedNonClaimLinks = new Set([
   'https://github.com/puppet-stagehand/stagehand-docs/issues/new',
   'https://github.com/puppet-stagehand/stagehand-docs/security/advisories/new',
   'https://github.com/puppet-stagehand/stagehand-release/issues',
+  'https://github.com/puppet-stagehand/stagehand-release/releases',
   'https://help.puppet.com/bolt/current/topics/bolt_installing.htm',
 ]);
 const canonicalBase = new URL('https://www.puppet-stagehand.com/');
@@ -45,7 +46,11 @@ const linkAttributes = (html: string): string[] => {
     }
     if ('content' in node) visit(node.content);
   };
-  visit(parse(html));
+  // scriptingEnabled: false so <noscript> fallback content (e.g. /downloads/'s manual GitHub
+  // link) is parsed as real child nodes instead of opaque raw text (parse5's JS-enabled default,
+  // which mirrors what a browser with JS enabled does) — otherwise links inside <noscript> are
+  // invisible to this checker (WR-01, 04.2-REVIEW.md).
+  visit(parse(html, { scriptingEnabled: false }));
   return values;
 };
 

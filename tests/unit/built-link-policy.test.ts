@@ -88,6 +88,25 @@ describe('built external-link policy', () => {
     expect(result.stdout).not.toMatch(/\[\d+\].*github\.com/u);
   });
 
+  // WR-01 (04.2-REVIEW.md): parse5 defaults to scriptingEnabled: true, which treats <noscript>
+  // content as opaque raw text (mirroring a JS-enabled browser) rather than real child nodes —
+  // so a link inside <noscript> (e.g. /downloads/'s manual GitHub fallback) was previously
+  // invisible to this checker entirely. These two fixtures prove the fix actually scans in.
+  it('rejects an unapproved external link that only appears inside a <noscript> fallback', () => {
+    const result = runCombinedCheck('unapproved-noscript-link');
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('https://evil.example/path');
+    expect(result.stdout).not.toContain('→ crawling');
+  });
+
+  it('accepts an allowlisted external link that only appears inside a <noscript> fallback', () => {
+    const result = runCombinedCheck('allowed-noscript-link');
+
+    expect(result.status, result.stderr).toBe(0);
+    expect(result.stdout).toContain('Verified 1 exact external link targets');
+  });
+
   it('rejects a broken entity-encoded canonical URL from the local build before crawling', () => {
     const result = runCombinedCheck('broken-first-party');
 
