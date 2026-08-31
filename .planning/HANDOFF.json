@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-08-31T01:00:48.758Z",
+  "phase": "04.1",
+  "phase_name": "Gated Tester Access (INSERTED)",
+  "phase_dir": ".planning/phases/04.1-gated-tester-access",
+  "plan": 5,
+  "task": 5,
+  "total_tasks": 5,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": 1, "name": "04.1-01 tracer/TDD KVS-backed gate", "status": "done", "commit": "prior session"},
+    {"id": 2, "name": "04.1-02 apply gate live + rotation runbook", "status": "done", "commit": "prior session"},
+    {"id": 3, "name": "04.1-03 port Tester's Guide + visibility toggle", "status": "done", "commit": "prior session"},
+    {"id": 4, "name": "04.1-04 phase-closing verify pass", "status": "done", "commit": "prior session"},
+    {"id": 5, "name": "04.1-05 gap closure: fail-closed tester-guide toggle (CR-01)", "status": "done", "commit": "d728754"}
+  ],
+  "remaining_tasks": [],
+  "blockers": [
+    {"description": "AUTH-06 live cross-environment re-check against real CloudFront is blocked by an unrelated, already-documented temporary whole-site enable_basic_auth lockdown (still true in all three environments' Terraform); tracked in .planning/WINDOWS.md id 2, expected to clear once Phase 05 ships.", "type": "external", "workaround": "none — wait for Phase 05"},
+    {"description": "Human read-through of src/content/docs/testers-guide.md for audience fit is deliberately deferred until remaining content (user/installer/module guides) is pushed up.", "type": "human_action", "workaround": "user will batch-review once all docs are up"}
+  ],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Run /gsd-verify-work 04.1 to walk through the two carried-forward human-verification items (AUTH-06 live re-check; testers-guide.md audience read-through) and mark the phase complete.", "context": "04.1-VERIFICATION.md status is human_needed — 6/6 must-haves and the gap-closure's 4/4 sub-truths are verified, but two pre-existing human items still need explicit sign-off before phase completion.", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "Marked 04.1-UAT.md test 3 (CR-01) as result: passed and its Gaps entry as status: resolved", "rationale": "Independently re-verified by both the code reviewer and the phase verifier — built the site, inspected static HTML, ran the new Playwright spec (3/3 pass), and a clean npm run verify with zero regressions.", "phase": "04.1"},
+    {"decision": "Scoped the CR-01 re-review to only the 3 files the gap-closure plan touched (--files override) instead of the whole phase", "rationale": "Faster, targeted review of the specific fix; the original 04.1-REVIEW.md already covered the full phase pre-fix.", "phase": "04.1"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "Run /gsd-verify-work 04.1 to resolve the two carried-forward human-verification items and complete the phase; ROADMAP/STATE advance to Phase 04.2 (Tester Downloads) automatically once verification status flips to passed.",
+  "context_notes": "This session ran /gsd-execute-phase 04.1 --gaps-only. Only one incomplete plan existed (04.1-05, gap_closure: true), closing code-review finding CR-01 (Tester's Guide visibility toggle failed open instead of closed). Executed it, updated the phase's own UAT gap status, re-ran code review scoped to the changed files (0 critical/blocker, 1 pre-existing warning unrelated to the fix, 2 info), and re-ran phase-goal verification (human_needed — same two pre-existing carried-forward human items as before, nothing new). No blocking gaps remain. The phase is functionally done; only human sign-off on the two known-deferred items stands between here and phase completion."
+}
