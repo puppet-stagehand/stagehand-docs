@@ -20,6 +20,19 @@ const capabilities = [
       "Know exactly what your tier includes, and what's still primary-evidence-verified in the compatibility register, before you rely on it.",
   },
 ] as const;
+
+const audiences = [
+  {
+    title: 'Hobbyists and Homelabs',
+    description:
+      'Stagehand is a great way to get control of your virtual machines, keep patching in order, and roll changes out to multiple systems without spending your evening repeating yourself.',
+  },
+  {
+    title: 'Open Source, Community, and Puppet Core',
+    description:
+      'Stagehand gives you an opinionated graphical interface for environment visibility, Bolt-native execution, and honest compliance and patch status, without a commercial support contract required to get it.',
+  },
+] as const;
 ---
 
 <BaseLayout
@@ -73,6 +86,30 @@ const capabilities = [
           ))
         }
       </div>
+    </div>
+  </section>
+
+  <section class="audiences" aria-labelledby="audiences-title">
+    <div class="container">
+      <div class="audiences__heading">
+        <p>WHO IT'S FOR / 02</p>
+        <h2 id="audiences-title">Bolt a Rocket Onto Your Puppet Environments.</h2>
+      </div>
+      <div class="audience-grid">
+        {
+          audiences.map(({ title, description }, index) => (
+            <article class="audience">
+              <span class="audience__index">0{index + 1}</span>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </article>
+          ))
+        }
+      </div>
+      <p class="audiences__note">
+        Puppet Enterprise and Puppet Enterprise Advanced support isn't live yet; it's next on the
+        roadmap.
+      </p>
     </div>
   </section>
 </BaseLayout>
