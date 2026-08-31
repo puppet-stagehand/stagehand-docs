@@ -89,7 +89,9 @@ export const loadDownloads = async (
   try {
     const response = await fetchImpl(RELEASES_URL);
     if (!response.ok) return emptyDownloads();
-    releases = (await response.json()) as GitHubRelease[];
+    const body = await response.json();
+    if (!Array.isArray(body)) return emptyDownloads();
+    releases = body as GitHubRelease[];
   } catch {
     return emptyDownloads();
   }
@@ -97,20 +99,20 @@ export const loadDownloads = async (
   const result = emptyDownloads();
 
   for (const channel of RELEASE_CHANNELS) {
-    const matchedRelease = findLatestForChannel(releases, channel);
-    if (!matchedRelease) continue;
-
-    const checksumsAsset = matchedRelease.assets.find((asset) => asset.name === 'SHA256SUMS');
-    if (!checksumsAsset) continue;
-
     try {
+      const matchedRelease = findLatestForChannel(releases, channel);
+      if (!matchedRelease) continue;
+
+      const checksumsAsset = matchedRelease.assets?.find((asset) => asset.name === 'SHA256SUMS');
+      if (!checksumsAsset) continue;
+
       const checksumsResponse = await fetchImpl(checksumsAsset.browser_download_url);
       if (!checksumsResponse.ok) continue;
       const checksums = parseChecksums(await checksumsResponse.text());
       if (Object.keys(checksums).length === 0) continue;
 
       const downloadUrls: Record<string, string> = {};
-      for (const asset of matchedRelease.assets) {
+      for (const asset of matchedRelease.assets ?? []) {
         if (asset.name === 'SHA256SUMS') continue;
         downloadUrls[asset.name] = asset.browser_download_url;
       }
@@ -123,7 +125,8 @@ export const loadDownloads = async (
         htmlUrl: matchedRelease.html_url,
       };
     } catch {
-      // Leave this channel null — a bad SHA256SUMS for one channel must never affect the others.
+      // Leave this channel null — a malformed release or a bad SHA256SUMS for one channel must
+      // never affect the others, and must never escape loadDownloads itself (CR-01).
       continue;
     }
   }
