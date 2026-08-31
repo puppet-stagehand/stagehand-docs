@@ -293,7 +293,6 @@
 .control-hero__grid {
   position: relative;
   display: grid;
-  min-height: min(47rem, calc(100vh - 5rem));
   grid-template-columns: 1fr;
 }
 
@@ -591,7 +590,9 @@
     padding: 4rem 0 4rem 2rem;
     border-top: 0;
     border-left: 1px solid var(--stagehand-line-strong);
-    align-content: space-between;
+    align-content: start;
+    align-self: center;
+    gap: 3rem;
     grid-template-columns: 1fr;
   }
 }
