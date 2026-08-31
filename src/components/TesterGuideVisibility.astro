@@ -17,11 +17,14 @@
   const channel = resolveSiteChannel(window.location.hostname);
   const allowed = channel === 'testpilots' || channel === 'beta';
 
-  // Default rendered state is "guide visible, fallback hidden" — matches what a
-  // testpilots/beta visitor should see, and what every visitor sees if this script
-  // never runs at all (JS disabled). Only flip state for a disallowed channel.
-  if (!allowed) {
-    guide?.setAttribute('hidden', '');
-    fallback?.removeAttribute('hidden');
+  // Default rendered state (DocsLayout.astro) is "guide hidden, fallback visible" — the safe,
+  // fail-closed default for every visitor whose browser never runs this script, for any reason
+  // (JS disabled, blocked by policy or an extension, slow/incomplete hydration, or a thrown
+  // exception before this line runs). Only a channel this script successfully resolves to
+  // testpilots/beta reveals the guide; there is no "else" branch, because staying hidden is
+  // already the state DocsLayout.astro server-rendered (CR-01 fix).
+  if (allowed) {
+    guide?.removeAttribute('hidden');
+    fallback?.setAttribute('hidden', '');
   }
 </script>

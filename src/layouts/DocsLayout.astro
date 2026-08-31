@@ -56,12 +56,16 @@ const updatedLabel = updatedDate?.toLocaleDateString('en-US', {
             }
           </header>
 
-          <div class="docs-content" data-tester-guide={entry.data.visibleOn ? true : undefined}>
+          <div
+            class="docs-content"
+            data-tester-guide={entry.data.visibleOn ? true : undefined}
+            hidden={entry.data.visibleOn ? true : undefined}
+          >
             <slot />
           </div>
           {
             entry.data.visibleOn && (
-              <p data-tester-guide-unavailable hidden>
+              <p data-tester-guide-unavailable>
                 This guide isn't shown on this site. It's only available on the testpilots and beta
                 sites.
               </p>
