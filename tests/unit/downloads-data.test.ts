@@ -137,6 +137,47 @@ describe('loadDownloads — channel-body parsing and per-channel data', () => {
 
     expect(downloads['test-pilots']).toBeNull();
   });
+
+  it('resolves to all-null, never throws, when the releases-list body is an object instead of an array (CR-01)', async () => {
+    const fetchImpl = vi.fn(async (input: string | URL | Request) => {
+      const url = String(input);
+      if (url === releasesUrl) {
+        return new Response(JSON.stringify({ message: 'API rate limit exceeded' }), {
+          status: 200,
+        });
+      }
+      return new Response('Not Found', { status: 404 });
+    });
+
+    await expect(loadDownloads(fetchImpl)).resolves.toEqual({
+      'test-pilots': null,
+      beta: null,
+      stable: null,
+    });
+  });
+
+  it('resolves to all-null, never throws, when a matched release’s assets field is null (CR-01)', async () => {
+    const malformedRelease = {
+      tag_name: 'v9.9.9',
+      body: 'Channel: `test-pilots`',
+      published_at: '2026-08-30T00:00:00Z',
+      html_url: 'https://github.com/puppet-stagehand/stagehand-release/releases/tag/v9.9.9',
+      assets: null,
+    };
+    const fetchImpl = vi.fn(async (input: string | URL | Request) => {
+      const url = String(input);
+      if (url === releasesUrl) {
+        return new Response(JSON.stringify([malformedRelease]), { status: 200 });
+      }
+      return new Response('Not Found', { status: 404 });
+    });
+
+    await expect(loadDownloads(fetchImpl)).resolves.toEqual({
+      'test-pilots': null,
+      beta: null,
+      stable: null,
+    });
+  });
 });
 
 describe('parseChecksums', () => {
