@@ -19,7 +19,19 @@ it can be planned.
 
 ## Solution
 
-TBD — likely a new content page (e.g. `/modules/` or a `src/content/docs/modules.md` entry)
-listing each vendored module with a link to its `forge.puppet.com/modules/<namespace>/<name>`
-page. Needs a decision on where the canonical list of vendored modules is sourced from (a
-Puppetfile? a manifest in another repo?) before implementation.
+Confirmed 2026-08-31: no content port is needed. `stagehand-module` (and its sibling first-party
+modules — patchbot, trivy, openscap, etc.) will not get their own pages or ported reference docs
+here; this site just links each vendored module out to its Forge page once published, the same
+way `installer-support.md` and `installer-registry-distribution.md` already link out rather than
+duplicate content.
+
+**Currently blocked**, not just unscoped: `stagehand-stagehand` is not yet live on the Forge
+(`https://forge.puppet.com/modules/stagehand/stagehand` returns HTTP 200 but the page itself reads
+"Not Found" — same generic-200 SPA shell every Forge URL returns). This is the same category of
+gap as WINDOWS.md entry 3 (`downloads.ts`'s zero-releases gap) — nothing to link to until the
+module is actually published.
+
+Still needs a decision on where the canonical list of vendored modules is sourced from (a
+Puppetfile? a manifest in another repo? `stagehand-module`'s own `README.md` "Sibling first-party
+modules" section?) once it's unblocked, and on page location/nav placement (a new `/modules/`
+top-level page, or a `src/content/docs/modules.md` entry).
