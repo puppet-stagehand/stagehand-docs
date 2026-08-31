@@ -41,6 +41,7 @@ describe('docs collection source', () => {
       'security',
       'testers-guide',
       'user-guide',
+      'why-stagehand',
     ]);
     expect(entries.every(({ data }) => typeof data.description === 'string')).toBe(true);
     expect(entries.every(({ data }) => String(data.description).trim().length > 0)).toBe(true);
