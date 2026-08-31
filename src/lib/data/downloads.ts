@@ -1,9 +1,9 @@
 import type { SiteChannel } from '../site-channel';
 
-// Corrected public mirror target (D-01/D-02) — the private puppetlabs-seteam/puppet-installer
-// repo is never referenced anywhere in this file. As of 2026-08-28 this repo does not exist yet
-// (D-07); every failure path below (404, network error, unparseable body) must degrade to the
-// same honest-unavailable result, never throw out of loadDownloads (Pitfall 8).
+// Corrected public mirror target (D-01/D-02) — the private upstream source repo (DOWN-02's
+// prohibition) is never named or referenced anywhere in this file. As of 2026-08-28 this public
+// repo does not exist yet (D-07); every failure path below (404, network error, unparseable body)
+// must degrade to the same honest-unavailable result, never throw out of loadDownloads (Pitfall 8).
 const RELEASES_URL = 'https://api.github.com/repos/puppet-stagehand/stagehand-release/releases';
 
 export interface ChannelRelease {

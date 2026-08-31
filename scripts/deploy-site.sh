@@ -48,6 +48,7 @@ aws cloudfront create-invalidation \
   '/docs/security/index.html' \
   '/docs/first-run/index.html' \
   '/docs/testers-guide/index.html' \
+  '/downloads/index.html' \
   '/support/index.html' \
   '/404.html' \
   '/deployed-commit.txt' \

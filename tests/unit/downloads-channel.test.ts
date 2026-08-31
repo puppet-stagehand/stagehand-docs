@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import { loadDownloads, releaseChannelFor } from '../../src/lib/data/downloads';
 
@@ -40,5 +42,17 @@ describe('releaseChannelFor', () => {
 
   it('returns undefined for SiteChannel unknown', () => {
     expect(releaseChannelFor('unknown')).toBeUndefined();
+  });
+});
+
+describe('gated-paths.json', () => {
+  it('never gates /downloads or any prefix of it — the downloads page is explicitly ungated (DOWN-03/D-06)', () => {
+    const gatedPaths = JSON.parse(
+      readFileSync(resolve(process.cwd(), 'infra/modules/static-site/gated-paths.json'), 'utf8'),
+    ) as string[];
+
+    for (const path of gatedPaths) {
+      expect(path.startsWith('/downloads')).toBe(false);
+    }
   });
 });
