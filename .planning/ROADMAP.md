@@ -252,8 +252,9 @@ Plans:
   4. A maintainer can roll stable back to a known-good SHA through the protected dispatch path and see the previous pages restored, without editing a single S3 object by hand.
   5. A non-maintainer can file a private security advisory and reach a monitored address whose delivery has been tested and the test recorded.
 
-**Plans**: 9/11 plans executed (LAUN-02 is satisfied — see 05-08's resolution note below — via
-direct orchestrator action, not by incrementing this count)
+**Plans**: 10/11 plans executed (LAUN-02 is satisfied — see 05-08's resolution note below — via
+direct orchestrator action, not by incrementing this count). All requirements (LAUN-01 through
+LAUN-05, GATE-05) now have real, verified evidence in `docs/operations/RELEASE-EVIDENCE.md`.
 
 Plans:
 **Wave 1**
@@ -302,7 +303,7 @@ Plans:
 
 **Wave 9** *(blocked on Wave 8 completion)*
 
-- [ ] 05-11-PLAN.md — Prove the rollback end to end and record it (LAUN-05)
+- [x] 05-11-PLAN.md — Prove the rollback end to end and record it (LAUN-05)
 
 ## Progress
 
@@ -315,7 +316,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. First Real Publication | 5/5 | Complete    | 2026-08-26 |
 | 3. Real Documentation Content | 4/4 | Complete    | 2026-08-26 |
 | 4. Evidence-Bearing Compatibility Register | 6/6 | In Progress|  |
-| 5. Production Launch | 8/11 | In Progress|  |
+| 5. Production Launch | 10/11 | Complete   | 2026-08-31 |
 
 ## Coverage
 

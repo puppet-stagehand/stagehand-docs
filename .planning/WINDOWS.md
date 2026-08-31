@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 2
+open_count: 3
 waived_count: 0
 fixed_count: 1
-total_count: 3
-last_updated: 2026-08-31T15:52:32.232Z
+total_count: 4
+last_updated: 2026-08-31T19:57:53.977Z
 ---
 
 # Broken Windows Ledger
@@ -17,7 +17,8 @@ last_updated: 2026-08-31T15:52:32.232Z
 |----|-------|------|------|------|-------------|--------|--------|-------------|-------------|
 | 1 | 01 | unrun-verify | docs/operations/aws-bootstrap.md |  | Task 1 human-check (one procedure not two, three custody controls, narrowed-not-abandoned scoping claim, hosted_zone_id placement) carried to end-of-phase UAT harvest per human_verify_mode default; not independently verified by executor | fixed |  | 2026-08-26T16:07:24.837Z | 2026-08-26T16:16:38.639Z |
 | 2 | 04.1 | deviation | src/content/docs/testers-guide.md |  | AUTH-06 live cross-environment proof deferred: check 6 (beta shows guide, stable shows fallback for a tester holding only the tester-gate credential) is blocked pre-launch by the separate, temporary whole-site enable_basic_auth lockdown (commit 44b56c9) sharing the same WWW-Authenticate realm as the tester gate, so the gated page's own static assets 401 for tester-credential-only sessions. Re-verify check 6 once Phase 05 removes the whole-site lockdown at public launch. | open |  | 2026-08-28T13:25:23.074Z |  |
-| 3 | 04.2 | deviation | src/lib/data/downloads.ts |  | DOWN-01/DOWN-02/DOWN-04 live verification deferred: the downloads page's build-time loader is proven against fixtures only (GATE-07). `puppet-stagehand/stagehand-release` now exists (created since 04.2-01/02 were planned — D-07's "repo does not exist" premise is stale) but holds zero releases (`gh release list --repo puppet-stagehand/stagehand-release` returns empty), confirmed by this plan's own real, non-fixture `npm run build` resolving all three channels to `null` in `dist/data/downloads.json` — the loader correctly fail-closes against the real target repo, but no real release has ever been fetched/rendered/checksum-verified end-to-end. Re-verify once the remaining cross-repo prerequisite steps (workflow retarget from souldonetworks to puppet-stagehand, token wiring, first real release per channel) land — see ROADMAP.md's Phase 04.2 Cross-Repo Prerequisite note. | open |  | 2026-08-31T15:52:32.232Z |  |
+| 3 | 04.2 | deviation | src/lib/data/downloads.ts |  | DOWN-01/DOWN-02/DOWN-04 live verification deferred: the downloads page's build-time loader is proven against fixtures only (GATE-07). puppet-stagehand/stagehand-release now exists (created since 04.2-01/02 were planned — D-07's 'repo does not exist' premise is stale) but holds zero releases (gh release list --repo puppet-stagehand/stagehand-release returns empty), confirmed by this plan's own real, non-fixture npm run build resolving all three channels to null in dist/data/downloads.json — the loader correctly fail-closes against the real target repo, but no real release has ever been fetched/rendered/checksum-verified end-to-end. Re-verify once the remaining cross-repo prerequisite steps (workflow retarget from souldonetworks to puppet-stagehand, token wiring, first real release per channel) land — see ROADMAP.md's Phase 04.2 Cross-Repo Prerequisite note. | open |  | 2026-08-31T15:52:32.232Z |  |
+| 4 | 05 | deviation | .github/workflows/deploy.yml |  | GitHub Actions environment-scoped BASIC_AUTH_USERNAME/BASIC_AUTH_PASSWORD secrets (testpilots, beta, stable) were all created once at 2026-08-28T12:28 and never updated since. Discovered during 05-11's rollback: the same run's own built-in Verify live deployment CI step 401'd on every route using these secrets, while an independently-supplied, working credential succeeded against the same live distribution minutes later. This strongly suggests the real Terraform-applied basic_auth_username/basic_auth_password (TF_VAR_basic_auth_username/TF_VAR_basic_auth_password, rotated via a full tofu apply per docs/operations/tester-access.md) has changed since 2026-08-28 without the three GitHub environment secrets being updated to match. Not fixed here -- updating a CI/CD secret needs a confirmed-correct current value, which only the maintainer holds. The deployment itself (S3 upload) is unaffected; only this CI smoke-test step and any future automated check-live-deployment.ts run inside GitHub Actions are impacted. Independent, out-of-CI verification in 05-11-SUMMARY.md and RELEASE-EVIDENCE.md's rollback row confirms the actual deployment succeeded. | open |  | 2026-08-31T19:57:53.977Z |  |
 
 ````json
 [
@@ -55,6 +56,18 @@ last_updated: 2026-08-31T15:52:32.232Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-31T15:52:32.232Z",
+    "resolved_at": null
+  },
+  {
+    "id": 4,
+    "kind": "deviation",
+    "phase": "05",
+    "file": ".github/workflows/deploy.yml",
+    "line": null,
+    "description": "GitHub Actions environment-scoped BASIC_AUTH_USERNAME/BASIC_AUTH_PASSWORD secrets (testpilots, beta, stable) were all created once at 2026-08-28T12:28 and never updated since. Discovered during 05-11's rollback: the same run's own built-in Verify live deployment CI step 401'd on every route using these secrets, while an independently-supplied, working credential succeeded against the same live distribution minutes later. This strongly suggests the real Terraform-applied basic_auth_username/basic_auth_password (TF_VAR_basic_auth_username/TF_VAR_basic_auth_password, rotated via a full tofu apply per docs/operations/tester-access.md) has changed since 2026-08-28 without the three GitHub environment secrets being updated to match. Not fixed here -- updating a CI/CD secret needs a confirmed-correct current value, which only the maintainer holds. The deployment itself (S3 upload) is unaffected; only this CI smoke-test step and any future automated check-live-deployment.ts run inside GitHub Actions are impacted. Independent, out-of-CI verification in 05-11-SUMMARY.md and RELEASE-EVIDENCE.md's rollback row confirms the actual deployment succeeded.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-31T19:57:53.977Z",
     "resolved_at": null
   }
 ]
