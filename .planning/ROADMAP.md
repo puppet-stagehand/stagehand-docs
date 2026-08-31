@@ -252,7 +252,7 @@ Plans:
   4. A maintainer can roll stable back to a known-good SHA through the protected dispatch path and see the previous pages restored, without editing a single S3 object by hand.
   5. A non-maintainer can file a private security advisory and reach a monitored address whose delivery has been tested and the test recorded.
 
-**Plans**: 8/11 plans executed (LAUN-02 is satisfied — see 05-08's resolution note below — via
+**Plans**: 9/11 plans executed (LAUN-02 is satisfied — see 05-08's resolution note below — via
 direct orchestrator action, not by incrementing this count)
 
 Plans:
@@ -298,7 +298,7 @@ Plans:
 
 **Wave 8** *(blocked on Wave 7 completion — satisfied per the resolution note above, not via 05-08's own tasks)*
 
-- [ ] 05-10-PLAN.md — Promote a newer SHA to beta, setting up a genuine rollback scenario
+- [x] 05-10-PLAN.md — Promote a newer SHA to beta, setting up a genuine rollback scenario
 
 **Wave 9** *(blocked on Wave 8 completion)*
 
