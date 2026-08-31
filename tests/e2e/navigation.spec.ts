@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const routes = [
-  ['/', 'Operate Puppet with Less Ceremony.'],
+  ['/', 'Manage Puppet Environments With Less Complexity.'],
   ['/tiers/', 'Stagehand Tiers'],
   ['/compatibility/', 'Compatibility Register'],
   ['/docs/', 'Documentation'],
