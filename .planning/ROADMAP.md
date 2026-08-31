@@ -219,7 +219,7 @@ Plans:
 
 **Canonical refs**: `puppet-console` repo at `/Users/matthew/Code/puppet-console/docs/USER-GUIDE.md`; `puppet-installer` repo docs at `/Users/matthew/Code/puppet-installer/docs/{registry-distribution-guide,support-guide}.md`; `puppet-installer/.github/workflows/release.yml` (channel-detection and mirror-step logic); PROJECT.md's immutable-promotion constraint.
 
-**Plans**: 1/3 plans executed
+**Plans**: 2/3 plans executed
 **UI hint**: yes
 
 Plans:
@@ -229,7 +229,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04.2-02-PLAN.md — Curated User Guide and reader-facing installer docs, live on all three environments (DOC-02, DOC-03)
+- [x] 04.2-02-PLAN.md — Curated User Guide and reader-facing installer docs, live on all three environments (DOC-02, DOC-03)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 

@@ -4,16 +4,16 @@ milestone: v0.2.3
 current_phase: 04.2
 current_phase_name: Tester Downloads (INSERTED)
 status: executing
-stopped_at: Completed 04.2-01-PLAN.md
-last_updated: "2026-08-31T15:32:17.759Z"
+stopped_at: Completed 04.2-02-PLAN.md
+last_updated: "2026-08-31T15:48:56.471Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04.2 execution started
-state_head: e0c36ef9841d01a0a36cd966c5a0d3950d0c704d
+state_head: ef20cfe5b7afa74cb0c99b8344b67f9b0375be29
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 38
-  completed_plans: 34
+  completed_plans: 35
 ---
 
 # Project State
@@ -29,7 +29,7 @@ published unless a maintainer reviewed primary evidence for it and dated that re
 ## Current Position
 
 Phase: 04.2 (Tester Downloads (INSERTED)) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 genuinely achieved — see 05-08-RESOLUTION.md. Not marked "complete" in the normal per-plan sense
 because the goal was reached via direct orchestrator action against a re-scoped domain
 (puppet-stagehand.com), not via this plan's own tasks executing to completion.
@@ -81,6 +81,7 @@ plan completion — see note above — 05-10/05-11 remain to close LAUN-05/rollb
 | Phase 05 P07 | ~7min | 2 tasks | 1 files |
 | Phase 04.1 P05 | 12min | 2 tasks | 3 files |
 | Phase 04.2 P01 | 15min | 3 tasks | 12 files |
+| Phase 04.2 P02 | 15min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,8 @@ Three locked ADRs constrain all phases and are not re-openable:
 - [Phase 05]: [Phase 05]: 05-08 halted, then resolved outside its own tasks — puppetstagehand.com's registrar (Cloudflare) doesn't support custom nameservers, so the maintainer registered puppet-stagehand.com directly through Route 53 Registrar; the orchestrator renamed the domain repo-wide (a2de948), applied bootstrap+all three environments against it (0/6/0, 5/2/5, 5/2/5, 8/2/8), verified NS delegation and the apex redirect against the real public internet, and retired the old domain's empty hosted zone. LAUN-02 closed for real; see 05-08-RESOLUTION.md.
 - [Phase 04.1]: 04.1-05: Substituted a dedicated chromium.launch({args:['--host-resolver-rules=...']}) instance for Playwright hostname spoofing in Tests B/C after the plan's page.addInitScript technique threw 'Cannot redefine property' against this Chromium build's non-configurable Location.hostname.
 - [Phase 04.2]: 04.2-01: ChannelRelease gained a downloadUrls field beyond the plan's original shape so each of the five binaries links to its real GitHub asset alongside its checksum, independently proven present (DOWN-04).
+- [Phase 04.2]: [Phase 04.2]: 04.2-02: dropped Teams/Roles/Approvals from user-guide.md in full per the plan's four-section drop list, and fixed the resulting dangling cross-references (Signing-in section, Code Management deploy note, glossary Team module repo row) rather than leaving pointers at removed content.
+- [Phase 04.2]: [Phase 04.2]: 04.2-02: installer-support.md's platform-lock section points to user-guide.md's table by plain prose link, not an anchor fragment, since heading-slug anchor stability wasn't verified for this markdown pipeline.
 
 ### Pending Todos
 
@@ -157,8 +160,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T15:32:17.519Z
-Stopped at: Completed 04.2-01-PLAN.md
+Last session: 2026-08-31T15:48:56.220Z
+Stopped at: Completed 04.2-02-PLAN.md
 internet; see .planning/phases/05-production-launch/05-08-RESOLUTION.md (05-08-SUMMARY.md's halt
 record is unchanged and remains accurate for what 05-08's own tasks did).
 Resume file: None

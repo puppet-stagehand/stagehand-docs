@@ -379,12 +379,12 @@ Added 2026-08-27. Ports reader-facing guides from `puppet-console` (and any read
       `beta` (see AUTH-06 for the runtime mechanism).
       *Source: doc-porting scope decision 2026-08-27*
 
-- [ ] **DOC-02**: The general User Guide is ported from `puppet-console`'s `docs/USER-GUIDE.md` into
+- [x] **DOC-02**: The general User Guide is ported from `puppet-console`'s `docs/USER-GUIDE.md` into
       this site's general documentation area (`src/content/docs/`), visible on all three
       environments.
       *Source: doc-porting scope decision 2026-08-27*
 
-- [ ] **DOC-03**: Reader-facing `puppet-installer` documentation is incorporated into the site's
+- [x] **DOC-03**: Reader-facing `puppet-installer` documentation is incorporated into the site's
       documentation area alongside DOC-02; maintainer-facing installer docs (release engineering,
       secrets handling, production-readiness checklists) are excluded as out of scope for a customer-
       facing site.
@@ -485,8 +485,8 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | DOWN-02 | Phase 04.2 | Pending |
 | DOWN-03 | Phase 04.2 | Pending |
 | DOWN-04 | Phase 04.2 | Pending |
-| DOC-02 | Phase 04.2 | Pending |
-| DOC-03 | Phase 04.2 | Pending |
+| DOC-02 | Phase 04.2 | Complete |
+| DOC-03 | Phase 04.2 | Complete |
 | GATE-07 | Phase 04.2 | Pending |
 
 **Coverage:**
