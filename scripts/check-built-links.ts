@@ -8,6 +8,8 @@ const allowedNonClaimLinks = new Set([
   'https://github.com/puppet-stagehand/stagehand-docs/issues',
   'https://github.com/puppet-stagehand/stagehand-docs/issues/new',
   'https://github.com/puppet-stagehand/stagehand-docs/security/advisories/new',
+  'https://github.com/puppet-stagehand/stagehand-release/issues',
+  'https://help.puppet.com/bolt/current/topics/bolt_installing.htm',
 ]);
 const canonicalBase = new URL('https://www.puppet-stagehand.com/');
 const nonNetworkSchemes = new Set(['data:', 'mailto:', 'tel:']);

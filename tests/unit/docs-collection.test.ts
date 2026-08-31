@@ -36,6 +36,8 @@ describe('docs collection source', () => {
     expect(entries.map(({ slug }) => slug).sort()).toEqual([
       'first-run',
       'getting-started',
+      'installer-registry-distribution',
+      'installer-support',
       'security',
       'testers-guide',
       'user-guide',

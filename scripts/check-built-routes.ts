@@ -9,6 +9,8 @@ const requiredOutputs = [
   'docs/getting-started/index.html',
   'docs/security/index.html',
   'docs/first-run/index.html',
+  'docs/installer-registry-distribution/index.html',
+  'docs/installer-support/index.html',
   'docs/testers-guide/index.html',
   'docs/user-guide/index.html',
   'downloads/index.html',
