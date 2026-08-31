@@ -219,7 +219,7 @@ Plans:
 
 **Canonical refs**: `puppet-console` repo at `/Users/matthew/Code/puppet-console/docs/USER-GUIDE.md`; `puppet-installer` repo docs at `/Users/matthew/Code/puppet-installer/docs/{registry-distribution-guide,support-guide}.md`; `puppet-installer/.github/workflows/release.yml` (channel-detection and mirror-step logic); PROJECT.md's immutable-promotion constraint.
 
-**Plans**: 3/3 plans executed
+**Plans**: 3/4 plans executed (04.2-04 is a gap-closure plan for CR-01, found by 04.2-VERIFICATION.md)
 **UI hint**: yes
 
 Plans:
@@ -234,6 +234,10 @@ Plans:
 **Wave 3** *(blocked on Wave 2 completion)*
 
 - [x] 04.2-03-PLAN.md — Phase-closing full `npm run verify` pass, live proof of criteria 3/6, and the WINDOWS.md deferral for criteria 1/2/4/5 pending the cross-repo prerequisite
+
+**Wave 4** *(gap closure — blocked on Wave 1 completion)*
+
+- [ ] 04.2-04-PLAN.md — Gap closure: CR-01 — loadDownloads() throws an uncaught TypeError on a malformed-but-200 upstream response, crashing the whole astro build (DOWN-04, GATE-07)
 
 ### Phase 5: Production Launch
 
