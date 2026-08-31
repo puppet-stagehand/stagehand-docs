@@ -10,6 +10,7 @@ const requiredOutputs = [
   'docs/security/index.html',
   'docs/first-run/index.html',
   'docs/testers-guide/index.html',
+  'docs/user-guide/index.html',
   'downloads/index.html',
   'support/index.html',
   'data/tiers.json',
