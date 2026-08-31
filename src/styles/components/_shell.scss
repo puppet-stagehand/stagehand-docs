@@ -372,20 +372,28 @@
   display: grid;
   padding: 2rem 0;
   border-top: 1px solid var(--stagehand-line-strong);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
 }
 
-.control-hero__datum {
-  display: grid;
-  gap: 0.5rem;
+.control-hero__preview {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--stagehand-line-strong);
+  border-radius: 0.5rem;
+  background: var(--stagehand-raised-navy);
 }
 
-.control-hero__datum-label {
+.control-hero__preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.control-hero__preview figcaption {
+  padding: 0.75rem 1rem;
   color: rgba(246, 249, 253, 0.68);
   font-family: var(--stagehand-mono);
   font-size: 0.625rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
 }
 
 .capabilities {
@@ -579,20 +587,17 @@
 
 @media (min-width: 62rem) {
   .control-hero__grid {
-    grid-template-columns: minmax(0, 4fr) minmax(13rem, 1fr);
+    grid-template-columns: minmax(0, 3fr) minmax(20rem, 2fr);
   }
 
   .control-hero__intro {
-    padding-right: clamp(3rem, 8vw, 9rem);
+    padding-right: clamp(2rem, 5vw, 4rem);
   }
 
   .control-hero__rail {
-    padding: 4rem 0 4rem 2rem;
+    padding: 0 0 0 2rem;
     border-top: 0;
     border-left: 1px solid var(--stagehand-line-strong);
-    align-content: start;
     align-self: center;
-    gap: 3rem;
-    grid-template-columns: 1fr;
   }
 }

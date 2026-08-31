@@ -1,0 +1,76 @@
+---
+import BrandTriangles from '../../components/BrandTriangles.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const features = [
+  {
+    image: '/screenshots/estate-viewer.jpg',
+    alt: "Estate Viewer showing 3 instances, 2 editions, and 28 nodes in one view, with an honest '? unreported' badge on an instance that can't be reached",
+    title: 'Every Environment, One View',
+    description:
+      "Stop piecing your fleet together from separate SSH sessions and scattered reports. Estate Viewer shows every registered instance side by side, whatever edition each one runs, with an honest '? unreported' when an instance can't be reached instead of a guess.",
+  },
+  {
+    image: '/screenshots/inventory.jpg',
+    alt: 'Inventory table listing nodes with their status, applied classes, environment, and last report time',
+    title: "Know What's Actually Out There",
+    description:
+      "Every node PuppetDB knows about, its last report status, and the classes actually applied to it, in one searchable table. Onboarding a brownfield system starts with seeing what it's already running, not assuming.",
+  },
+  {
+    image: '/screenshots/bolt-runs.jpg',
+    alt: 'Activity and Runs table listing Bolt plans, tasks, and commands with their initiator, targets, outcome, and duration',
+    title: 'Bolt-Native Execution, Fully Logged',
+    description:
+      "Plans, tasks, and one-off commands run through Puppet Bolt's own execution model over SSH, the same path documented in Getting Started. Every run's targets, outcome, and duration land here, whether it started from the console or the command line.",
+  },
+  {
+    image: '/screenshots/activity-audit.jpg',
+    alt: 'Audit log listing changes made through the console with actor, action, object, and target for each entry',
+    title: 'An Audit Trail You Can Hand to Security',
+    description:
+      'Every change made through the console, who made it, and when, with the before/after payload available on request. This is the record a security team can rely on, and the receipts a Puppet team can point to when the value of the automation needs proving.',
+  },
+] as const;
+---
+
+<BaseLayout
+  title="Features"
+  description="Real screens from a running Stagehand console: environment visibility, inventory, Bolt-native execution, and a full audit trail."
+  canonicalPath="/features/"
+>
+  <header class="register-hero">
+    <BrandTriangles class="register-hero__triangles" />
+    <div class="container register-hero__grid">
+      <div>
+        <p class="register-hero__eyebrow">
+          PRODUCT FEATURES / {features.length.toString().padStart(2, '0')}
+        </p>
+        <h1>See It in Action.</h1>
+      </div>
+      <p class="register-hero__lede">
+        Real screens from a running Stagehand console, not mockups. Shown here with synthetic demo
+        data from a lab environment, never a live customer fleet.
+      </p>
+    </div>
+  </header>
+
+  <section class="feature-list" aria-label="Product features">
+    <div class="container">
+      {
+        features.map(({ image, alt, title, description }, index) => (
+          <article class="feature-block" data-reverse={index % 2 === 1}>
+            <figure class="feature-block__media">
+              <img src={image} alt={alt} width="1568" height="768" loading="lazy" />
+            </figure>
+            <div class="feature-block__copy">
+              <span class="feature-block__index">0{index + 1}</span>
+              <h2>{title}</h2>
+              <p>{description}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

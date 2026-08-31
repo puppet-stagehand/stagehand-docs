@@ -1,6 +1,5 @@
 ---
 import BrandTriangles from '../components/BrandTriangles.astro';
-import StatusMark from '../components/StatusMark.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const capabilities = [
@@ -56,15 +55,16 @@ const audiences = [
           <a class="btn btn-outline-light" href="/compatibility/">Check compatibility</a>
         </div>
       </div>
-      <aside class="control-hero__rail" aria-label="Stagehand system profile">
-        <div class="control-hero__datum">
-          <span class="control-hero__datum-label">CONTROL MODE</span>
-          <StatusMark label="Operator directed" />
-        </div>
-        <div class="control-hero__datum">
-          <span class="control-hero__datum-label">EXECUTION</span>
-          <StatusMark label="Bolt native" tone="indigo" />
-        </div>
+      <aside class="control-hero__rail" aria-label="Stagehand console preview">
+        <figure class="control-hero__preview">
+          <img
+            src="/screenshots/action-center.jpg"
+            alt="Stagehand's Action Center showing failed, corrective, and intentional node counts alongside service health, all running"
+            width="1568"
+            height="768"
+          />
+          <figcaption>Action Center — shown with synthetic demo data.</figcaption>
+        </figure>
       </aside>
     </div>
   </section>

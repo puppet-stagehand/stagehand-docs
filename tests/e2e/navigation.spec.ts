@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const routes = [
   ['/', 'Manage Puppet Environments With Less Complexity.'],
+  ['/features/', 'See It in Action.'],
   ['/tiers/', 'Stagehand Tiers'],
   ['/compatibility/', 'Compatibility Register'],
   ['/docs/', 'Documentation'],
@@ -23,6 +24,7 @@ test('every published HTML route has its unique page heading and document title'
 
 test('primary navigation reaches each top-level destination', async ({ page }) => {
   const destinations = [
+    ['Features', '/features/'],
     ['Tiers', '/tiers/'],
     ['Compatibility', '/compatibility/'],
     ['Docs', '/docs/'],

@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 
 const requiredOutputs = [
   'index.html',
+  'features/index.html',
   'tiers/index.html',
   'compatibility/index.html',
   'docs/index.html',

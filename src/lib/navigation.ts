@@ -4,6 +4,7 @@ export interface NavigationItem {
 }
 
 export const primaryNavigation: readonly NavigationItem[] = [
+  { href: '/features/', label: 'Features' },
   { href: '/tiers/', label: 'Tiers' },
   { href: '/compatibility/', label: 'Compatibility' },
   { href: '/docs/', label: 'Docs' },
