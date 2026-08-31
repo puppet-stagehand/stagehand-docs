@@ -288,7 +288,7 @@ constraint in PROJECT.md and a success criterion of every phase, not a requireme
       assumed from configuration.
       *Source: testing strategy; AUTH-01*
 
-- [x] **GATE-07**: A test asserts that the downloads page resolves each site's channel correctly
+- [ ] **GATE-07**: A test asserts that the downloads page resolves each site's channel correctly
       against fixture release data (test-pilots on testpilots, beta on beta, stable on stable) and
       that no channel silently falls back to another channel's binary or a stale cached one.
       *Source: testing strategy; amended 2026-08-27 for DOWN-01/DOWN-02 (channel-matched GitHub Releases pull replaces the private-S3-origin design)*
@@ -340,14 +340,14 @@ password, on a site that is static and a repository that is public.
 Added 2026-08-26 after roadmap evolution. Amended 2026-08-27: replaces the original ghcr-container +
 private-S3-installer design with a GitHub Releases pull from a public mirror repo, ungated.
 
-- [x] **DOWN-01**: `/downloads/` presents a download link for the puppet-installer binary, resolving
+- [ ] **DOWN-01**: `/downloads/` presents a download link for the puppet-installer binary, resolving
       to the release channel matching whichever site is serving the page — `test-pilots` on
       `testpilots.puppetstagehand.com`, `beta` on `beta.puppetstagehand.com`, `stable` on
       `www.puppetstagehand.com` — determined by client-side hostname detection against the same
       immutably-promoted build, and states the version it resolves to rather than implying it.
       *Source: tester-enablement scope decision 2026-08-26; amended 2026-08-27 (channel-matched GitHub Releases pull replaces the dual ghcr/S3 design)*
 
-- [x] **DOWN-02**: Release data and binaries are sourced from the public
+- [ ] **DOWN-02**: Release data and binaries are sourced from the public
       `puppet-stagehand/stagehand-release` repository's GitHub Releases via its public API — no
       credential for the private `puppetlabs-seteam/puppet-installer` repo is ever shipped to the
       browser or checked into this repository.
@@ -356,13 +356,13 @@ private-S3-installer design with a GitHub Releases pull from a public mirror rep
       yet. Cross-repo prerequisite: `puppet-stagehand/stagehand-release` must exist and receive real
       releases before this requirement is reachable — see ROADMAP.md's cross-repo prerequisite note.*
 
-- [x] **DOWN-03**: The downloads page is reachable without the shared password — only the Tester's
+- [ ] **DOWN-03**: The downloads page is reachable without the shared password — only the Tester's
       Guide (DOC-01, AUTH-06) stays behind the AUTH-01 gate; one page linking to public release
       artifacts does not need the same protection as reader-facing testing instructions.
       *Source: tester-enablement scope decision 2026-08-27 (supersedes the original single-mechanism
       DOWN-03, since the installer is no longer gated)*
 
-- [x] **DOWN-04**: The page states each artifact's checksum and publication date, and a reader can
+- [ ] **DOWN-04**: The page states each artifact's checksum and publication date, and a reader can
       verify a downloaded file against the stated checksum. Where a channel has no published
       release, it renders an honest unavailable state naming what is missing rather than a dead link
       or an unsubstantiated version.
@@ -379,12 +379,12 @@ Added 2026-08-27. Ports reader-facing guides from `puppet-console` (and any read
       `beta` (see AUTH-06 for the runtime mechanism).
       *Source: doc-porting scope decision 2026-08-27*
 
-- [x] **DOC-02**: The general User Guide is ported from `puppet-console`'s `docs/USER-GUIDE.md` into
+- [ ] **DOC-02**: The general User Guide is ported from `puppet-console`'s `docs/USER-GUIDE.md` into
       this site's general documentation area (`src/content/docs/`), visible on all three
       environments.
       *Source: doc-porting scope decision 2026-08-27*
 
-- [x] **DOC-03**: Reader-facing `puppet-installer` documentation is incorporated into the site's
+- [ ] **DOC-03**: Reader-facing `puppet-installer` documentation is incorporated into the site's
       documentation area alongside DOC-02; maintainer-facing installer docs (release engineering,
       secrets handling, production-readiness checklists) are excluded as out of scope for a customer-
       facing site.
@@ -481,13 +481,13 @@ locked decision, or the milestone scope — so none is smuggled into v1.
 | AUTH-06 | Phase 04.1 | Complete |
 | DOC-01 | Phase 04.1 | Complete |
 | GATE-06 | Phase 04.1 | Complete |
-| DOWN-01 | Phase 04.2 | Complete |
-| DOWN-02 | Phase 04.2 | Complete |
-| DOWN-03 | Phase 04.2 | Complete |
-| DOWN-04 | Phase 04.2 | Complete |
-| DOC-02 | Phase 04.2 | Complete |
-| DOC-03 | Phase 04.2 | Complete |
-| GATE-07 | Phase 04.2 | Complete |
+| DOWN-01 | Phase 04.2 | Gaps Found |
+| DOWN-02 | Phase 04.2 | Gaps Found |
+| DOWN-03 | Phase 04.2 | Gaps Found |
+| DOWN-04 | Phase 04.2 | Gaps Found |
+| DOC-02 | Phase 04.2 | Gaps Found |
+| DOC-03 | Phase 04.2 | Gaps Found |
+| GATE-07 | Phase 04.2 | Gaps Found |
 
 **Coverage:**
 
