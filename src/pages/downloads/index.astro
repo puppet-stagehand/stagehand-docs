@@ -3,6 +3,36 @@ import BrandTriangles from '../../components/BrandTriangles.astro';
 import DownloadsChannelVisibility from '../../components/DownloadsChannelVisibility.astro';
 import DownloadsEmptyState from '../../components/DownloadsEmptyState.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { loadDownloads, type ChannelRelease, type ReleaseChannel } from '../../lib/data/downloads';
+
+const downloads = await loadDownloads();
+
+// The five binaries every puppet-installer release produces (puppet-installer/docs/releasing.md's
+// naming pattern). A binary present in the release but missing from SHA256SUMS (or vice versa)
+// states only what's actually known — never a blank/guessed checksum (DOWN-04).
+const expectedBinaries = [
+  'puppet-installer-linux-amd64',
+  'puppet-installer-linux-arm64',
+  'puppet-installer-darwin-amd64',
+  'puppet-installer-darwin-arm64',
+  'puppet-installer-windows-amd64.exe',
+] as const;
+
+const channels: { channel: ReleaseChannel; label: string }[] = [
+  { channel: 'test-pilots', label: 'Test Pilots' },
+  { channel: 'beta', label: 'Beta' },
+  { channel: 'stable', label: 'Stable' },
+];
+
+const formatPublishedDate = (isoDate: string): string =>
+  new Date(isoDate).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+
+const stagehandReleaseIssuesUrl = 'https://github.com/puppet-stagehand/stagehand-release/issues';
 ---
 
 <BaseLayout
@@ -38,15 +68,68 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </p>
       </noscript>
 
-      <section data-channel="test-pilots" hidden>
-        <DownloadsEmptyState channelLabel="Test Pilots" />
-      </section>
-      <section data-channel="beta" hidden>
-        <DownloadsEmptyState channelLabel="Beta" />
-      </section>
-      <section data-channel="stable" hidden>
-        <DownloadsEmptyState channelLabel="Stable" />
-      </section>
+      {
+        channels.map(({ channel, label }) => {
+          const release: ChannelRelease | null = downloads[channel];
+          return (
+            <section data-channel={channel} hidden>
+              {release === null ? (
+                <DownloadsEmptyState channelLabel={label} />
+              ) : (
+                <div class="compat-card">
+                  <div class="compat-card__header">
+                    <div>
+                      <p>{label} channel</p>
+                      <h2>puppet-installer {release.version}</h2>
+                    </div>
+                    <a href={release.htmlUrl}>View release on GitHub</a>
+                  </div>
+                  <dl class="compat-card__facts">
+                    <div>
+                      <dt>Published</dt>
+                      <dd>
+                        <time datetime={release.publishedAt}>
+                          {formatPublishedDate(release.publishedAt)}
+                        </time>
+                      </dd>
+                    </div>
+                  </dl>
+                  <ul class="compat-list">
+                    {expectedBinaries.map((filename) => {
+                      const downloadUrl = release.downloadUrls[filename];
+                      const checksum = release.checksums[filename];
+                      if (!downloadUrl && !checksum) return null;
+                      return (
+                        <li>
+                          <span class="compat-card__mono">{filename}</span>{' '}
+                          {downloadUrl ? (
+                            <a href={downloadUrl}>Download</a>
+                          ) : (
+                            <span>download link unavailable</span>
+                          )}{' '}
+                          {checksum ? (
+                            <code class="compat-card__mono">{checksum}</code>
+                          ) : (
+                            <span>checksum unavailable</span>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <div class="compat-card__footer">
+                    <span>Found a problem with the installer or console?</span>
+                    <div>
+                      <a href={stagehandReleaseIssuesUrl}>
+                        File it at puppet-stagehand/stagehand-release
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </section>
+          );
+        })
+      }
     </div>
   </div>
 

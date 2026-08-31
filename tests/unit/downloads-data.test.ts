@@ -9,21 +9,34 @@ const checksumsUrl = (tag: string) =>
 const sha256sumsText = (tag: string) =>
   `${'a'.repeat(64)}  puppet-installer-linux-amd64\n${'b'.repeat(64)}  puppet-installer-darwin-arm64\n\n${tag}\n`;
 
+const binaryAssetUrl = (tag: string, filename: string) =>
+  `https://github.com/puppet-stagehand/stagehand-release/releases/download/${tag}/${filename}`;
+
 const release = (options: {
   tag: string;
   channel: string | null;
   publishedAt?: string;
   withChecksumsAsset?: boolean;
 }) => {
-  const { tag, channel, publishedAt = '2026-08-28T00:00:00Z', withChecksumsAsset = true } =
-    options;
+  const { tag, channel, publishedAt = '2026-08-28T00:00:00Z', withChecksumsAsset = true } = options;
   return {
     tag_name: tag,
-    body: channel === null ? 'No channel here.' : `Single-binary installer.\nChannel: \`${channel}\`\n`,
+    body:
+      channel === null ? 'No channel here.' : `Single-binary installer.\nChannel: \`${channel}\`\n`,
     published_at: publishedAt,
     html_url: `https://github.com/puppet-stagehand/stagehand-release/releases/tag/${tag}`,
     assets: withChecksumsAsset
-      ? [{ name: 'SHA256SUMS', browser_download_url: checksumsUrl(tag) }]
+      ? [
+          { name: 'SHA256SUMS', browser_download_url: checksumsUrl(tag) },
+          {
+            name: 'puppet-installer-linux-amd64',
+            browser_download_url: binaryAssetUrl(tag, 'puppet-installer-linux-amd64'),
+          },
+          {
+            name: 'puppet-installer-darwin-arm64',
+            browser_download_url: binaryAssetUrl(tag, 'puppet-installer-darwin-arm64'),
+          },
+        ]
       : [],
   };
 };
@@ -32,7 +45,9 @@ const buildFetchStub = (
   releases: ReturnType<typeof release>[],
   checksumsBodies: Record<string, string | { status: number }> = {},
 ) =>
-  vi.fn(async (input: string | URL) => {
+  // Second param kept so the mock's call-arity matches typeof fetch's signature.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  vi.fn(async (input: string | URL | Request, _init?: RequestInit) => {
     const url = String(input);
     if (url === releasesUrl) return new Response(JSON.stringify(releases), { status: 200 });
     for (const [assetUrl, body] of Object.entries(checksumsBodies)) {
@@ -63,6 +78,10 @@ describe('loadDownloads — channel-body parsing and per-channel data', () => {
       checksums: {
         'puppet-installer-linux-amd64': 'a'.repeat(64),
         'puppet-installer-darwin-arm64': 'b'.repeat(64),
+      },
+      downloadUrls: {
+        'puppet-installer-linux-amd64': binaryAssetUrl('v1.2.0', 'puppet-installer-linux-amd64'),
+        'puppet-installer-darwin-arm64': binaryAssetUrl('v1.2.0', 'puppet-installer-darwin-arm64'),
       },
       htmlUrl: 'https://github.com/puppet-stagehand/stagehand-release/releases/tag/v1.2.0',
     });
