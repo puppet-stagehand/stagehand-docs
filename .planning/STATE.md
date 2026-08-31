@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v0.2.3
 current_phase: 04.2
-current_phase_name: Tester Downloads (INSERTED)
-status: verifying
+current_phase_name: tester-downloads
+status: executing
 stopped_at: Completed 04.2-03-PLAN.md
-last_updated: "2026-08-31T15:55:52.378Z"
+last_updated: "2026-08-31T16:22:19.536Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04.2 execution started
-state_head: 341a0793f0c697fa0787f4001717f731a7d04331
+state_head: 0780a15d078526d3f4a15b47bf75673cf8f41f82
 progress:
   total_phases: 7
   completed_phases: 4
-  total_plans: 38
+  total_plans: 39
   completed_plans: 36
 ---
 
@@ -28,12 +28,12 @@ published unless a maintainer reviewed primary evidence for it and dated that re
 
 ## Current Position
 
-Phase: 04.2 (Tester Downloads (INSERTED)) — EXECUTING
+Phase: 04.2 (tester-downloads) — READY TO EXECUTE
 Plan: 3 of 3
 genuinely achieved — see 05-08-RESOLUTION.md. Not marked "complete" in the normal per-plan sense
 because the goal was reached via direct orchestrator action against a re-scoped domain
 (puppet-stagehand.com), not via this plan's own tasks executing to completion.
-Status: Phase complete — ready for verification
+Status: Ready to execute
 Wave 8 (05-10-PLAN.md) can now proceed.
 Last activity: 2026-08-31 — Phase 04.2 execution started
 real (bootstrap 0/6/0, testpilots 5/2/5, beta 5/2/5, stable 8/2/8 resource changes; NS delegation
