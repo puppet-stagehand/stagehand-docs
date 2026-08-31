@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v0.2.3
 current_phase: 04.2
 current_phase_name: Tester Downloads (INSERTED)
-status: executing
-stopped_at: Completed 04.2-02-PLAN.md
-last_updated: "2026-08-31T15:48:56.471Z"
+status: verifying
+stopped_at: Completed 04.2-03-PLAN.md
+last_updated: "2026-08-31T15:55:52.378Z"
 last_activity: 2026-08-31
 last_activity_desc: Phase 04.2 execution started
-state_head: ef20cfe5b7afa74cb0c99b8344b67f9b0375be29
+state_head: 341a0793f0c697fa0787f4001717f731a7d04331
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 38
-  completed_plans: 35
+  completed_plans: 36
 ---
 
 # Project State
@@ -33,7 +33,7 @@ Plan: 3 of 3
 genuinely achieved — see 05-08-RESOLUTION.md. Not marked "complete" in the normal per-plan sense
 because the goal was reached via direct orchestrator action against a re-scoped domain
 (puppet-stagehand.com), not via this plan's own tasks executing to completion.
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Wave 8 (05-10-PLAN.md) can now proceed.
 Last activity: 2026-08-31 — Phase 04.2 execution started
 real (bootstrap 0/6/0, testpilots 5/2/5, beta 5/2/5, stable 8/2/8 resource changes; NS delegation
@@ -82,6 +82,7 @@ plan completion — see note above — 05-10/05-11 remain to close LAUN-05/rollb
 | Phase 04.1 P05 | 12min | 2 tasks | 3 files |
 | Phase 04.2 P01 | 15min | 3 tasks | 12 files |
 | Phase 04.2 P02 | 15min | 2 tasks | 8 files |
+| Phase 04.2 P03 | 12min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -118,6 +119,9 @@ Three locked ADRs constrain all phases and are not re-openable:
 - [Phase 04.2]: 04.2-01: ChannelRelease gained a downloadUrls field beyond the plan's original shape so each of the five binaries links to its real GitHub asset alongside its checksum, independently proven present (DOWN-04).
 - [Phase 04.2]: [Phase 04.2]: 04.2-02: dropped Teams/Roles/Approvals from user-guide.md in full per the plan's four-section drop list, and fixed the resulting dangling cross-references (Signing-in section, Code Management deploy note, glossary Team module repo row) rather than leaving pointers at removed content.
 - [Phase 04.2]: [Phase 04.2]: 04.2-02: installer-support.md's platform-lock section points to user-guide.md's table by plain prose link, not an anchor fragment, since heading-slug anchor stability wasn't verified for this markdown pipeline.
+- [Phase 04.2]: [Phase 04.2]: 04.2-03: npm run verify already green combining Plans 01+02, no fix needed for Task 1.
+- [Phase 04.2]: [Phase 04.2]: 04.2-03: all three real hostnames blocked by the pre-existing whole-site basic-auth lockdown (44b56c9, same cause as WINDOWS entry #2); proved criteria 3/6 via local build+preview instead.
+- [Phase 04.2]: [Phase 04.2]: 04.2-03: puppet-stagehand/stagehand-release now exists (zero releases) — corrected WINDOWS.md entry #3's description before committing rather than the plan's stale 'repo does not exist' claim.
 
 ### Pending Todos
 
@@ -160,8 +164,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T15:48:56.220Z
-Stopped at: Completed 04.2-02-PLAN.md
+Last session: 2026-08-31T15:55:52.090Z
+Stopped at: Completed 04.2-03-PLAN.md
 internet; see .planning/phases/05-production-launch/05-08-RESOLUTION.md (05-08-SUMMARY.md's halt
 record is unchanged and remains accurate for what 05-08's own tasks did).
 Resume file: None
