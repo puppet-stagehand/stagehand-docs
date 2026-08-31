@@ -219,13 +219,13 @@ Plans:
 
 **Canonical refs**: `puppet-console` repo at `/Users/matthew/Code/puppet-console/docs/USER-GUIDE.md`; `puppet-installer` repo docs at `/Users/matthew/Code/puppet-installer/docs/{registry-distribution-guide,support-guide}.md`; `puppet-installer/.github/workflows/release.yml` (channel-detection and mirror-step logic); PROJECT.md's immutable-promotion constraint.
 
-**Plans**: 3 plans
+**Plans**: 1/3 plans executed
 **UI hint**: yes
 
 Plans:
 **Wave 1**
 
-- [ ] 04.2-01-PLAN.md — Tracer/TDD: the build-time GitHub Releases loader, honest-unavailable-by-default downloads page, client-side channel reveal, and DOWN-03's negative gate (DOWN-01–04, GATE-07)
+- [x] 04.2-01-PLAN.md — Tracer/TDD: the build-time GitHub Releases loader, honest-unavailable-by-default downloads page, client-side channel reveal, and DOWN-03's negative gate (DOWN-01–04, GATE-07)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 

@@ -1,19 +1,19 @@
 ---
 gsd_state_version: 1.0
 milestone: v0.2.3
-current_phase: 04.1
-current_phase_name: Gated Tester Access (INSERTED)
+current_phase: 04.2
+current_phase_name: Tester Downloads (INSERTED)
 status: executing
-stopped_at: Completed 04.1-05-PLAN.md
-last_updated: "2026-08-31T00:41:11.613Z"
-last_activity: 2026-08-30
-last_activity_desc: Phase 04.1 execution started
-state_head: d7287549479d431f067f83a5ac4a6730d7974959
+stopped_at: Completed 04.2-01-PLAN.md
+last_updated: "2026-08-31T15:32:17.759Z"
+last_activity: 2026-08-31
+last_activity_desc: Phase 04.2 execution started
+state_head: e0c36ef9841d01a0a36cd966c5a0d3950d0c704d
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 38
-  completed_plans: 33
+  completed_plans: 34
 ---
 
 # Project State
@@ -24,18 +24,18 @@ See: .planning/PROJECT.md (updated 2026-08-26)
 
 **Core value:** A reader can trust every compatibility claim on the site, because no claim is
 published unless a maintainer reviewed primary evidence for it and dated that review honestly.
-**Current focus:** Phase 04.1 — Gated Tester Access (INSERTED)
+**Current focus:** Phase 04.2 — Tester Downloads (INSERTED)
 
 ## Current Position
 
-Phase: 04.1 (Gated Tester Access (INSERTED)) — EXECUTING
-Plan: 2 of 5
+Phase: 04.2 (Tester Downloads (INSERTED)) — EXECUTING
+Plan: 2 of 3
 genuinely achieved — see 05-08-RESOLUTION.md. Not marked "complete" in the normal per-plan sense
 because the goal was reached via direct orchestrator action against a re-scoped domain
 (puppet-stagehand.com), not via this plan's own tasks executing to completion.
 Status: Ready to execute
 Wave 8 (05-10-PLAN.md) can now proceed.
-Last activity: 2026-08-30 — Phase 04.1 execution started
+Last activity: 2026-08-31 — Phase 04.2 execution started
 real (bootstrap 0/6/0, testpilots 5/2/5, beta 5/2/5, stable 8/2/8 resource changes; NS delegation
 and apex-redirect confirmed via dig/curl). See 05-08-RESOLUTION.md and
 docs/operations/RELEASE-EVIDENCE.md's new promotion row.
@@ -80,6 +80,7 @@ plan completion — see note above — 05-10/05-11 remain to close LAUN-05/rollb
 | Phase 05 P06 | 12min | 3 tasks | 0 files |
 | Phase 05 P07 | ~7min | 2 tasks | 1 files |
 | Phase 04.1 P05 | 12min | 2 tasks | 3 files |
+| Phase 04.2 P01 | 15min | 3 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,7 @@ Three locked ADRs constrain all phases and are not re-openable:
 - [Phase 05]: [Phase 05]: 05-07: dig +short www.puppetstagehand.com/puppetstagehand.com confirmed both still resolve to the unrelated Cloudflare-routed GitHub Pages site (puppetlabs-seteam.github.io), confirming pre-cutover DNS state ahead of 05-08.
 - [Phase 05]: [Phase 05]: 05-08 halted, then resolved outside its own tasks — puppetstagehand.com's registrar (Cloudflare) doesn't support custom nameservers, so the maintainer registered puppet-stagehand.com directly through Route 53 Registrar; the orchestrator renamed the domain repo-wide (a2de948), applied bootstrap+all three environments against it (0/6/0, 5/2/5, 5/2/5, 8/2/8), verified NS delegation and the apex redirect against the real public internet, and retired the old domain's empty hosted zone. LAUN-02 closed for real; see 05-08-RESOLUTION.md.
 - [Phase 04.1]: 04.1-05: Substituted a dedicated chromium.launch({args:['--host-resolver-rules=...']}) instance for Playwright hostname spoofing in Tests B/C after the plan's page.addInitScript technique threw 'Cannot redefine property' against this Chromium build's non-configurable Location.hostname.
+- [Phase 04.2]: 04.2-01: ChannelRelease gained a downloadUrls field beyond the plan's original shape so each of the five binaries links to its real GitHub asset alongside its checksum, independently proven present (DOWN-04).
 
 ### Pending Todos
 
@@ -155,8 +157,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-31T00:41:11.409Z
-Stopped at: Completed 04.1-05-PLAN.md
+Last session: 2026-08-31T15:32:17.519Z
+Stopped at: Completed 04.2-01-PLAN.md
 internet; see .planning/phases/05-production-launch/05-08-RESOLUTION.md (05-08-SUMMARY.md's halt
 record is unchanged and remains accurate for what 05-08's own tasks did).
 Resume file: None
