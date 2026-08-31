@@ -1,19 +1,19 @@
 ---
 gsd_state_version: 1.0
 milestone: v0.2.3
-current_phase: 05
-current_phase_name: Production Launch
+current_phase: 04.1
+current_phase_name: gated-tester-access
 status: executing
 stopped_at: 05-08's goal (LAUN-02 DNS cutover + real apex-redirect verification) achieved via direct orchestrator action against puppet-stagehand.com; see 05-08-RESOLUTION.md. Wave 8 (05-10-PLAN.md) unblocked.
-last_updated: "2026-08-27T22:00:00.000Z"
+last_updated: "2026-08-31T00:19:26.508Z"
 last_activity: 2026-08-27
-last_activity_desc: Domain migration to puppet-stagehand.com completed and verified against the real public internet (dig/curl); 05-08 resolved via direct orchestrator action, not its own Task 2/3; 05-10/05-11 unblocked
-state_head: a2de94867ff1ddbbe0e5aad0166ae441deac1e7d
+last_activity_desc: Phase 04.1 execution started
+state_head: 28411c11f243dc99d69c3961047665cf112dc051
 progress:
   total_phases: 7
   completed_phases: 4
-  total_plans: 30
-  completed_plans: 27
+  total_plans: 38
+  completed_plans: 28
 ---
 
 # Project State
@@ -24,18 +24,18 @@ See: .planning/PROJECT.md (updated 2026-08-26)
 
 **Core value:** A reader can trust every compatibility claim on the site, because no claim is
 published unless a maintainer reviewed primary evidence for it and dated that review honestly.
-**Current focus:** Phase 05 — Production Launch
+**Current focus:** Phase 04.1 — Gated Tester Access (INSERTED)
 
 ## Current Position
 
-Phase: 05 (Production Launch) — EXECUTING
-Plan: 08 — HALTED as a plan (Task 2/3 never resumed), but its underlying goal (LAUN-02) is now
+Phase: 04.1 (gated-tester-access) — READY TO EXECUTE
+Plan: 1 of 4
 genuinely achieved — see 05-08-RESOLUTION.md. Not marked "complete" in the normal per-plan sense
 because the goal was reached via direct orchestrator action against a re-scoped domain
 (puppet-stagehand.com), not via this plan's own tasks executing to completion.
-Status: Unblocked — domain migration verified against the real public internet on 2026-08-27;
+Status: Ready to execute
 Wave 8 (05-10-PLAN.md) can now proceed.
-Last activity: 2026-08-27 — Domain migration to puppet-stagehand.com applied and verified for
+Last activity: 2026-08-27 — Phase 04.1 execution started
 real (bootstrap 0/6/0, testpilots 5/2/5, beta 5/2/5, stable 8/2/8 resource changes; NS delegation
 and apex-redirect confirmed via dig/curl). See 05-08-RESOLUTION.md and
 docs/operations/RELEASE-EVIDENCE.md's new promotion row.
