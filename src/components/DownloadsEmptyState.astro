@@ -1,0 +1,23 @@
+---
+// Mirrors CompatibilityEmptyState.astro's structure and class-naming convention (reusing its
+// already-styled .compat-empty pattern — the "honest nothing here yet" visual this page needs is
+// identical, just for a different data source). See DOWN-04's honest-unavailable requirement.
+interface Props {
+  channelLabel: string;
+}
+
+const { channelLabel } = Astro.props;
+const headingId = `downloads-empty-${channelLabel.toLowerCase().replace(/\s+/g, '-')}-title`;
+---
+
+<div class="compat-empty" aria-labelledby={headingId}>
+  <p class="compat-empty__code" aria-hidden="true">00 / RELEASES</p>
+  <div>
+    <h2 id={headingId}>{channelLabel} build not published yet</h2>
+    <p>No puppet-installer release has been published to the {channelLabel} channel yet.</p>
+    <p>
+      Once a release ships, this page states its version, publication date, checksums, and download
+      links automatically. For help in the meantime, <a href="/support/">contact support</a>.
+    </p>
+  </div>
+</div>

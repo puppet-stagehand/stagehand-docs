@@ -1,0 +1,19 @@
+---
+// Mirrors TesterGuideVisibility.astro's external, non-`is:inline` <script> pattern, extended to
+// a three-way toggle. Every [data-channel] section starts hidden in the static markup (D-05) —
+// showing the wrong channel's binary/checksum would be a DOWN-01 correctness bug, so there is no
+// safe "assume visible" default here, unlike TesterGuideVisibility's fallback-visible pattern.
+---
+
+<script>
+  import { releaseChannelFor } from '../lib/data/downloads';
+  import { resolveSiteChannel } from '../lib/site-channel';
+
+  const channel = resolveSiteChannel(window.location.hostname);
+  const releaseChannel = releaseChannelFor(channel);
+
+  if (releaseChannel) {
+    const section = document.querySelector<HTMLElement>(`[data-channel="${releaseChannel}"]`);
+    section?.removeAttribute('hidden');
+  }
+</script>

@@ -1,0 +1,54 @@
+---
+import BrandTriangles from '../../components/BrandTriangles.astro';
+import DownloadsChannelVisibility from '../../components/DownloadsChannelVisibility.astro';
+import DownloadsEmptyState from '../../components/DownloadsEmptyState.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Downloads"
+  description="Download the puppet-installer build for your Stagehand release channel, with checksum and publication date stated alongside every link."
+  canonicalPath="/downloads/"
+>
+  <header class="register-hero register-hero--downloads">
+    <BrandTriangles class="register-hero__triangles" />
+    <div class="container register-hero__grid">
+      <div>
+        <p class="register-hero__eyebrow">RELEASE CHANNEL / PUPPET-INSTALLER</p>
+        <h1>Downloads</h1>
+      </div>
+      <div class="register-hero__lede">
+        <p>
+          This page shows only the puppet-installer build published to your site's release channel —
+          testpilots, beta, or stable — never a matrix of every channel.
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <div class="compatibility-page">
+    <div class="container">
+      <noscript>
+        <p>
+          JavaScript is required to determine which release channel applies to this site. Browse
+          every published release directly on <a
+            href="https://github.com/puppet-stagehand/stagehand-release/releases"
+            >puppet-stagehand/stagehand-release</a
+          >.
+        </p>
+      </noscript>
+
+      <section data-channel="test-pilots" hidden>
+        <DownloadsEmptyState channelLabel="Test Pilots" />
+      </section>
+      <section data-channel="beta" hidden>
+        <DownloadsEmptyState channelLabel="Beta" />
+      </section>
+      <section data-channel="stable" hidden>
+        <DownloadsEmptyState channelLabel="Stable" />
+      </section>
+    </div>
+  </div>
+
+  <DownloadsChannelVisibility />
+</BaseLayout>
