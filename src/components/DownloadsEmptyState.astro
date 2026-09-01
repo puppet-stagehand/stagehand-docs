@@ -4,20 +4,42 @@
 // identical, just for a different data source). See DOWN-04's honest-unavailable requirement.
 interface Props {
   channelLabel: string;
+  /**
+   * True for channels not yet open to any release (beta, stable). Swaps the copy to
+   * "Coming Soon" framing instead of the honest-empty "not published yet" state test-pilots
+   * uses. Purely presentational: the moment loadDownloads() returns a real release for this
+   * channel, downloads/index.astro's real-data branch takes over regardless of this prop.
+   */
+  comingSoon?: boolean;
 }
 
-const { channelLabel } = Astro.props;
+const { channelLabel, comingSoon = false } = Astro.props;
 const headingId = `downloads-empty-${channelLabel.toLowerCase().replace(/\s+/g, '-')}-title`;
 ---
 
 <div class="compat-empty" aria-labelledby={headingId}>
   <p class="compat-empty__code" aria-hidden="true">00 / RELEASES</p>
-  <div>
-    <h2 id={headingId}>{channelLabel} build not published yet</h2>
-    <p>No puppet-installer release has been published to the {channelLabel} channel yet.</p>
-    <p>
-      Once a release ships, this page states its version, publication date, checksums, and download
-      links automatically. For help in the meantime, <a href="/support/">contact support</a>.
-    </p>
-  </div>
+  {
+    comingSoon ? (
+      <div>
+        <h2 id={headingId}>{channelLabel} channel: coming soon</h2>
+        <p>The {channelLabel} channel isn't open yet.</p>
+        <p>
+          When it opens, this page will state its version, publication date, checksums, and
+          download links automatically. For help in the meantime,{' '}
+          <a href="/support/">contact support</a>.
+        </p>
+      </div>
+    ) : (
+      <div>
+        <h2 id={headingId}>{channelLabel} build not published yet</h2>
+        <p>No puppet-installer release has been published to the {channelLabel} channel yet.</p>
+        <p>
+          Once a release ships, this page states its version, publication date, checksums, and
+          download links automatically. For help in the meantime,{' '}
+          <a href="/support/">contact support</a>.
+        </p>
+      </div>
+    )
+  }
 </div>
