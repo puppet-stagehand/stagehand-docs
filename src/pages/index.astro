@@ -1,37 +1,6 @@
 ---
 import BrandTriangles from '../components/BrandTriangles.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-const capabilities = [
-  {
-    title: 'Environment Visibility',
-    description:
-      'See the state of your Puppet and OpenVox environments from one place, instead of piecing it together from separate SSH sessions and scattered reports.',
-  },
-  {
-    title: 'Bolt-Native Execution',
-    description:
-      "Work runs through Puppet Bolt's own task and plan execution model over SSH — the same execution path documented in the Getting Started and Security and Trust Boundaries guides, not a second, unnamed automation surface.",
-  },
-  {
-    title: 'Explicit Support Boundaries',
-    description:
-      "Know exactly what your tier includes, and what's still primary-evidence-verified in the compatibility register, before you rely on it.",
-  },
-] as const;
-
-const audiences = [
-  {
-    title: 'Hobbyists and Homelabs',
-    description:
-      'Stagehand is a great way to get control of your virtual machines, keep patching in order, and roll changes out to multiple systems without spending your evening repeating yourself.',
-  },
-  {
-    title: 'Open Source, Community, and Puppet Core',
-    description:
-      'Stagehand gives you an opinionated graphical interface for environment visibility, Bolt-native execution, and honest compliance and patch status, without a commercial support contract required to get it.',
-  },
-] as const;
 ---
 
 <BaseLayout
@@ -43,15 +12,14 @@ const audiences = [
     <BrandTriangles class="control-hero__triangles" />
     <div class="container control-hero__grid">
       <div class="control-hero__intro">
-        <p class="control-hero__eyebrow">AUTOMATION CONTROL PLANE</p>
-        <h1 id="hero-title">Manage Puppet Environments With Less Complexity.</h1>
+        <p class="control-hero__eyebrow">PUPPET STAGEHAND</p>
+        <h1 id="hero-title">Set the State. Pull the Strings.</h1>
         <p class="control-hero__lede">
           A focused interface for environment visibility, Bolt-native execution workflows, and
           clearly documented support boundaries.
         </p>
         <div class="control-hero__actions">
           <a class="btn btn-primary" href="/docs/getting-started/">Get started</a>
-          <a class="btn btn-outline-light" href="/tiers/">View tiers</a>
           <a class="btn btn-outline-light" href="/compatibility/">Check compatibility</a>
         </div>
       </div>
@@ -66,50 +34,6 @@ const audiences = [
           <figcaption>Action Center — shown with synthetic demo data.</figcaption>
         </figure>
       </aside>
-    </div>
-  </section>
-
-  <section class="capabilities" aria-labelledby="capabilities-title">
-    <div class="container">
-      <div class="capabilities__heading">
-        <p>CAPABILITY GRID / 03</p>
-        <h2 id="capabilities-title">Operational Signal, Without the Noise.</h2>
-      </div>
-      <div class="capability-grid">
-        {
-          capabilities.map(({ title, description }, index) => (
-            <article class="capability">
-              <span class="capability__index">0{index + 1}</span>
-              <h3>{title}</h3>
-              <p>{description}</p>
-            </article>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <section class="audiences" aria-labelledby="audiences-title">
-    <div class="container">
-      <div class="audiences__heading">
-        <p>WHO IT'S FOR / 02</p>
-        <h2 id="audiences-title">Bolt a Rocket Onto Your Puppet Environments.</h2>
-      </div>
-      <div class="audience-grid">
-        {
-          audiences.map(({ title, description }, index) => (
-            <article class="audience">
-              <span class="audience__index">0{index + 1}</span>
-              <h3>{title}</h3>
-              <p>{description}</p>
-            </article>
-          ))
-        }
-      </div>
-      <p class="audiences__note">
-        Puppet Enterprise and Puppet Enterprise Advanced support isn't live yet; it's next on the
-        roadmap.
-      </p>
     </div>
   </section>
 </BaseLayout>
