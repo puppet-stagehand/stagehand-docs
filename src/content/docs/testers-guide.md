@@ -9,11 +9,11 @@ visibleOn: ['testpilots', 'beta']
 ## Who This Is For
 
 This guide is for anyone verifying that a _deployed_ Stagehand console actually does what it
-claims — someone testing a release, walking through a UAT pass, or exploring the product before
+claims: someone testing a release, walking through a UAT pass, or exploring the product before
 sign-off. It assumes you already have a running console (installed via the Puppet Installer, or an
 existing instance someone gave you access to) and the shared password the Stagehand team gave you
 to reach this site. It does not assume a source checkout, a build toolchain, or any development
-environment — every step below happens in the browser, against the console's own UI.
+environment; every step below happens in the browser, against the console's own UI.
 
 If you find something that doesn't match what's described here, see
 [Reporting What You Find](#reporting-what-you-find) below.
@@ -25,17 +25,17 @@ The shipped 1.0 release runs a fixed capability profile. Supported today:
 - One local Global Administrator account (no multi-user role-based access control yet)
 - The full Activity Log
 - Compliance and findings (scans, summary/node rollup, settings)
-- Code Management, scoped to **control repositories only** — attaching a `team_module` or `module`
-  kind repository is not available in 1.0
+- Code Management, scoped to **control repositories only** (attaching a `team_module` or `module`
+  kind repository is not available in 1.0)
 - Bolt vulnerability scans
-- Estate Viewer, as a registration/health view across instances — no cross-instance
+- Estate Viewer, as a registration/health view across instances, with no cross-instance
   classification or discovery actions
 
 Deferred to a later release, and not reachable in a shipped 1.0 build no matter how you navigate:
 multi-user RBAC/teams, an approvals workflow, customer-facing Data Management (the Puppet Data
 Service / Hiera hierarchy editor), the ENC discovery/import wizard, and console self-update. If you
 land on a route for one of these and it behaves as unavailable rather than throwing an error, that
-is expected — it is not a bug to report.
+is expected; it is not a bug to report.
 
 ## Manual Test Scenarios
 
@@ -73,17 +73,17 @@ as a read-only deploy key, and confirm **Fetch** succeeds and shows classes and 
 | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Open the Deployments tab's environment dropdown after attaching a control repository with multiple branches | Every branch on the repository is listed, defaulting to the repository's configured default branch when it's among them, with no free-text entry allowed |
 | No control repository attached                                                                              | Deploy now is disabled with an explanation that a control repository must be attached first; no dropdown is shown                                        |
-| Run **Deploy now** against an environment                                                                   | That environment's row in the Environments list updates in place — no page reload — with a passed/failed status, a timestamp, and the actor who ran it   |
-| Open an environment that has never been deployed through the console                                        | Its row shows the branch's short commit SHA and "Never deployed from this console" — no fabricated date or status                                        |
+| Run **Deploy now** against an environment                                                                   | That environment's row in the Environments list updates in place (no page reload) with a passed/failed status, a timestamp, and the actor who ran it   |
+| Open an environment that has never been deployed through the console                                        | Its row shows the branch's short commit SHA and "Never deployed from this console", no fabricated date or status                                        |
 | The environment list or branch list fails to load (host unreachable, an authentication problem)             | A clear error explains the failure and includes a way to retry, without breaking the rest of the page                                                    |
 
-### Scoped task and plan launcher
+### Scoped Task and Plan Launcher
 
 Open **Runner**, pick the PQL tab, enter a query, and click Preview. Note the matched-count badge
 and, if you expand it, the certname list. Launch the run and confirm the resolved target count and
 list match what the PQL preview showed.
 
-### Dependency graphs
+### Dependency Graphs
 
 Open a node with a failed latest report and click its Dependencies tab. Confirm resource nodes are
 colored by status (failed = red, changed = amber, unchanged = green), and that clicking a
@@ -92,7 +92,7 @@ own severity color. Confirm the side panel shows a status row (glyph plus label)
 impact count, and that clicking never navigates away. Open a node with no Puppet report yet and
 confirm every resource shows as gray "Unreported" rather than a false "clean" state.
 
-### Node detail, activity, classes, and configuration coverage
+### Node Detail, Activity, Classes, and Configuration Coverage
 
 | Scenario                                                                                      | Expected result                                                                                                                                                                                                            |
 | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -111,44 +111,44 @@ Select a step and confirm its inspector renders a typed parameter form plus a ta
 the draft, then Validate: a valid draft shows a success state, an invalid one lists cleaned error
 rows with the raw output available behind a disclosure, and an unconfigured Bolt shows a clear
 "Bolt unavailable" state rather than a raw error. Open the same draft in two browser windows, save
-in one, then try saving in the other — confirm the second save is blocked by a conflict warning
+in one, then try saving in the other; confirm the second save is blocked by a conflict warning
 rather than silently overwritten.
 
-### Bolt Designer dry run, publish, undo, and redo
+### Bolt Designer Dry Run, Publish, Undo, and Redo
 
 | Scenario                                                                           | Expected result                                                                                                                                                                 |
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Save a draft whose first targeted step points at a real target, then click Dry run | The button shows a running state and disables; results fill in per-step with success/failed rows and full output behind a disclosure; no target machine is actually changed     |
 | As a Global Administrator, click Publish on a saved draft attached to a repository | A confirmation dialog opens with a prefilled branch and commit message; confirming shows a success message with a link, and the branch really exists on the attached repository |
-| Attempt the same publish while unauthenticated or as a non-administrator           | The server rejects the publish; the dialog stays open with the reason — never a silent success                                                                                  |
+| Attempt the same publish while unauthenticated or as a non-administrator           | The server rejects the publish; the dialog stays open with the reason, never a silent success                                                                                  |
 | Make several canvas edits, then Undo and Redo                                      | Each Undo restores the prior step list one edit at a time; Redo re-applies them in order; both buttons disable at the ends of the history                                       |
-| Reload the page mid-edit                                                           | Undo/Redo history starts fresh — history is in-session only, and the saved draft itself is untouched                                                                            |
+| Reload the page mid-edit                                                           | Undo/Redo history starts fresh; history is in-session only, and the saved draft itself is untouched                                                                            |
 
-### Command palette
+### Command Palette
 
 Click "Search anything…" in the sidebar. Confirm a compact dialog opens with the search input
 focused. Try typing a term that produces many results, a few results, and zero results, confirming
 groups render in a fixed order with no more than a capped number of rows, and that zero matches
 shows a plain "No matches." message. Select a node, a section, and an action in turn, confirming
 each selection navigates correctly and the palette closes. Confirm this all still works if the
-backend that supplies node results is briefly unreachable — the rest of the palette should keep
+backend that supplies node results is briefly unreachable; the rest of the palette should keep
 working rather than showing an error.
 
-### Novice-friendly Bolt forms
+### Novice-Friendly Bolt Forms
 
 Open Runner, Discover, and Scan with the Advanced section collapsed (the default). Confirm each
-form is visibly lighter — no group/PQL tab bar — with one prominent primary button and a short
+form is visibly lighter (no group/PQL tab bar) with one prominent primary button and a short
 helper line. Open the Playbooks tab the same way, and confirm a selected playbook with declared
 default variables shows generated fields above Advanced, pre-filled from those defaults. Click
 "Show advanced options" on each form, reload the page, and confirm the open/closed choice persists
 per page. Complete one task or plan run using only the default, non-Advanced path, confirming it
 launches and completes without ever needing Advanced.
 
-### EYAML profile wizard and Create Secret
+### EYAML Profile Wizard and Create Secret
 
 Open **Configuration → Data Management**, then the **Create Secret** tab. With no key profile
 saved, the "Encrypt a value" controls are disabled with a message pointing at "Manage keys." Switch
-to Manage keys and generate a real key pair, watching your browser's network tab — the create
+to Manage keys and generate a real key pair, watching your browser's network tab; the create
 request and response should never contain the private key or PEM material, only the public key and
 metadata. Uploading an existing key pair should be accepted after the console self-validates that
 its public and private halves match. Use the "encrypt a value" helper and confirm the resulting
@@ -157,7 +157,7 @@ plaintext and ciphertext fields.
 
 If you have a live Puppet Server with the matching decryption tooling configured, pasting a value
 encrypted under a generated key pair into a real Hiera file should decrypt correctly at catalog
-compile time — decryption failing for a value encrypted under a generated (not uploaded) key pair
+compile time; decryption failing for a value encrypted under a generated (not uploaded) key pair
 is expected, since the private half of a generated pair never leaves the console.
 
 ### Estate Viewer
@@ -177,9 +177,9 @@ is expected, since the private half of a generated pair never leaves the console
 | Open **Settings → SBOM**                                   | Version, channel, commit, and a non-zero component count render                                               |
 | Open the Components table                                  | Every dependency is listed with name, version, and license; a filter box narrows by name or license substring |
 | Click "Download App SBOM"                                  | A CycloneDX JSON file downloads immediately, served directly from the running binary                          |
-| No self-update manifest is configured, or it's unreachable | "Download Full Container SBOM" renders disabled with an explanatory note — no error banner, no broken link    |
+| No self-update manifest is configured, or it's unreachable | "Download Full Container SBOM" renders disabled with an explanatory note, no error banner, no broken link    |
 
-### Guided Hierascope and EYAML walkthrough
+### Guided Hierascope and EYAML Walkthrough
 
 Open **Configuration → Data Management**, then the Hierascope tab, on a console with an attached
 repository. Confirm the job list renders (empty state if none exist yet) with a visible "Start
@@ -191,7 +191,7 @@ differences, confirm the Evidence, Failures, and Inputs tabs all render, and tha
 JSON or CSV produces a real file. Cancel a running job, then restart a finished one, confirming
 restart creates a new job with the same frozen inputs.
 
-### PDCTNG connection and change tracking
+### PDCTNG Connection and Change Tracking
 
 | Scenario                                                                                                    | Expected result                                                                                                                                   |
 | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -210,11 +210,11 @@ attaching and fetching a real fixture repository should make its playbooks appea
 page's picker. Run a Designer-published multi-step plan that includes one playbook step alongside
 another step, and confirm the run's detail view shows the full ordered step list, with the playbook
 step rendering the same per-target output a standalone playbook run uses. Note that a playbook step
-only renders this way when its name is left as the tool's default — a custom-named step is not
+only renders this way when its name is left as the tool's default; a custom-named step is not
 currently recognized as a playbook step and renders as a generic task row instead; this is expected
 today, not a bug.
 
-### Patchbot-only patching boundary
+### Patchbot-Only Patching Boundary
 
 Patchbot is the only supported patching engine in this release. A deployed console must not expose
 a patch-provider picker, or any provider switching, migration, or generic provider-run capability.
@@ -226,11 +226,11 @@ authentication or readiness response.
 If you have access to disposable test targets, you can also verify the package-protection boundary:
 confirm an ordinary operating-system package update cannot move a protected Puppet package, then
 run the installer-controlled upgrade and confirm it unlocks only the boundary it's actively working
-on, applies the intended change, and re-locks and verifies before finishing — including after a
+on, applies the intended change, and re-locks and verifies before finishing, including after a
 deliberately injected interruption partway through.
 
 ## Reporting What You Find
 
 If something here doesn't match what you see, or you find a defect while testing, report it via
-[Support](/support/) — it explains the difference between the public issue tracker and the private
+[Support](/support/); it explains the difference between the public issue tracker and the private
 advisory channel, and which one to use.
