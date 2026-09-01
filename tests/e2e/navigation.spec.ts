@@ -8,6 +8,7 @@ const routes = [
   ['/docs/getting-started/', 'Getting Started'],
   ['/docs/security/', 'Security and Trust Boundaries'],
   ['/docs/support/', 'Support & Troubleshooting Channels'],
+  ['/about/', 'Why We Built Stagehand'],
 ] as const;
 
 test('every published HTML route has its unique page heading and document title', async ({
@@ -23,7 +24,7 @@ test('every published HTML route has its unique page heading and document title'
 
 test('primary navigation reaches each top-level destination', async ({ page }) => {
   const destinations = [
-    ['Why Stagehand?', '/docs/why-stagehand/'],
+    ['About', '/about/'],
     ['Features', '/features/'],
     ['Compatibility', '/compatibility/'],
     ['Docs', '/docs/'],

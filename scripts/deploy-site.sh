@@ -52,8 +52,8 @@ aws cloudfront create-invalidation \
   '/docs/installer-support/index.html' \
   '/docs/testers-guide/index.html' \
   '/docs/user-guide/index.html' \
-  '/docs/why-stagehand/index.html' \
   '/docs/support/index.html' \
+  '/about/index.html' \
   '/downloads/index.html' \
   '/support/index.html' \
   '/404.html' \

@@ -3,13 +3,11 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import BrandTriangles from '../../components/BrandTriangles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-type Category = NonNullable<CollectionEntry<'docs'>['data']['category']>;
+type Category = CollectionEntry<'docs'>['data']['category'];
 
-// why-stagehand.md has no category (it's promoted to the top nav instead), so it's the one entry
-// this filters out of the register below.
-const entries = (await getCollection('docs'))
-  .filter((entry) => entry.data.category !== undefined)
-  .sort((left, right) => left.data.order - right.data.order);
+const entries = (await getCollection('docs')).sort(
+  (left, right) => left.data.order - right.data.order,
+);
 
 const categoryLabels: Record<Category, string> = {
   installing: 'Installing Stagehand',

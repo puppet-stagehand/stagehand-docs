@@ -6,7 +6,7 @@ interface Props {
   currentSlug: string;
 }
 
-type Category = NonNullable<CollectionEntry<'docs'>['data']['category']>;
+type Category = CollectionEntry<'docs'>['data']['category'];
 
 const { entries, currentSlug } = Astro.props;
 

@@ -4,7 +4,7 @@ export interface NavigationItem {
 }
 
 export const primaryNavigation: readonly NavigationItem[] = [
-  { href: '/docs/why-stagehand/', label: 'Why Stagehand?' },
+  { href: '/about/', label: 'About' },
   { href: '/features/', label: 'Features' },
   { href: '/compatibility/', label: 'Compatibility' },
   { href: '/docs/', label: 'Docs' },
