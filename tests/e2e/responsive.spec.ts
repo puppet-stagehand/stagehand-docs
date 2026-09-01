@@ -3,12 +3,11 @@ import { expect, test } from '@playwright/test';
 const htmlRoutes = [
   '/',
   '/features/',
-  '/tiers/',
   '/compatibility/',
   '/docs/',
   '/docs/getting-started/',
   '/docs/security/',
-  '/support/',
+  '/docs/support/',
   '/404.html',
 ] as const;
 

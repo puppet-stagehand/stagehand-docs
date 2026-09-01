@@ -1,14 +1,13 @@
 import { expect, test } from '@playwright/test';
 
 const routes = [
-  ['/', 'Manage Puppet Environments With Less Complexity.'],
+  ['/', 'Set the State. Pull the Strings.'],
   ['/features/', 'See It in Action.'],
-  ['/tiers/', 'Stagehand Tiers'],
   ['/compatibility/', 'Compatibility Register'],
   ['/docs/', 'Documentation'],
   ['/docs/getting-started/', 'Getting Started'],
   ['/docs/security/', 'Security and Trust Boundaries'],
-  ['/support/', 'Stagehand Support'],
+  ['/docs/support/', 'Support & Troubleshooting Channels'],
 ] as const;
 
 test('every published HTML route has its unique page heading and document title', async ({
@@ -24,11 +23,10 @@ test('every published HTML route has its unique page heading and document title'
 
 test('primary navigation reaches each top-level destination', async ({ page }) => {
   const destinations = [
+    ['Why Stagehand?', '/docs/why-stagehand/'],
     ['Features', '/features/'],
-    ['Tiers', '/tiers/'],
     ['Compatibility', '/compatibility/'],
     ['Docs', '/docs/'],
-    ['Support', '/support/'],
   ] as const;
 
   for (const [label, path] of destinations) {
@@ -86,4 +84,15 @@ test('an unknown route renders the useful static 404 page', async ({ page }) => 
   await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Browse documentation' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Find support' })).toBeVisible();
+});
+
+test('retired pages redirect to their replacement', async ({ page }) => {
+  // A 0-second meta-refresh (RetiredPageRedirect.astro) is the WCAG 2.2.1-correct choice — any
+  // nonzero delay fails axe's meta-refresh rule — but that means the browser may navigate away
+  // before an assertion on the interim page's own content can run. Assert only the end state.
+  await page.goto('/tiers/');
+  await expect(page).toHaveURL(/\/compatibility\/$/);
+
+  await page.goto('/support/');
+  await expect(page).toHaveURL(/\/docs\/support\/$/);
 });

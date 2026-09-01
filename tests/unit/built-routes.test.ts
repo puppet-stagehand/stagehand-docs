@@ -12,7 +12,6 @@ const requiredOutputs = [
   'docs/getting-started/index.html',
   'docs/security/index.html',
   'support/index.html',
-  'data/tiers.json',
   'data/compatibility.json',
   '404.html',
 ] as const;
@@ -31,7 +30,7 @@ describe('built route gate', () => {
     for (const output of requiredOutputs) {
       const target = join(root, 'dist', output);
       mkdirSync(dirname(target), { recursive: true });
-      if (output === 'data/tiers.json') mkdirSync(target);
+      if (output === 'data/compatibility.json') mkdirSync(target);
       else writeFileSync(target, 'fixture');
     }
 
@@ -42,6 +41,6 @@ describe('built route gate', () => {
     );
 
     expect(result.status).toBe(1);
-    expect(result.stderr).toContain('data/tiers.json');
+    expect(result.stderr).toContain('data/compatibility.json');
   });
 });

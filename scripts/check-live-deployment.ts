@@ -5,8 +5,8 @@ const requiredRoutes = [
   '/docs/',
   '/docs/getting-started/',
   '/docs/security/',
+  '/docs/support/',
   '/support/',
-  '/data/tiers.json',
   '/data/compatibility.json',
 ] as const;
 

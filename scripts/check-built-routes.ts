@@ -15,9 +15,9 @@ const requiredOutputs = [
   'docs/testers-guide/index.html',
   'docs/user-guide/index.html',
   'docs/why-stagehand/index.html',
+  'docs/support/index.html',
   'downloads/index.html',
   'support/index.html',
-  'data/tiers.json',
   'data/compatibility.json',
   '404.html',
 ] as const;

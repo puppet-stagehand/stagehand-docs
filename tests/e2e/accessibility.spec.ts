@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 const auditedRoutes = [
   '/',
   '/features/',
-  '/tiers/',
+  '/docs/support/',
   '/compatibility/',
   '/docs/',
   '/docs/first-run/',

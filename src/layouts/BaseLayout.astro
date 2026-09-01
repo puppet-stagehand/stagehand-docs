@@ -33,6 +33,7 @@ const documentTitle = title === 'Puppet Stagehand' ? title : `${title} | Puppet 
     <meta name="theme-color" content="#00003a" />
     <link rel="canonical" href={canonicalUrl} />
     <title>{documentTitle}</title>
+    <slot name="head" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>

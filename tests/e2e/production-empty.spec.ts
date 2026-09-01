@@ -16,7 +16,7 @@ test("reflects the real production register's empty-or-populated state", async (
     ).toBeVisible();
     await expect(page.getByRole('link', { name: 'contact support' })).toHaveAttribute(
       'href',
-      '/support/',
+      '/docs/support/',
     );
     await expect(page.locator('[data-compatibility-matrix]')).toHaveCount(0);
   } else {

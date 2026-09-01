@@ -53,6 +53,7 @@ aws cloudfront create-invalidation \
   '/docs/testers-guide/index.html' \
   '/docs/user-guide/index.html' \
   '/docs/why-stagehand/index.html' \
+  '/docs/support/index.html' \
   '/downloads/index.html' \
   '/support/index.html' \
   '/404.html' \

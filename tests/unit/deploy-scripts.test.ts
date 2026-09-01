@@ -102,7 +102,7 @@ esac
     expect(readFileSync(log, 'utf8').trim().split('\n')).toEqual([
       's3 sync dist/assets s3://stagehand-content-test/assets --cache-control public,max-age=31536000,immutable --delete',
       's3 sync dist s3://stagehand-content-test --exclude assets/* --cache-control public,max-age=0,must-revalidate --delete',
-      'cloudfront create-invalidation --distribution-id EDIST123 --paths /index.html /features/index.html /tiers/index.html /compatibility/index.html /docs/index.html /docs/getting-started/index.html /docs/security/index.html /docs/first-run/index.html /docs/installer-registry-distribution/index.html /docs/installer-support/index.html /docs/testers-guide/index.html /docs/user-guide/index.html /docs/why-stagehand/index.html /downloads/index.html /support/index.html /404.html /deployed-commit.txt /data/*',
+      'cloudfront create-invalidation --distribution-id EDIST123 --paths /index.html /features/index.html /tiers/index.html /compatibility/index.html /docs/index.html /docs/getting-started/index.html /docs/security/index.html /docs/first-run/index.html /docs/installer-registry-distribution/index.html /docs/installer-support/index.html /docs/testers-guide/index.html /docs/user-guide/index.html /docs/why-stagehand/index.html /docs/support/index.html /downloads/index.html /support/index.html /404.html /deployed-commit.txt /data/*',
     ]);
   });
 

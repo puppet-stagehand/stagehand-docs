@@ -1,0 +1,38 @@
+---
+// A retired page's replacement: a 0-second meta-refresh (works with no JavaScript, unlike a
+// client-side redirect, and this static site has no CloudFront-level redirect map to do it at the
+// HTTP layer instead) plus a visible fallback link for the rare browser that ignores meta-refresh.
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Props {
+  title: string;
+  to: string;
+  linkText: string;
+  canonicalPath: string;
+}
+
+const { title, to, linkText, canonicalPath } = Astro.props;
+---
+
+<BaseLayout
+  title={title}
+  description={`This page has moved to ${to}.`}
+  canonicalPath={canonicalPath}
+>
+  <Fragment slot="head">
+    <meta http-equiv="refresh" content={`0; url=${to}`} />
+  </Fragment>
+  <section class="not-found">
+    <div class="container not-found__grid">
+      <p class="not-found__code" aria-hidden="true">→</p>
+      <div>
+        <p class="section-kicker">PAGE MOVED</p>
+        <h1>{title}</h1>
+        <p>This page has moved. You should be redirected automatically.</p>
+        <div class="not-found__actions">
+          <a class="btn btn-primary" href={to}>{linkText}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
