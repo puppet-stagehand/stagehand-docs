@@ -138,12 +138,12 @@ Compose stack," the honest answer is "go check the running container,
 because nothing wrote it down." Each install mode handles this differently
 today, and three of the four don't handle it at all:
 
-| Mode       | What's recorded today                                                                        |
-| ---------- | -------------------------------------------------------------------------------------------- |
+| Mode       | What's recorded today                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------- |
 | Compose    | Only generated passwords/secrets (`secrets.json`); nothing about what was built or deployed |
 | Helm       | Nothing; relies entirely on Helm's own internal bookkeeping                                 |
-| All-in-one | Nothing                                                                                      |
-| Multi-VM   | Nothing                                                                                      |
+| All-in-one | Nothing                                                                                     |
+| Multi-VM   | Nothing                                                                                     |
 
 The fix is a small, shared record (one JSON file per install), written
 right after each mode finishes successfully. It's not a secret file (it

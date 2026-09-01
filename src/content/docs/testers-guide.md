@@ -73,8 +73,8 @@ as a read-only deploy key, and confirm **Fetch** succeeds and shows classes and 
 | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Open the Deployments tab's environment dropdown after attaching a control repository with multiple branches | Every branch on the repository is listed, defaulting to the repository's configured default branch when it's among them, with no free-text entry allowed |
 | No control repository attached                                                                              | Deploy now is disabled with an explanation that a control repository must be attached first; no dropdown is shown                                        |
-| Run **Deploy now** against an environment                                                                   | That environment's row in the Environments list updates in place (no page reload) with a passed/failed status, a timestamp, and the actor who ran it   |
-| Open an environment that has never been deployed through the console                                        | Its row shows the branch's short commit SHA and "Never deployed from this console", no fabricated date or status                                        |
+| Run **Deploy now** against an environment                                                                   | That environment's row in the Environments list updates in place (no page reload) with a passed/failed status, a timestamp, and the actor who ran it     |
+| Open an environment that has never been deployed through the console                                        | Its row shows the branch's short commit SHA and "Never deployed from this console", no fabricated date or status                                         |
 | The environment list or branch list fails to load (host unreachable, an authentication problem)             | A clear error explains the failure and includes a way to retry, without breaking the rest of the page                                                    |
 
 ### Scoped Task and Plan Launcher
@@ -120,9 +120,9 @@ rather than silently overwritten.
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Save a draft whose first targeted step points at a real target, then click Dry run | The button shows a running state and disables; results fill in per-step with success/failed rows and full output behind a disclosure; no target machine is actually changed     |
 | As a Global Administrator, click Publish on a saved draft attached to a repository | A confirmation dialog opens with a prefilled branch and commit message; confirming shows a success message with a link, and the branch really exists on the attached repository |
-| Attempt the same publish while unauthenticated or as a non-administrator           | The server rejects the publish; the dialog stays open with the reason, never a silent success                                                                                  |
+| Attempt the same publish while unauthenticated or as a non-administrator           | The server rejects the publish; the dialog stays open with the reason, never a silent success                                                                                   |
 | Make several canvas edits, then Undo and Redo                                      | Each Undo restores the prior step list one edit at a time; Redo re-applies them in order; both buttons disable at the ends of the history                                       |
-| Reload the page mid-edit                                                           | Undo/Redo history starts fresh; history is in-session only, and the saved draft itself is untouched                                                                            |
+| Reload the page mid-edit                                                           | Undo/Redo history starts fresh; history is in-session only, and the saved draft itself is untouched                                                                             |
 
 ### Command Palette
 
@@ -177,7 +177,7 @@ is expected, since the private half of a generated pair never leaves the console
 | Open **Settings → SBOM**                                   | Version, channel, commit, and a non-zero component count render                                               |
 | Open the Components table                                  | Every dependency is listed with name, version, and license; a filter box narrows by name or license substring |
 | Click "Download App SBOM"                                  | A CycloneDX JSON file downloads immediately, served directly from the running binary                          |
-| No self-update manifest is configured, or it's unreachable | "Download Full Container SBOM" renders disabled with an explanatory note, no error banner, no broken link    |
+| No self-update manifest is configured, or it's unreachable | "Download Full Container SBOM" renders disabled with an explanatory note, no error banner, no broken link     |
 
 ### Guided Hierascope and EYAML Walkthrough
 
