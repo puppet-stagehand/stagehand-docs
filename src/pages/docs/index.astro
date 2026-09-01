@@ -1,11 +1,29 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import BrandTriangles from '../../components/BrandTriangles.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const entries = (await getCollection('docs')).sort(
-  (left, right) => left.data.order - right.data.order,
-);
+type Category = NonNullable<CollectionEntry<'docs'>['data']['category']>;
+
+// why-stagehand.md has no category (it's promoted to the top nav instead), so it's the one entry
+// this filters out of the register below.
+const entries = (await getCollection('docs'))
+  .filter((entry) => entry.data.category !== undefined)
+  .sort((left, right) => left.data.order - right.data.order);
+
+const categoryLabels: Record<Category, string> = {
+  installing: 'Installing Stagehand',
+  guide: "User's Guide",
+  support: 'Support & Troubleshooting',
+};
+const categoryOrder: Category[] = ['installing', 'guide', 'support'];
+const sections = categoryOrder
+  .map((category) => ({
+    category,
+    label: categoryLabels[category],
+    entries: entries.filter((entry) => entry.data.category === category),
+  }))
+  .filter((section) => section.entries.length > 0);
 ---
 
 <BaseLayout
@@ -35,26 +53,31 @@ const entries = (await getCollection('docs')).sort(
         <p class="section-kicker">GUIDE REGISTER</p>
         <h2 id="guide-list-title">Start with the Operating Boundary.</h2>
       </div>
-      <ol class="docs-index__list">
-        {
-          entries.map((entry) => (
-            <li>
-              <a href={`/docs/${entry.id}/`}>
-                <span class="docs-index__order" aria-hidden="true">
-                  {entry.data.order.toString().padStart(2, '0')}
-                </span>
-                <span>
-                  <strong>{entry.data.title}</strong>
-                  <span>{entry.data.description}</span>
-                </span>
-                <span class="docs-index__arrow" aria-hidden="true">
-                  →
-                </span>
-              </a>
-            </li>
-          ))
-        }
-      </ol>
+      {
+        sections.map((section) => (
+          <div class="docs-index__section">
+            <h3 id={`docs-index-${section.category}`}>{section.label}</h3>
+            <ol class="docs-index__list" aria-labelledby={`docs-index-${section.category}`}>
+              {section.entries.map((entry) => (
+                <li>
+                  <a href={`/docs/${entry.id}/`}>
+                    <span class="docs-index__order" aria-hidden="true">
+                      {entry.data.order.toString().padStart(2, '0')}
+                    </span>
+                    <span>
+                      <strong>{entry.data.title}</strong>
+                      <span>{entry.data.description}</span>
+                    </span>
+                    <span class="docs-index__arrow" aria-hidden="true">
+                      →
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))
+      }
     </div>
   </section>
 </BaseLayout>

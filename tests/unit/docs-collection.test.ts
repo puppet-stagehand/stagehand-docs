@@ -39,6 +39,7 @@ describe('docs collection source', () => {
       'installer-registry-distribution',
       'installer-support',
       'security',
+      'support',
       'testers-guide',
       'user-guide',
       'why-stagehand',

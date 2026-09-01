@@ -2,6 +2,7 @@
 title: Security and Trust Boundaries
 description: Understand credential ownership, transport verification, entitlement boundaries, and safe reporting.
 order: 2
+category: installing
 ---
 
 ## Credential Ownership

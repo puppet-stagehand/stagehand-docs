@@ -2,6 +2,7 @@
 title: 'Installer Support & Troubleshooting'
 description: Symptom-to-fix guidance for troubleshooting a Puppet Installer install, upgrade, or credential problem.
 order: 7
+category: support
 updated: 2026-08-31
 ---
 

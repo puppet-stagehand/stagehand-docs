@@ -6,25 +6,46 @@ interface Props {
   currentSlug: string;
 }
 
+type Category = NonNullable<CollectionEntry<'docs'>['data']['category']>;
+
 const { entries, currentSlug } = Astro.props;
-const orderedEntries = [...entries].sort((left, right) => left.data.order - right.data.order);
+
+const categoryLabels: Record<Category, string> = {
+  installing: 'Installing Stagehand',
+  guide: "User's Guide",
+  support: 'Support & Troubleshooting',
+};
+const categoryOrder: Category[] = ['installing', 'guide', 'support'];
+const sortedEntries = [...entries].sort((left, right) => left.data.order - right.data.order);
+const sections = categoryOrder
+  .map((category) => ({
+    category,
+    label: categoryLabels[category],
+    entries: sortedEntries.filter((entry) => entry.data.category === category),
+  }))
+  .filter((section) => section.entries.length > 0);
 ---
 
 <nav class="docs-nav" aria-label="Documentation navigation">
   <p class="docs-nav__label">Documentation</p>
-  <ol>
-    {
-      orderedEntries.map((entry) => (
-        <li>
-          <a
-            href={`/docs/${entry.id}/`}
-            aria-current={entry.id === currentSlug ? 'page' : undefined}
-          >
-            <span aria-hidden="true">{entry.data.order.toString().padStart(2, '0')}</span>
-            {entry.data.title}
-          </a>
-        </li>
-      ))
-    }
-  </ol>
+  {
+    sections.map((section) => (
+      <div class="docs-nav__section">
+        <p class="docs-nav__section-label">{section.label}</p>
+        <ol>
+          {section.entries.map((entry) => (
+            <li>
+              <a
+                href={`/docs/${entry.id}/`}
+                aria-current={entry.id === currentSlug ? 'page' : undefined}
+              >
+                <span aria-hidden="true">{entry.data.order.toString().padStart(2, '0')}</span>
+                {entry.data.title}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    ))
+  }
 </nav>

@@ -2,6 +2,7 @@
 title: Running Stagehand for the First Time
 description: Confirm connectivity, run a read-only first pass, and know what a successful first run looks like before you rely on the output.
 order: 3
+category: installing
 updated: 2026-08-26
 ---
 

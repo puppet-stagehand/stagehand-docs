@@ -2,6 +2,7 @@
 title: "Puppet Stagehand, User's Guide"
 description: A plain-English walkthrough of every screen in the Puppet Stagehand console, for readers who have never used Puppet before.
 order: 5
+category: guide
 updated: 2026-08-31
 ---
 

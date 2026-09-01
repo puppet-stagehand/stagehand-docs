@@ -10,19 +10,25 @@ interface Props {
 }
 
 export async function getStaticPaths() {
-  const entries = (await getCollection('docs')).sort(
+  const allEntries = (await getCollection('docs')).sort(
     (left, right) => left.data.order - right.data.order,
   );
+  // why-stagehand.md has no category (promoted to the top nav instead), so it's excluded from the
+  // sidebar and from prev/next pagination; it still gets its own static page below.
+  const navEntries = allEntries.filter((entry) => entry.data.category !== undefined);
 
-  return entries.map((entry, index) => ({
-    params: { slug: entry.id },
-    props: {
-      entry,
-      entries,
-      previous: entries[index - 1],
-      next: entries[index + 1],
-    },
-  }));
+  return allEntries.map((entry) => {
+    const navIndex = navEntries.findIndex((navEntry) => navEntry.id === entry.id);
+    return {
+      params: { slug: entry.id },
+      props: {
+        entry,
+        entries: navEntries,
+        previous: navIndex >= 0 ? navEntries[navIndex - 1] : undefined,
+        next: navIndex >= 0 ? navEntries[navIndex + 1] : undefined,
+      },
+    };
+  });
 }
 
 const { entry, entries, previous, next } = Astro.props;

@@ -1,7 +1,8 @@
 ---
 title: 'Registry-Hosted Container Distribution'
 description: How Compose and Helm installs get pre-built Puppet Core images instead of building them locally, and what record is kept of what got deployed.
-order: 6
+order: 4
+category: installing
 updated: 2026-08-31
 ---
 

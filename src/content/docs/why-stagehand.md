@@ -1,7 +1,7 @@
 ---
 title: Why We Built Stagehand
 description: The six problems Stagehand exists to solve, from a fast install to proving Puppet's value to leadership, and why version compatibility mattered enough to build a public register for it.
-order: 8
+order: 9
 ---
 
 Puppet automation solves real problems, but running it well has usually meant weeks of reading before you touch a target, a dashboard that only shows what you already knew to look for, and no good answer when leadership asks what the automation actually bought you. None of that is a Puppet problem specifically. It is what happens when a powerful tool ships without an operating layer on top of it. Stagehand is that layer. Six goals shaped what we built, and why.

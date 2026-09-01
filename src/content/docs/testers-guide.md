@@ -1,7 +1,8 @@
 ---
 title: "Tester's Guide"
 description: How to verify a deployed Stagehand console behaves as documented, and where to report what you find.
-order: 4
+order: 6
+category: support
 updated: 2026-08-27
 visibleOn: ['testpilots', 'beta']
 ---

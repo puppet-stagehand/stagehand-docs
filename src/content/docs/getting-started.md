@@ -2,6 +2,7 @@
 title: Getting Started
 description: Prepare a Puppet Core environment and understand the current Stagehand execution boundary.
 order: 1
+category: installing
 updated: 2026-08-22
 ---
 
