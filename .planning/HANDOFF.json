@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-09-01T00:43:06.386Z",
+  "phase": "04.1",
+  "phase_name": "gated-tester-access",
+  "phase_dir": ".planning/phases/04.1-gated-tester-access",
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "04.2-04", "name": "CR-01 gap closure (loadDownloads never throws)", "status": "done", "commit": "8e74a43"},
+    {"id": "04.2-WR-01", "name": "Scan <noscript> links in built-link checker", "status": "done", "commit": "f2b1c58"},
+    {"id": "04.2-WR-02", "name": "E2E spec for DownloadsChannelVisibility DOM reveal", "status": "done", "commit": "6d184ba"},
+    {"id": "04.2-verify", "name": "Re-verify phase 04.2, human UAT read", "status": "done", "commit": "4582e9b + 48424ac"},
+    {"id": "05-10", "name": "Promote newer SHA to beta (rollback setup)", "status": "done", "commit": "ed1e097"},
+    {"id": "05-11", "name": "Prove rollback end to end (LAUN-05)", "status": "done", "commit": "defdc04"},
+    {"id": "04.1-auth-06", "name": "Correct and waive AUTH-06 blocker framing", "status": "done", "commit": "8fb17c6"}
+  ],
+  "remaining_tasks": [
+    {"id": "04.1-uat-test-1", "name": "AUTH-06 live cross-environment proof", "status": "blocked_external", "note": "Genuinely blocked, not resumable this session — needs the maintainer to remove enable_basic_auth as part of a real future public launch, whenever that is."}
+  ],
+  "blockers": [
+    {"description": "WINDOWS entry 3: downloads.ts live verification is fixture-only — puppet-stagehand/stagehand-release exists but has zero published releases", "type": "external", "workaround": "none — waiting on cross-repo release workflow to actually publish"},
+    {"description": "WINDOWS entry 4: GitHub Actions BASIC_AUTH_USERNAME/PASSWORD secrets (testpilots/beta/stable) appear stale relative to the real deployed credential", "type": "human_action", "workaround": "maintainer needs to refresh the three environment secrets with a confirmed-correct current value"},
+    {"description": "Vendored-modules page todo cannot be built yet", "type": "external", "workaround": "waiting on stagehand-stagehand publishing to the Forge"}
+  ],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Refresh BASIC_AUTH_USERNAME/PASSWORD GitHub environment secrets (all three environments) with the current real credential", "context": "WINDOWS.md entry 4 — CI's own smoke-test step and any in-CI check-live-deployment.ts run will keep failing until this is done; does not block actual deployments", "blocking": false},
+    {"action": "Remove enable_basic_auth when actually ready for public launch", "context": "Intentional per the maintainer's own release sequencing (confirmed 2026-08-31) — not something to do automatically. Re-run 04.1's AUTH-06 UAT test once this happens.", "blocking": false}
+  ],
+  "decisions": [
+    {"decision": "Moved the writing-style guide out of root CLAUDE.md into a project skill (skills/docs-style/)", "rationale": "Was loading into every session's context including pure code work; only needed for doc-writing sessions", "phase": null},
+    {"decision": "Homepage H1 set to 'Manage Puppet Environments With Less Complexity.'", "rationale": "Survived independent critique from both Opus and Fable after several rounds of tagline iteration", "phase": null},
+    {"decision": "Hero rail and new /features/ page show real product screenshots (seeded synthetic demo data) instead of jargon-only labels", "rationale": "User flagged the prior CONTROL MODE/EXECUTION labels as meaningless per docs-style; real UI proof is stronger and more honest", "phase": null},
+    {"decision": "AUTH-06's blocker reclassified from 'Phase 5 dependency' to 'intentional pre-launch state, waived'", "rationale": "Maintainer confirmed the whole-site basic-auth lockdown stays up deliberately until the rest of the release ships — Phase 5 completing never implied it would come down", "phase": "04.1"},
+    {"decision": "Did not attempt to fix the stale CI basic-auth secrets directly", "rationale": "Overwriting a CI/CD secret needs a maintainer-confirmed correct value, not an assumption", "phase": "05"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "No forced next step — all work this session is committed and pushed, and nothing is mid-task. If continuing GSD-tracked work, /gsd-progress will route based on 04.1's UAT (test 1 stays intentionally blocked/waived, not something to re-test now). Otherwise the homepage/Features work (untracked against REQUIREMENTS.md) could be formalized if it needs to survive a future audit — see .planning/notes/homepage-marketing-refresh.md.",
+  "context_notes": "This was a long, wide-ranging session: closed out Phase 04.2's last gap plus two code-review findings, did a lot of ad hoc homepage copy/design iteration (tagline, hero, new Features page, real console screenshots from a seeded demo stack), then executed Phase 5's final two plans (05-10/05-11) including discovering and pushing 54 unpushed commits, and finally corrected a stale assumption about phase 04.1's AUTH-06 blocker. Nothing is left half-done — every thread that could be closed was closed and committed. The only genuinely open items are external (waiting on a future Forge release, a future public-launch decision, and a maintainer credential refresh)."
+}
