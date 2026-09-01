@@ -16,6 +16,12 @@ mock_provider "aws" {
       arn = "arn:aws:s3:::stagehand-beta-site-test"
     }
   }
+
+  mock_resource "aws_cloudfront_key_value_store" {
+    defaults = {
+      arn = "arn:aws:cloudfront::123456789012:key-value-store/stagehand-beta-tester-gate"
+    }
+  }
 }
 
 mock_provider "aws" {
