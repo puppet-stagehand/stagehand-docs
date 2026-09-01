@@ -3,7 +3,7 @@ title: "Tester's Guide"
 description: How to verify a deployed Stagehand console behaves as documented, and where to report what you find.
 order: 6
 category: support
-updated: 2026-08-27
+updated: 2026-09-01
 visibleOn: ['testpilots', 'beta']
 ---
 
@@ -11,10 +11,13 @@ visibleOn: ['testpilots', 'beta']
 
 This guide is for anyone verifying that a _deployed_ Stagehand console actually does what it
 claims: someone testing a release, walking through a UAT pass, or exploring the product before
-sign-off. It assumes you already have a running console (installed via the Puppet Installer, or an
-existing instance someone gave you access to) and the shared password the Stagehand team gave you
-to reach this site. It does not assume a source checkout, a build toolchain, or any development
-environment; every step below happens in the browser, against the console's own UI.
+sign-off. It pairs with the [User's Guide](/docs/user-guide/) (what a feature _is_, in plain
+language); this guide is _how you prove it works_, walking through the running console itself.
+
+It assumes you already have a running console (installed via the Puppet Installer, or an existing
+instance someone gave you access to) and the shared password the Stagehand team gave you to reach
+this site. It does not assume a source checkout, a build toolchain, or any development environment;
+every step below happens in the browser, against the console's own UI.
 
 If you find something that doesn't match what's described here, see
 [Reporting What You Find](#reporting-what-you-find) below.
@@ -34,9 +37,11 @@ The shipped 1.0 release runs a fixed capability profile. Supported today:
 
 Deferred to a later release, and not reachable in a shipped 1.0 build no matter how you navigate:
 multi-user RBAC/teams, an approvals workflow, customer-facing Data Management (the Puppet Data
-Service / Hiera hierarchy editor), the ENC discovery/import wizard, and console self-update. If you
-land on a route for one of these and it behaves as unavailable rather than throwing an error, that
-is expected; it is not a bug to report.
+Service / Hiera hierarchy editor), the ENC discovery/import wizard, console self-update, and
+switching between patching providers (Patchbot is the only one shipped; see
+[Patchbot-Only Patching Boundary](#patchbot-only-patching-boundary) below). If you land on a route
+for one of these and it behaves as unavailable rather than throwing an error, that is expected; it
+is not a bug to report.
 
 ## Manual Test Scenarios
 
@@ -56,9 +61,10 @@ Bolt isn't configured, replaces the button with an explanatory note instead of f
 With at least one node reporting, click **Heatmap** next to **Summary**. Confirm the grid shows one
 row per node and one column per benchmark, each cell showing a glyph and color (never color alone)
 for that pair's worst status, with a visibly distinct glyph for any node/benchmark pair that hasn't
-been scanned yet. Click a cell and confirm the drilldown opens filtered to just that node and that
-one benchmark. Click **Summary** again and confirm the original dashboard (charts, table,
-pagination) renders unchanged.
+been scanned yet. A node with at least one failing control among passes shows a fail glyph for that
+cell, not an average or majority vote. Click a cell and confirm the drilldown opens filtered to just
+that node and that one benchmark. Click **Summary** again and confirm the original dashboard
+(charts, table, pagination) renders unchanged.
 
 This is also where to verify Bolt vulnerability scans specifically: the Inspector, and any other
 configured scanner, should appear as a selectable option in the Run compliance check wizard above.
@@ -75,8 +81,37 @@ as a read-only deploy key, and confirm **Fetch** succeeds and shows classes and 
 | Open the Deployments tab's environment dropdown after attaching a control repository with multiple branches | Every branch on the repository is listed, defaulting to the repository's configured default branch when it's among them, with no free-text entry allowed |
 | No control repository attached                                                                              | Deploy now is disabled with an explanation that a control repository must be attached first; no dropdown is shown                                        |
 | Run **Deploy now** against an environment                                                                   | That environment's row in the Environments list updates in place (no page reload) with a passed/failed status, a timestamp, and the actor who ran it     |
-| Open an environment that has never been deployed through the console                                        | Its row shows the branch's short commit SHA and "Never deployed from this console", no fabricated date or status                                         |
+| Open an environment that has never been deployed through the console                                        | Its row shows the branch's short commit SHA and "Never deployed from this console," no fabricated date or status                                         |
 | The environment list or branch list fails to load (host unreachable, an authentication problem)             | A clear error explains the failure and includes a way to retry, without breaking the rest of the page                                                    |
+
+**Setting up a control repository from scratch**, walking the attach drawer: after attaching, the
+setup drawer auto-detects whether this is a new or existing r10k setup, reports readiness, and walks
+through credential and branch steps without deploying anything; **Deploy now** stays a separate,
+later action. If the primary host you're setting up genuinely lacks an SSH server, the drawer's
+managed remediation reports its real progress or error and can be retried without restarting the
+wizard.
+
+Under **Git Credentials**, host-default and specific-repository entries both show their name and
+scope but never secret material, and a specific-repository credential wins for its own URL over a
+host-default one. Revoking a credential mid-clone stops only the operation using that credential;
+other operations using a different credential continue, and the revoked key or token never appears
+in any response, run output, or the Activity Log. Importing an existing deploy key found on the
+primary host is read-only until you explicitly confirm the import; the consent dialog only opens
+after you click **Review**, with neither choice preselected.
+
+If the control repository has Git-sourced Puppetfile modules on other hosts, each external module
+appears in the Runner/Designer Palette as an auto-discovered row naming its parent control
+repository, and a missing credential for one module produces a clear error on just that module while
+the others still scan and deploy normally.
+
+The **Puppetfile → Forge cross-check** on the Repositories tab compares each pinned module's version
+against what the Puppet Forge has published, when a Forge API key is configured under
+**Settings → Packages**. With no key configured, every row shows an honest **? unknown** pill and a
+note that no key is set, never a false "current." With a key configured, a module with a newer
+published release shows an **↻ update available** pill with the newer version number, and a
+deprecated module shows a distinct **✕ deprecated** pill; hovering either pill explains why, and
+what (if anything) replaces it. Modules pinned by git reference or left unpinned always show `—`
+with no pill, since there's nothing on the Forge to compare against.
 
 ### Scoped Task and Plan Launcher
 
@@ -95,12 +130,13 @@ confirm every resource shows as gray "Unreported" rather than a false "clean" st
 
 ### Node Detail, Activity, Classes, and Configuration Coverage
 
-| Scenario                                                                                      | Expected result                                                                                                                                                                                                            |
-| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Open a node's detail page                                                                     | Overview, Activity, and Classes tabs render, with Overview selected by default and showing a line for how many classes are applied that switches to the Classes tab in place                                               |
-| Open the Activity tab on a node with mixed history (audit entries, Bolt runs, Puppet reports) | A single time-ordered table renders all three kinds together; toggling a kind filter hides that kind's rows (at least one filter always stays on); clicking a row deep-links to the underlying run, report, or audit entry |
-| Open the Classes tab on a node with classes from more than one source                         | Each class shows a source/mismatch indicator: in sync, not yet applied, or catalog only                                                                                                                                    |
-| Open Configuration Coverage (under Reporting)                                                 | Three sections render: most-applied classes (ranked), declared-but-unused classes, and unclassified nodes; clicking a row opens its own drilldown listing the matching nodes                                               |
+| Scenario                                                                                      | Expected result                                                                                                                                                                                                                                                                     |
+| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Open a node's detail page                                                                     | Overview, Activity, and Classes tabs render, with Overview selected by default and showing a line for how many classes are applied that switches to the Classes tab in place                                                                                                        |
+| Open the Activity tab on a node with mixed history (audit entries, Bolt runs, Puppet reports) | A single time-ordered table renders all three kinds together; toggling a kind filter hides that kind's rows (at least one filter always stays on); clicking a row deep-links to the underlying run, report, or audit entry                                                          |
+| Open the Activity tab on a node with an orphaned or stale Bolt run                            | That row's outcome badge reads "unreported" (glyph plus label), never "running" or a fabricated failure                                                                                                                                                                             |
+| Open the Classes tab on a node with classes from more than one source                         | Each class shows a source/mismatch indicator: in sync, not yet applied, or catalog only                                                                                                                                                                                             |
+| Open Configuration Coverage (under Reporting)                                                 | Five summary cards render above the existing ranked sections (Environments, Classes in use, Declared but unused, Unclassified nodes, and Modules when a control repository is attached); clicking a card or a ranked row opens its own drilldown or scrolls to the matching section |
 
 ### Visual Bolt Designer
 
@@ -151,25 +187,29 @@ Open **Configuration → Data Management**, then the **Create Secret** tab. With
 saved, the "Encrypt a value" controls are disabled with a message pointing at "Manage keys." Switch
 to Manage keys and generate a real key pair, watching your browser's network tab; the create
 request and response should never contain the private key or PEM material, only the public key and
-metadata. Uploading an existing key pair should be accepted after the console self-validates that
-its public and private halves match. Use the "encrypt a value" helper and confirm the resulting
-ciphertext renders once with a copy affordance, and that reopening the form clears both the
-plaintext and ciphertext fields.
+metadata. A generated key pair's private half never leaves the console, so an inline warning
+explains that Puppet can't decrypt anything encrypted under it unless a matching key pair is
+separately installed on Puppet's own infrastructure. Uploading an existing key pair should be
+accepted after the console self-validates that its public and private halves match. Use the
+"encrypt a value" helper and confirm the resulting ciphertext renders once with a copy affordance,
+and that reopening the form clears both the plaintext and ciphertext fields.
 
 If you have a live Puppet Server with the matching decryption tooling configured, pasting a value
-encrypted under a generated key pair into a real Hiera file should decrypt correctly at catalog
+encrypted under an uploaded key pair into a real Hiera file should decrypt correctly at catalog
 compile time; decryption failing for a value encrypted under a generated (not uploaded) key pair
 is expected, since the private half of a generated pair never leaves the console.
 
 ### Estate Viewer
 
-| Scenario                                                                          | Expected result                                                                                                                                 |
-| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Register a second instance through Estate Viewer's "Add instance" wizard          | The confirm step stays unreachable until a connection test succeeds; a failed test shows a specific reason, never a generic "failed"            |
-| Switch the active-instance selector to the new instance                           | Other pages now show that instance's data; Estate Viewer's own "Showing" filter is unaffected by the switch                                     |
-| Point a registered instance at an unreachable host, then wait out a poll interval | That instance shows an honest "unreported" state, never a fabricated zero, and is never dropped from the total                                  |
-| Edit an instance's name, product type, or console URL                             | The row updates in place; leaving the console URL blank means no "Open console" link renders; entering a non-`http(s)` value is rejected inline |
-| Delete the currently active instance                                              | The deletion is refused with guidance to switch the active instance first                                                                       |
+| Scenario                                                                          | Expected result                                                                                                                                                                                                                                                                                                            |
+| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Register a second instance through Estate Viewer's "Add instance" wizard          | The confirm step stays unreachable until a connection test succeeds; a failed test shows a specific reason, never a generic "failed"                                                                                                                                                                                       |
+| Switch the active-instance selector to the new instance                           | Other pages now show that instance's data; Estate Viewer's own "Showing" filter is unaffected by the switch                                                                                                                                                                                                                |
+| Point a registered instance at an unreachable host, then wait out a poll interval | That instance shows an honest "unreported" state, never a fabricated zero, and is never dropped from the total                                                                                                                                                                                                             |
+| Edit an instance's name, product type, or console URL                             | The row updates in place; leaving the console URL blank means no "Open console" link renders; entering a non-`http(s)` value (for example, a `javascript:` URL) is rejected inline, both when saving and when the row renders                                                                                              |
+| Delete the currently active instance                                              | The deletion is refused with guidance to switch the active instance first                                                                                                                                                                                                                                                  |
+| Any instance row, any product edition                                             | A "Support options" link always appears, pointing at that edition's real support page (Puppet Core or Enterprise lifecycle pages, or Vox Pupuli's OpenVox page); Core and Enterprise rows also show a lifecycle status ("Supported," with published end-of-support and end-of-life dates); OpenVox rows show "Unsupported" |
+| Open Settings → Connections with more than one instance registered                | The Instances card shows the currently active instance's own name and connections; other registered instances are listed separately, each editable without switching to them first                                                                                                                                         |
 
 ### Console SBOM
 
@@ -215,6 +255,42 @@ only renders this way when its name is left as the tool's default; a custom-name
 currently recognized as a playbook step and renders as a generic task row instead; this is expected
 today, not a bug.
 
+### Account Security
+
+Open **Settings → Account security** and confirm you can change the signed-in account's password.
+This is the only self-service password-change surface in the console today. Two things are worth
+verifying deliberately, since neither is obvious from clicking around casually:
+
+- **You stay signed in on the browser where you changed it.** After a successful password change,
+  the current browser session keeps working; a page you navigate to right after should load
+  normally, not bounce you to the sign-in page.
+- **Every other session is signed out.** If you're signed in as the same account in a second
+  browser (or a private window), the next action taken there lands on the sign-in page, and only
+  the new password works there afterward.
+
+### HTTPS and TLS
+
+Open **Configuration → HTTPS / TLS**. On a fresh install with no TLS configured, the console serves
+plain HTTP and the page shows no "configured" state. Generate a self-signed certificate, restart the
+console, and confirm it now serves HTTPS on its configured address, with the old plain-HTTP port
+issuing a redirect instead of serving the app directly. A browser hitting the HTTPS URL will show
+the expected self-signed-certificate warning; that's inherent to self-signed certificates, not a
+console defect, and goes away once a certificate from a real certificate authority is uploaded.
+Uploading an invalid or non-PEM value as the certificate or key should be rejected with a clear
+error and change nothing. As a certificate's expiration approaches, the Action Center shows a
+warning card inside 30 days and a critical card once it has actually expired, both linking back to
+this settings page.
+
+### Puppet Component Versions
+
+Open **Settings → Packages & Forge** with a working PuppetDB connection. A "Puppet component
+versions" table lists the exact `puppet-agent` version strings reported across your fleet, each
+with its node count. Puppet Server and PuppetDB both show an honest **? not available** in this
+table (hover for why) rather than a guessed version, since the console has no installed-version
+source for either today; the "Latest (upstream)" column is likewise always **? not available**,
+never a fabricated number, for any of the three components. If no node has reported a Puppet
+version fact yet, the table says so instead of rendering empty.
+
 ### Patchbot-Only Patching Boundary
 
 Patchbot is the only supported patching engine in this release. A deployed console must not expose
@@ -233,5 +309,5 @@ deliberately injected interruption partway through.
 ## Reporting What You Find
 
 If something here doesn't match what you see, or you find a defect while testing, report it via
-[Support](/support/); it explains the difference between the public issue tracker and the private
-advisory channel, and which one to use.
+[Support](/docs/support/); it explains the difference between the public issue tracker and the
+private advisory channel, and which one to use.

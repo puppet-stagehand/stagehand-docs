@@ -3,7 +3,7 @@ title: 'Installer Support & Troubleshooting'
 description: Symptom-to-fix guidance for troubleshooting a Puppet Installer install, upgrade, or credential problem.
 order: 7
 category: support
-updated: 2026-08-31
+updated: 2026-09-01
 ---
 
 Troubleshooting guidance for anyone running `puppet-installer`, installing or
@@ -309,6 +309,17 @@ crash, a silent capability gap. If you see a Puppet class or function "not
 found" that should be part of the standard bundled set, check whether the
 specific installer build you're running actually had modules bundled before
 it was compiled.
+
+### Bundled Console and Hierascope Binaries
+
+Two other components, the Stagehand console itself and the Hierascope
+comparison engine, are bundled straight into the installer binary at build
+time, the same way the Puppet modules above are. Both degrade gracefully if
+a particular build left one out: the dependent feature reports itself
+unavailable instead of crashing the install. If a customer reports a
+console- or Hierascope-dependent feature silently doing nothing rather than
+failing with an error, check whether the specific installer build they're
+running actually bundled that component before it was compiled.
 
 ## Platform-Lock Diagnosis and Controlled Recovery
 

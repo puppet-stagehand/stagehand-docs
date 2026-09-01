@@ -66,6 +66,40 @@ After that, you sign in like any web app. **Stagehand 1.0 has exactly one admini
 
 The very first time _anyone_ signs in to a given installation, they land on the End User License Agreement instead of the dashboard, a full-screen page with the agreement text and an **Accept** button, and nothing else in the console is reachable until it's accepted. This only ever happens once **per installation**, not once per person: as soon as one person accepts it, every sign-in afterward, theirs or anyone else's, skips straight to the dashboard. You can still read the full agreement any time afterward from **Settings → EULA**, though that page is just a reference; there's nothing left to accept there.
 
+### Changing Your Password
+
+You change the administrator password from **Settings**, in the section called **Account security**. That's the whole feature, there's no separate page to hunt for, no wizard, and no "Forgot password?" link anywhere in the console. (If you prefer typing addresses, `/settings#account` opens straight to it.)
+
+The section has four boxes, top to bottom:
+
+- **Signed in as**, read-only. It just shows which account you're about to change; you can't type in it. It's there mainly so your browser's password manager knows which saved entry to _update_, rather than quietly saving a second one and leaving you with two entries and no idea which is current.
+- **Current password**, the password you're using right now. The console asks for it to confirm it's really you doing this, and not someone who wandered up to a screen you left unlocked. Getting it wrong changes nothing.
+- **New password**, what you want it to be from now on. It has to be **at least 12 characters**; longer is better, and a short sentence you'll actually remember beats a short word with a number stuck on the end. There is an upper limit too, but only very long passwords reach it, if you paste in something enormous, the console tells you plainly: "That password is too long, bcrypt accepts at most 72 bytes (fewer than 72 characters if you've used accented or non-Latin letters). Shorten it and try again."
+- **Confirm new password**, type the new one a second time. This box exists purely to catch a typo. Nothing on this screen ever shows you the characters you typed, so without a second copy to compare against, one slipped keystroke would set your password to something you don't know, on the one account that can get back in. If the two don't match you get "These don't match, retype the new password." and nothing is sent anywhere.
+
+Then click **Change password**.
+
+**The single most important thing on this page.** There is no password-reset email, and there is no second administrator account to let you back in. Stagehand 1.0 ships with exactly one administrator, and this screen is the only supported way to change its password. So the new password must be something you can genuinely retrieve later, written into your organization's password manager, or a passphrase you're certain of. If you lose it, nobody in the console can help you; recovering the install means going back to whoever deployed it.
+
+**What happens to your other sign-ins.** When the change succeeds, the console tells you "Password changed. You're still signed in here." and adds that any other browser or device signed in as your account has been signed out. That's deliberate, and it's the whole point: the usual reason to change a password is that you think somebody else might have it. Signing every _other_ session out is how that person stops being signed in. The tab you're sitting in is the one exception, you did the right thing, so you don't get punished with a re-login. Anywhere else, the next click asks for a sign-in, and the new password is what works.
+
+**Attempts that get refused are written down.** Every time this form refuses a password change, because the current password was wrong, or because the new one was something the console won't accept, it writes a line to the console's **Activity** log, which you'll find at **Reporting → Activity & Runs** on the **Audit** tab. That matters for one specific reason: if somebody who isn't you sits there guessing at the current password, the Activity log is the place those guesses show up, and it's the only place in the console where you'd notice it happening. So if you ever suspect somebody has been poking at this account, that's where to look. Successful changes are recorded there too, so the log shows the whole picture rather than only the bad days.
+
+What is written down is the _event_, never the secret. The password you typed is **never** written to the Activity log, not the old one, not the new one, not a scrambled version of either. A line says what kind of refusal it was, a wrong current password, or which rule the new password broke ("too short," say), and nothing more. Somebody reading the Activity log learns that an attempt was refused; they don't learn anything that would help them make the next attempt.
+
+**If several current-password attempts go wrong in a row.** After five wrong tries the console stops accepting attempts from that browser session for a while, and shows a message headed "Too many incorrect attempts." with "Wait a few minutes before trying again. Your password has not been changed." Nothing is locked, reset, or deleted, you're still signed in, everything else in the console still works, and the only thing that changes is that this one form pauses. Waiting is the entire remedy: the pause clears itself after ten minutes without you doing anything. (The screen deliberately says "a few minutes" rather than naming the exact wait, so nobody has to keep two numbers in step; ten minutes is the value the console actually uses.) The pause applies to the browser you were typing in, not to your account, so it can never be used to lock you out of your own console.
+
+In the Activity log, **the entry to look for is the moment the pause starts**, that is, the fifth and last wrong attempt, which is marked as the one that used up the allowance. The pause itself is deliberately quiet: once it's in force, further attempts are turned away without adding any more entries, so you'll see one line marking the block rather than a long run of identical lines from somebody hammering at a form that has already stopped listening. One block, one entry. If you're scanning the log for signs of guessing, that marked entry is the thing worth finding.
+
+**One unusual outcome worth recognizing.** Very rarely the console reports "Password changed, but other sessions couldn't be signed out." followed by "Your new password is in effect. Signing yourself out won't clear the other sign-ins, that only ends your own. Restarting the console clears them all at once."
+
+Read that carefully, because it is _not_ a failure. Taking it a piece at a time:
+
+- **Your password did change.** The new one is what works from now on, everywhere, including here. Don't try the change again with the old password: the old one is already gone, and retyping it will just be rejected as wrong.
+- **What didn't happen is the tidy-up of the other sign-ins.** Any other browser, phone, or machine that was signed in as your account is _still_ signed in, with the session it already had. That's the part the console couldn't finish.
+- **Signing yourself out does not fix it.** This is the important bit, and it's the opposite of what most people assume. Signing out ends _your_ sign-in, on the screen you're looking at. It does nothing at all to anybody else's. So if the reason you changed the password was that you think someone else has been using the account, signing yourself out leaves them exactly where they were.
+- **What does fix it is restarting the console.** A restart clears every sign-in at once, everywhere, because the console keeps the list of who's signed in only while it's running. So tell whoever runs this console, your operations team, or whoever deployed it, that it needs a restart. Until then, everything else in the console keeps working normally, and your new password is already the one to use.
+
 ---
 
 ## The Main Areas of the Console
@@ -139,6 +173,14 @@ If `File[/etc/nginx/nginx.conf]` (in red) fails, clicking it highlights everythi
 ### Classification
 
 This is where you tell Puppet _what a node should be_. Instead of writing config files by hand, you assign nodes to **groups** (e.g., "web servers," "database servers") through the console UI, and each group carries the settings/roles that get applied. Think of it like tagging, a node's group membership determines its desired state.
+
+### Discovering Classes and Groups From Another Instance: Deferred in Stagehand 1.0
+
+A discovery/import wizard exists in the codebase, reachable from the Classification page in earlier builds via a "Discover from instance" button, that reads what classes/groups are already applied on a registered PE, Core, or OpenVox instance and offers to import that structure into Stagehand instead of retyping it by hand. It is **not part of the supported 1.0 surface**: its screens are hidden and its endpoints answer with a stable "feature not available" response. For 1.0, [Estate Viewer](#estate-viewer) is the only cross-instance surface, it lets you view another instance's registration/health and link out to that instance's own web UI and support options, but it does not classify, discover, or import anything from it. The wizard returns for reassessment in v2.
+
+### Data (Hiera): Deferred in Stagehand 1.0
+
+Puppet separates _what a node's role is_ (classification, above) from _the actual values_ that role needs (a Hiera hierarchy). A visual Data/hierarchy editor exists in the codebase but is **not part of the supported 1.0 surface**, its screens are hidden and its endpoints answer with a stable "feature not available" response. What remains active is invisible plumbing: the Puppet installer reads Hiera data through machine-only service tokens (never a browser session). The editor returns for reassessment in v2.
 
 ### Hierascope Analysis Jobs
 
@@ -692,6 +734,14 @@ This is a **read-only** check: nothing is ever changed or proposed automatically
 
 Puppet nodes authenticate using certificates issued by your Puppet Certificate Authority (CA). This screen lists pending certificate requests (a new node asking to join) and issued certificates, sign a pending request to let that node in, or revoke a certificate to kick a node out. The list pages 25/50/100 at a time, so a large fleet's "signed" filter (effectively every enrolled node) stays fast to browse.
 
+### Self-Update: Deferred in Stagehand 1.0
+
+A full self-update lifecycle exists in the codebase, reachable from Administration → Self-Update in earlier builds, that let a Global Administrator pick an update channel (Test Pilots, Beta, or Stable), see when a newer signed version was available, trigger an update, watch it snapshot the database, apply, restart, and verify live, and automatically roll everything back if the new version failed its post-restart health check. It is **not part of the supported 1.0 surface**: the nav entry, page, and its endpoints are hidden, and the endpoints answer with a stable "feature not available" response.
+
+This is a genuine scope narrowing, not a bug fix or a quality problem with the feature itself, it was built, tested, and worked. Stagehand's console lifecycle is being redesigned around **container deployment** (a Hiera-driven image-tag bump plus a Puppet-module-owned lifecycle, instead of the console updating its own running binary in place), and that redesign needs its own design decision before self-update's replacement ships. Until then, updating a console build stays an operator/installer task outside the console UI. The self-update mechanism, manifest signature verification, downgrade/replay rejection, snapshot-then-apply-then-verify with automatic rollback, remains intact in the codebase for reassessment once the container-deployment redesign lands.
+
+The container-deployment redesign is no longer a future intent, it now exists as an accepted architecture decision in the puppet-console codebase. For a console running as a Docker container, updating means an operator's own infrastructure-as-code applies a Puppet-module-managed container lifecycle: the operator commits a new image reference to their control repo, the same review-and-commit motion as any other configuration change, and Puppet takes it from there. This is still not a console-UI feature, there is no button in the console itself to trigger, watch, or roll back this process.
+
 ### Console SBOM
 
 Reachable from **Settings → SBOM**. This is a **Software Bill of Materials**, a list of every third-party piece of software the console itself is built from, for when your own security or compliance team needs one to evaluate the console as a vendor.
@@ -783,6 +833,10 @@ The console's typeface (the font used for all headings and body text) is
 the console ships, there's no older brand font hiding behind a build flag,
 and no setting to toggle. This keeps the console's look free of any
 font-licensing question.
+
+### Teams, Roles, and Approvals: Deferred in Stagehand 1.0
+
+Stagehand 1.0 is a **single-administrator** console: one local account, created at first-run bootstrap, with an explicit confirmation step in front of every privileged action and every action recorded in the Activity Log. The full multi-user model, teams, four roles, and second-person approvals where the requester can never approve their own change, is implemented and preserved in the codebase, but its screens are hidden and its endpoints answer with a stable "feature not available" response in 1.0. It returns for reassessment in v2. Code Management's per-team module repos are deferred for the same reason, they depend on this team model, and plain tracked module repos are deferred alongside them; only the control repo is attachable today (see "Code Management" above).
 
 ### Patchbot Installation and Ownership
 
