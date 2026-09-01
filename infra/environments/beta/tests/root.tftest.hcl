@@ -24,6 +24,12 @@ mock_provider "aws" {
       arn = "arn:aws:iam::123456789012:role/stagehand-beta-site-deploy"
     }
   }
+
+  mock_resource "aws_cloudfront_key_value_store" {
+    defaults = {
+      arn = "arn:aws:cloudfront::123456789012:key-value-store/stagehand-beta-tester-gate"
+    }
+  }
 }
 
 mock_provider "aws" {
@@ -40,6 +46,11 @@ mock_provider "aws" {
 variables {
   hosted_zone_id           = "Z0123456789ABC"
   github_oidc_provider_arn = "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com"
+  # This root hardcodes enable_basic_auth = true, so the module's >=12-character
+  # validation on basic_auth_password applies here too. A test-only placeholder,
+  # never a real credential.
+  basic_auth_username = "test-user"
+  basic_auth_password = "test-dummy-password-12plus"
 }
 
 run "plans_the_beta_site_contract" {
