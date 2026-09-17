@@ -1,14 +1,21 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
 
 interface Props {
   entries: CollectionEntry<'docs'>[];
   currentSlug: string;
+  // Headings for whichever entry is currently open, so its table of contents can render nested
+  // under that entry's own link instead of needing every doc's headings rendered up front.
+  currentHeadings?: MarkdownHeading[];
 }
 
 type Category = CollectionEntry<'docs'>['data']['category'];
 
-const { entries, currentSlug } = Astro.props;
+const { entries, currentSlug, currentHeadings = [] } = Astro.props;
+// depth 4 (the step-by-step "Devices" sub-sections) would triple the list's length for one
+// section; depth 2-3 already gets a reader to every named part of the page.
+const tableOfContents = currentHeadings.filter((heading) => heading.depth <= 3);
 
 const categoryLabels: Record<Category, string> = {
   installing: 'Installing Stagehand',
@@ -42,6 +49,15 @@ const sections = categoryOrder
                 <span aria-hidden="true">{entry.data.order.toString().padStart(2, '0')}</span>
                 {entry.data.title}
               </a>
+              {entry.id === currentSlug && tableOfContents.length > 0 && (
+                <ol class="docs-nav__toc" aria-label={`Sections in ${entry.data.title}`}>
+                  {tableOfContents.map((heading) => (
+                    <li class={`docs-nav__toc-item docs-nav__toc-item--depth-${heading.depth}`}>
+                      <a href={`/docs/${entry.id}/#${heading.slug}`}>{heading.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              )}
             </li>
           ))}
         </ol>

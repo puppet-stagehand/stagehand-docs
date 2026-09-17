@@ -173,6 +173,34 @@
   background: rgba(0, 207, 255, 0.08);
 }
 
+.docs-nav__toc {
+  margin: 0.25rem 0 0.5rem;
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--stagehand-line-strong);
+  gap: 0 !important;
+}
+
+.docs-nav__toc a {
+  display: block;
+  padding: 0.4rem 0.75rem;
+  border-left: none;
+  grid-template-columns: none;
+  color: var(--stagehand-muted);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+}
+
+.docs-nav__toc-item--depth-3 a {
+  padding-left: 1.5rem;
+  font-size: 0.7813rem;
+  opacity: 0.85;
+}
+
+.docs-nav__toc a:hover {
+  color: #ffffff;
+  background: rgba(0, 207, 255, 0.08);
+}
+
 .docs-article {
   min-width: 0;
   padding-top: clamp(3rem, 7vw, 5rem);

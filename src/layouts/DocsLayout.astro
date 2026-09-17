@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
 import DocsNavigation from '../components/DocsNavigation.astro';
 import TesterGuideVisibility from '../components/TesterGuideVisibility.astro';
 import BaseLayout from './BaseLayout.astro';
@@ -9,9 +10,10 @@ interface Props {
   entries: CollectionEntry<'docs'>[];
   previous?: CollectionEntry<'docs'>;
   next?: CollectionEntry<'docs'>;
+  headings: MarkdownHeading[];
 }
 
-const { entry, entries, previous, next } = Astro.props;
+const { entry, entries, previous, next, headings } = Astro.props;
 const updatedDate = entry.data.updated;
 const updatedIso = updatedDate?.toISOString().slice(0, 10);
 const updatedLabel = updatedDate?.toLocaleDateString('en-US', {
@@ -39,7 +41,7 @@ const updatedLabel = updatedDate?.toLocaleDateString('en-US', {
 
       <div class="docs-shell__grid">
         <aside class="docs-shell__rail">
-          <DocsNavigation entries={entries} currentSlug={entry.id} />
+          <DocsNavigation entries={entries} currentSlug={entry.id} currentHeadings={headings} />
         </aside>
 
         <article class="docs-article">
