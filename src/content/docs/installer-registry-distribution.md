@@ -3,7 +3,7 @@ title: 'Registry-Hosted Container Distribution'
 description: How Compose and Helm installs get pre-built Puppet Core images instead of building them locally, and what record is kept of what got deployed.
 order: 4
 category: installing
-updated: 2026-08-31
+updated: 2026-09-17
 ---
 
 This explains two related pieces of work that change how Compose and Helm
@@ -162,10 +162,10 @@ flowchart TD
     end
 
     subgraph where["Where each mode keeps its copy"]
-        W1["Compose:\n~/.puppet-installer/compose/<project>/deployment.json"]
-        W2["All-in-one:\n~/.puppet-installer/allinone/<target>/deployment.json"]
-        W3["Multi-VM:\n~/.puppet-installer/multivm/<primary-target>/deployment.json"]
-        W4["Helm:\n~/.puppet-installer/helm/<namespace-release>/deployment.json"]
+        W1["Compose:\n~/.stagehand-installer/compose/<project>/deployment.json"]
+        W2["All-in-one:\n~/.stagehand-installer/allinone/<target>/deployment.json"]
+        W3["Multi-VM:\n~/.stagehand-installer/multivm/<primary-target>/deployment.json"]
+        W4["Helm:\n~/.stagehand-installer/helm/<namespace-release>/deployment.json"]
     end
 
     record --> where

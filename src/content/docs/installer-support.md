@@ -3,7 +3,7 @@ title: 'Installer Support & Troubleshooting'
 description: Symptom-to-fix guidance for troubleshooting a Puppet Installer install, upgrade, or credential problem.
 order: 7
 category: support
-updated: 2026-09-01
+updated: 2026-09-17
 ---
 
 Troubleshooting guidance for anyone running `puppet-installer`, installing or
@@ -403,6 +403,37 @@ This isn't a bug; it reflects real, in-progress work on how build
 artifacts reach an installer build. If you hit a missing image for a
 specific Puppet version, that's expected for now, not a sign something is
 broken.
+
+## Backup and Restore
+
+No install mode backs up or restores your PostgreSQL/PuppetDB data
+automatically today. That's on you, using standard `pg_dump` or
+volume/snapshot tooling outside the installer.
+
+This is separate from the one-time recovery values, database password,
+ingest token, data-service token, the installer prints during a lifecycle
+install (see **Secrets** above). That's a credential printout, not a
+database backup, and the two shouldn't be confused.
+
+- **All-in-one / Multi-VM**: PostgreSQL runs directly on the target VM.
+  Back it up with `pg_dump` or a volume/filesystem snapshot, on whatever
+  schedule your own operational policy requires.
+- **Compose**: PostgreSQL runs in a container with a Docker/Podman-managed
+  volume. Back up that volume, or run `pg_dump` against the running
+  container.
+- **Helm**: Helm mode doesn't provision PostgreSQL itself, the chart
+  expects you to supply your own PostgreSQL instance, so backup and
+  restore is entirely your responsibility using whatever tooling your
+  Kubernetes/PostgreSQL environment already provides.
+- **Console-only lifecycle**: this mode has no PostgreSQL instance of its
+  own; it attaches to whichever Core (or PE) install is already running,
+  so its backup and restore posture matches whatever mode that Core
+  install uses.
+
+For the installer's own PostgreSQL major-version-upgrade path
+specifically, not general backup and restore, see the PostgreSQL
+major-change requirement noted in **Platform-Lock Diagnosis and Controlled
+Recovery** above.
 
 ## Where to Report a Problem
 

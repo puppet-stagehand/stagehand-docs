@@ -3,7 +3,7 @@ title: "Tester's Guide"
 description: How to verify a deployed Stagehand console behaves as documented, and where to report what you find.
 order: 6
 category: support
-updated: 2026-09-01
+updated: 2026-09-17
 visibleOn: ['testpilots', 'beta']
 ---
 
@@ -29,16 +29,20 @@ The shipped 1.0 release runs a fixed capability profile. Supported today:
 - One local Global Administrator account (no multi-user role-based access control yet)
 - The full Activity Log
 - Compliance and findings (scans, summary/node rollup, settings)
-- Code Management, scoped to **control repositories only** (attaching a `team_module` or `module`
-  kind repository is not available in 1.0)
+- Task Repos, for attaching a git repository of Bolt tasks, Bolt plans, or Ansible playbooks so the
+  console can discover and run what's inside (the earlier control-repository, environment/branch,
+  and pull-based deploy workflow has been retired and is not part of any shipped 1.0 build)
 - Bolt vulnerability scans
+- Check-ins, a Reporting page showing daily rollup totals and a trend chart, with retention,
+  webhook forwarding, and per-report JSON/CSV export settings
 - Estate Viewer, as a registration/health view across instances, with no cross-instance
   classification or discovery actions
 
 Deferred to a later release, and not reachable in a shipped 1.0 build no matter how you navigate:
 multi-user RBAC/teams, an approvals workflow, customer-facing Data Management (the Puppet Data
-Service / Hiera hierarchy editor), the ENC discovery/import wizard, console self-update, and
-switching between patching providers (Patchbot is the only one shipped; see
+Service / Hiera hierarchy editor), the ENC discovery/import wizard, console self-update, the EYAML
+key-management and Hierascope comparison workflow (moved behind the same "Data Management" nav
+consolidation), and switching between patching providers (Patchbot is the only one shipped; see
 [Patchbot-Only Patching Boundary](#patchbot-only-patching-boundary) below). If you land on a route
 for one of these and it behaves as unavailable rather than throwing an error, that is expected; it
 is not a bug to report.
@@ -69,27 +73,30 @@ that node and that one benchmark. Click **Summary** again and confirm the origin
 This is also where to verify Bolt vulnerability scans specifically: the Inspector, and any other
 configured scanner, should appear as a selectable option in the Run compliance check wizard above.
 
-### Code Management (control repositories only)
+### Task Repos
 
-Sign in and open **Management → Code Management**. On the **Repositories** tab, confirm the
-repository-kind picker offers "control repo" as selectable, with any other kind shown but disabled.
-Attach a real control repository with a real git host, add the shown public deploy key to that host
-as a read-only deploy key, and confirm **Fetch** succeeds and shows classes and the Puppetfile.
+Sign in and open **Configuration → Task Repos**. Confirm the **Kind** selector on the attach form
+offers exactly two options, module and playbook repo, both enabled. Attach a real repository
+containing at least one Bolt task, add the shown deploy key to your git host as a read-only deploy
+key (or use a saved git credential or an HTTPS token instead), and click **Fetch now**. Confirm the
+scan status moves to a success state and the task/plan/playbook counts on the row update to reflect
+what the repository actually contains.
 
-| Scenario                                                                                                    | Expected result                                                                                                                                          |
-| ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Open the Deployments tab's environment dropdown after attaching a control repository with multiple branches | Every branch on the repository is listed, defaulting to the repository's configured default branch when it's among them, with no free-text entry allowed |
-| No control repository attached                                                                              | Deploy now is disabled with an explanation that a control repository must be attached first; no dropdown is shown                                        |
-| Run **Deploy now** against an environment                                                                   | That environment's row in the Environments list updates in place (no page reload) with a passed/failed status, a timestamp, and the actor who ran it     |
-| Open an environment that has never been deployed through the console                                        | Its row shows the branch's short commit SHA and "Never deployed from this console," no fabricated date or status                                         |
-| The environment list or branch list fails to load (host unreachable, an authentication problem)             | A clear error explains the failure and includes a way to retry, without breaking the rest of the page                                                    |
+Open **Automation → Tasks & Plans** and confirm the task you attached appears in the Runner's task
+picker; run it against a target and confirm a run report appears in the run history, the same as any
+other Bolt run.
 
-**Setting up a control repository from scratch**, walking the attach drawer: after attaching, the
-setup drawer auto-detects whether this is a new or existing r10k setup, reports readiness, and walks
-through credential and branch steps without deploying anything; **Deploy now** stays a separate,
-later action. If the primary host you're setting up genuinely lacks an SSH server, the drawer's
-managed remediation reports its real progress or error and can be retried without restarting the
-wizard.
+| Scenario                                                                                                  | Expected result                                                                                                                                                 |
+| --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Attach a second repository whose derived name (its git URL's last path segment) matches the first         | The attach is refused and the error names the module name that collided, never the first repository's URL                                                       |
+| Attach a repository named after the console's own built-in module (a URL ending in `stagehand`)           | The attach is refused the same way, naming `stagehand` as a reserved module name, rather than silently renaming it or replacing the console's own bundled tasks |
+| Detach an attached repository                                                                             | The response is a clean success and nothing the console can still run is left behind with no row to show for it                                                 |
+| Click **Fetch now** on a repository large enough to take a few seconds, then immediately click **Delete** | The delete is refused with an explanation that a fetch is in progress, rather than appearing to succeed; deleting again once the fetch finishes succeeds        |
+
+**Negative check:** on the Task Repos page, confirm there is no Deployments tab, no per-branch
+Puppetfile tab, and no "Deploy now" control anywhere. That workflow, tied to whole-environment
+control-repository deployment, has been retired; a Task Repos attachment is for discovering and
+running tasks, plans, and playbooks only.
 
 Under **Git Credentials**, host-default and specific-repository entries both show their name and
 scope but never secret material, and a specific-repository credential wins for its own URL over a
@@ -99,19 +106,11 @@ in any response, run output, or the Activity Log. Importing an existing deploy k
 primary host is read-only until you explicitly confirm the import; the consent dialog only opens
 after you click **Review**, with neither choice preselected.
 
-If the control repository has Git-sourced Puppetfile modules on other hosts, each external module
-appears in the Runner/Designer Palette as an auto-discovered row naming its parent control
-repository, and a missing credential for one module produces a clear error on just that module while
-the others still scan and deploy normally.
-
-The **Puppetfile → Forge cross-check** on the Repositories tab compares each pinned module's version
-against what the Puppet Forge has published, when a Forge API key is configured under
-**Settings → Packages**. With no key configured, every row shows an honest **? unknown** pill and a
-note that no key is set, never a false "current." With a key configured, a module with a newer
-published release shows an **↻ update available** pill with the newer version number, and a
-deprecated module shows a distinct **✕ deprecated** pill; hovering either pill explains why, and
-what (if anything) replaces it. Modules pinned by git reference or left unpinned always show `—`
-with no pill, since there's nothing on the Forge to compare against.
+Under **Settings → Packages**, save a Forge API key and confirm a reference line appears showing
+only the key's last six characters and the date it was attached, never the full key. Save an
+expiration date in the past and confirm the Action Center shows a critical "Forge API key expired
+N days ago" card linking back to that settings page; save one 10 days out and confirm it's a
+warning-toned card instead; save one 90 days out and confirm no card appears.
 
 ### Scoped Task and Plan Launcher
 
@@ -128,15 +127,46 @@ own severity color. Confirm the side panel shows a status row (glyph plus label)
 impact count, and that clicking never navigates away. Open a node with no Puppet report yet and
 confirm every resource shows as gray "Unreported" rather than a false "clean" state.
 
-### Node Detail, Activity, Classes, and Configuration Coverage
+### Node Detail, Activity, Classes, and Class Coverage
 
-| Scenario                                                                                      | Expected result                                                                                                                                                                                                                                                                     |
-| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Open a node's detail page                                                                     | Overview, Activity, and Classes tabs render, with Overview selected by default and showing a line for how many classes are applied that switches to the Classes tab in place                                                                                                        |
-| Open the Activity tab on a node with mixed history (audit entries, Bolt runs, Puppet reports) | A single time-ordered table renders all three kinds together; toggling a kind filter hides that kind's rows (at least one filter always stays on); clicking a row deep-links to the underlying run, report, or audit entry                                                          |
-| Open the Activity tab on a node with an orphaned or stale Bolt run                            | That row's outcome badge reads "unreported" (glyph plus label), never "running" or a fabricated failure                                                                                                                                                                             |
-| Open the Classes tab on a node with classes from more than one source                         | Each class shows a source/mismatch indicator: in sync, not yet applied, or catalog only                                                                                                                                                                                             |
-| Open Configuration Coverage (under Reporting)                                                 | Five summary cards render above the existing ranked sections (Environments, Classes in use, Declared but unused, Unclassified nodes, and Modules when a control repository is attached); clicking a card or a ranked row opens its own drilldown or scrolls to the matching section |
+| Scenario                                                                                      | Expected result                                                                                                                                                                                                                                                                                                                                                                  |
+| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Open a node's detail page                                                                     | Overview, Activity, and Classes tabs render, with Overview selected by default and showing a line for how many classes are applied that switches to the Classes tab in place                                                                                                                                                                                                     |
+| Open the Activity tab on a node with mixed history (audit entries, Bolt runs, Puppet reports) | A single time-ordered table renders all three kinds together; toggling a kind filter hides that kind's rows (at least one filter always stays on); clicking a row deep-links to the underlying run, report, or audit entry                                                                                                                                                       |
+| Open the Activity tab on a node with an orphaned or stale Bolt run                            | That row's outcome badge reads "unreported" (glyph plus label), never "running" or a fabricated failure                                                                                                                                                                                                                                                                          |
+| Open the Classes tab on a node with classes from more than one source                         | Each class shows a source/mismatch indicator: in sync, not yet applied, or catalog only                                                                                                                                                                                                                                                                                          |
+| Open Class Coverage (under Configuration, not Reporting)                                      | Four summary cards render above the existing ranked sections (Environments, Classes in use, Declared but unused, Unclassified nodes); a fifth "Modules" card is omitted entirely rather than shown empty, since its data source predates Task Repos and nothing attaches to it today; clicking a card or a ranked row opens its own drilldown or scrolls to the matching section |
+
+### Check-ins
+
+Open **Reporting → Check-ins**, directly after Activity & Runs. On a console whose background
+rollup job has already run at least once against a reachable PuppetDB, the page shows a totals row
+(Changed, Failed, Unchanged, Unreported, Overdue) for the most recent day and a trend chart below it
+with one line per status. On a fresh install with no rollup rows yet, the page shows "No check-ins
+recorded yet" with an explanation that the rollup starts after the next poll cycle, never a blank
+page. With the console's own database briefly unreachable, reloading the page shows a distinct error
+banner with a **Retry** action, not the "No check-ins recorded yet" empty state; retrying once the
+database is back recovers the page without a full reload.
+
+Click **Check-in settings** (or open **Settings → Check-ins** directly). Raising the retention value
+saves immediately with no dialog; lowering it opens a reduction-confirmation dialog naming what will
+be deleted, whose confirm button stays disabled until you check the acknowledgment box, and
+canceling leaves the saved value unchanged. As a non-Global-Administrator, the retention field and
+save controls are visible but grayed out, with an explanation on hover that this needs Global
+Administrator, rather than being hidden.
+
+On the same settings panel, turning on **Forward daily totals to a webhook** reveals a URL field; an
+`http://` URL shows an inline warning that the payload travels unencrypted but still saves, while an
+`https://` URL clears the warning. **Send test webhook** stays disabled until the field holds a
+well-formed URL. Pointing it at a reachable test endpoint and clicking **Send test webhook** reports
+a real success naming the host reached and delivers a JSON payload; pointing it at an unreachable
+host reports a clear failure naming the host and the reason. A test send never changes the "No
+deliveries yet" line, since a test is explicitly not a real delivery.
+
+From any individual report, a **JSON / CSV** format picker plus an **Export** button let you download
+that report. A JSON export contains the same data the page itself renders from; a CSV export has a
+header row and one data row per resource event, and a report with zero resource events still
+downloads a valid CSV with just the header row, never an empty or broken file.
 
 ### Visual Bolt Designer
 
@@ -181,24 +211,6 @@ default variables shows generated fields above Advanced, pre-filled from those d
 per page. Complete one task or plan run using only the default, non-Advanced path, confirming it
 launches and completes without ever needing Advanced.
 
-### EYAML Profile Wizard and Create Secret
-
-Open **Configuration → Data Management**, then the **Create Secret** tab. With no key profile
-saved, the "Encrypt a value" controls are disabled with a message pointing at "Manage keys." Switch
-to Manage keys and generate a real key pair, watching your browser's network tab; the create
-request and response should never contain the private key or PEM material, only the public key and
-metadata. A generated key pair's private half never leaves the console, so an inline warning
-explains that Puppet can't decrypt anything encrypted under it unless a matching key pair is
-separately installed on Puppet's own infrastructure. Uploading an existing key pair should be
-accepted after the console self-validates that its public and private halves match. Use the
-"encrypt a value" helper and confirm the resulting ciphertext renders once with a copy affordance,
-and that reopening the form clears both the plaintext and ciphertext fields.
-
-If you have a live Puppet Server with the matching decryption tooling configured, pasting a value
-encrypted under an uploaded key pair into a real Hiera file should decrypt correctly at catalog
-compile time; decryption failing for a value encrypted under a generated (not uploaded) key pair
-is expected, since the private half of a generated pair never leaves the console.
-
 ### Estate Viewer
 
 | Scenario                                                                          | Expected result                                                                                                                                                                                                                                                                                                            |
@@ -220,18 +232,6 @@ is expected, since the private half of a generated pair never leaves the console
 | Click "Download App SBOM"                                  | A CycloneDX JSON file downloads immediately, served directly from the running binary                          |
 | No self-update manifest is configured, or it's unreachable | "Download Full Container SBOM" renders disabled with an explanatory note, no error banner, no broken link     |
 
-### Guided Hierascope and EYAML Walkthrough
-
-Open **Configuration → Data Management**, then the Hierascope tab, on a console with an attached
-repository. Confirm the job list renders (empty state if none exist yet) with a visible "Start
-analysis run" action. Start a guided run: pick a repository, two refs to compare, preview the
-scope, then start. Confirm a real active-node count and scope-cap indicator render before you
-commit, and the new job lands on its own detail page. Watch a running job's detail page and confirm
-progress polls automatically with no manual refresh needed. On a completed job with real
-differences, confirm the Evidence, Failures, and Inputs tabs all render, and that downloading as
-JSON or CSV produces a real file. Cancel a running job, then restart a finished one, confirming
-restart creates a new job with the same frozen inputs.
-
 ### PDCTNG Connection and Change Tracking
 
 | Scenario                                                                                                    | Expected result                                                                                                                                   |
@@ -246,7 +246,7 @@ restart creates a new job with the same frozen inputs.
 ### Playbooks
 
 Attach a Playbook Repository via the Playbooks page's "Attach repo" link, confirming the console
-navigates you to Code Management's attach form with the right repository kind preselected;
+navigates you to Task Repos' attach form with the right repository kind preselected;
 attaching and fetching a real fixture repository should make its playbooks appear in the Playbooks
 page's picker. Run a Designer-published multi-step plan that includes one playbook step alongside
 another step, and confirm the run's detail view shows the full ordered step list, with the playbook
