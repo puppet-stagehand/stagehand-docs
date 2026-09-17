@@ -12,6 +12,11 @@ const allowedNonClaimLinks = new Set([
   'https://github.com/puppet-stagehand/stagehand-release/releases',
   'https://help.puppet.com/bolt/current/topics/bolt_installing.htm',
 ]);
+// Release-tag links (e.g. the downloads page's "latest release" link) carry a version in the
+// path, so they can't live in the exact-match set above without breaking on every release bump.
+const allowedNonClaimLinkPrefixes = [
+  'https://github.com/puppet-stagehand/stagehand-release/releases/tag/',
+];
 const canonicalBase = new URL('https://www.puppet-stagehand.com/');
 const nonNetworkSchemes = new Set(['data:', 'mailto:', 'tel:']);
 
@@ -114,7 +119,10 @@ export const validateBuiltLinks = async (root = 'dist'): Promise<string[]> => {
 
   const unapproved = [
     ...[...externalLinks].filter(
-      ([url]) => !allowedNonClaimLinks.has(url) && !allowedEvidenceLinks.has(url),
+      ([url]) =>
+        !allowedNonClaimLinks.has(url) &&
+        !allowedEvidenceLinks.has(url) &&
+        !allowedNonClaimLinkPrefixes.some((prefix) => url.startsWith(prefix)),
     ),
     ...unsupportedLinks,
   ];
